@@ -1,0 +1,24 @@
+{
+	"$schema": "https://raw.githubusercontent.com/TypeScriptToLua/TypeScriptToLua/master/tsconfig-schema.json",
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"outDir": "lua/neotest-playwright",
+		"noImplicitThis": true
+	},
+	"include": ["src"],
+	"exclude": ["tests"],
+	"tstl": {
+		// Docs: https://typescripttolua.github.io/docs/configuration#custom-options
+		"luaTarget": "JIT",
+		"tstlVerbose": false,
+		"luaLibImport": "inline",
+		"noImplicitSelf": true,
+		"noResolvePaths": [
+			"neotest.lib",
+			"neotest.async",
+			"neotest-playwright/build-spec",
+			"neotest-playwright/report",
+			"neotest-playwright.util" // copied manually
+		]
+	}
+}

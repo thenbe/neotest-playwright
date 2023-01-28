@@ -1,0 +1,16 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "@tsconfig/node18-strictest-esm/tsconfig.json",
+	"compilerOptions": {
+		"target": "esnext",
+		"lib": ["esnext"],
+		"moduleResolution": "node",
+		"types": ["node", "lua-types/jit", "@gkzhb/lua-types-nvim"],
+		"resolveJsonModule": true,
+		"baseUrl": "src",
+		"paths": {
+			"neotest-playwright/*": ["*"]
+		}
+	},
+	"exclude": ["tests/sample/**"]
+}

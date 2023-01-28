@@ -1,0 +1,225 @@
+{
+	"config": {
+		"forbidOnly": false,
+		"fullyParallel": true,
+		"globalSetup": null,
+		"globalTeardown": null,
+		"globalTimeout": 0,
+		"grep": {},
+		"grepInvert": null,
+		"maxFailures": 0,
+		"metadata": {},
+		"preserveOutput": "always",
+		"projects": [
+			{
+				"outputDir": "/home/user/project/test-results",
+				"repeatEach": 1,
+				"retries": 0,
+				"id": "chromium",
+				"name": "chromium",
+				"testDir": "/home/user/project/tests",
+				"testIgnore": [],
+				"testMatch": ["**/?(*.)@(spec|test).*"],
+				"timeout": 30000
+			}
+		],
+		"reporter": [["json", null]],
+		"reportSlowTests": {
+			"max": 5,
+			"threshold": 15000
+		},
+		"configFile": "/home/user/project/playwright.config.ts",
+		"rootDir": "/home/user/project/tests",
+		"quiet": false,
+		"shard": null,
+		"updateSnapshots": "missing",
+		"version": "1.30.0",
+		"workers": 12,
+		"webServer": null
+	},
+	"suites": [
+		{
+			"title": "example.spec.ts",
+			"file": "example.spec.ts",
+			"column": 0,
+			"line": 0,
+			"specs": [
+				{
+					"title": "common sense",
+					"ok": true,
+					"tags": [],
+					"tests": [
+						{
+							"timeout": 30000,
+							"annotations": [],
+							"expectedStatus": "passed",
+							"projectId": "chromium",
+							"projectName": "chromium",
+							"results": [
+								{
+									"workerIndex": 2,
+									"status": "passed",
+									"duration": 64,
+									"errors": [],
+									"stdout": [],
+									"stderr": [],
+									"retry": 0,
+									"startTime": "2023-02-06T07:51:39.432Z",
+									"attachments": []
+								}
+							],
+							"status": "expected"
+						}
+					],
+					"id": "a30a6eba6312f6b87ea5-6c487d38001086d67734",
+					"file": "example.spec.ts",
+					"line": 13,
+					"column": 5
+				},
+				{
+					"title": "not so common sense",
+					"ok": false,
+					"tags": [],
+					"tests": [
+						{
+							"timeout": 30000,
+							"annotations": [],
+							"expectedStatus": "passed",
+							"projectId": "chromium",
+							"projectName": "chromium",
+							"results": [
+								{
+									"workerIndex": 3,
+									"status": "failed",
+									"duration": 71,
+									"error": {
+										"message": "\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m",
+										"stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at /home/user/project/tests/example.spec.ts:18:15"
+									},
+									"errors": [
+										{
+											"location": {
+												"file": "/home/user/project/tests/example.spec.ts",
+												"column": 15,
+												"line": 18
+											},
+											"message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n\n\u001b[90m   at \u001b[39mexample.spec.ts:18\n\n\u001b[0m \u001b[90m 16 |\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 17 |\u001b[39m test(\u001b[32m'not so common sense'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 18 |\u001b[39m \texpect(\u001b[36mtrue\u001b[39m)\u001b[33m.\u001b[39mtoBe(\u001b[36mfalse\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m    |\u001b[39m \t             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 19 |\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 20 |\u001b[39m\u001b[0m\n\n\u001b[2m    at /home/user/project/tests/example.spec.ts:18:15\u001b[22m"
+										}
+									],
+									"stdout": [],
+									"stderr": [],
+									"retry": 0,
+									"startTime": "2023-02-06T07:51:39.432Z",
+									"attachments": [],
+									"errorLocation": {
+										"file": "/home/user/project/tests/example.spec.ts",
+										"column": 15,
+										"line": 18
+									}
+								}
+							],
+							"status": "unexpected"
+						}
+					],
+					"id": "a30a6eba6312f6b87ea5-184d3d3d7a2199f803a2",
+					"file": "example.spec.ts",
+					"line": 17,
+					"column": 5
+				}
+			],
+			"suites": [
+				{
+					"title": "math",
+					"file": "example.spec.ts",
+					"line": 3,
+					"column": 6,
+					"specs": [
+						{
+							"title": "addition",
+							"ok": true,
+							"tags": [],
+							"tests": [
+								{
+									"timeout": 30000,
+									"annotations": [],
+									"expectedStatus": "passed",
+									"projectId": "chromium",
+									"projectName": "chromium",
+									"results": [
+										{
+											"workerIndex": 0,
+											"status": "passed",
+											"duration": 66,
+											"errors": [],
+											"stdout": [],
+											"stderr": [],
+											"retry": 0,
+											"startTime": "2023-02-06T07:51:39.429Z",
+											"attachments": []
+										}
+									],
+									"status": "expected"
+								}
+							],
+							"id": "a30a6eba6312f6b87ea5-bce34a10a758cb89be1c",
+							"file": "example.spec.ts",
+							"line": 4,
+							"column": 6
+						},
+						{
+							"title": "not substraction",
+							"ok": false,
+							"tags": [],
+							"tests": [
+								{
+									"timeout": 30000,
+									"annotations": [],
+									"expectedStatus": "passed",
+									"projectId": "chromium",
+									"projectName": "chromium",
+									"results": [
+										{
+											"workerIndex": 1,
+											"status": "failed",
+											"duration": 35,
+											"error": {
+												"message": "\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m11\u001b[39m\nReceived: \u001b[31m0\u001b[39m",
+												"stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m11\u001b[39m\nReceived: \u001b[31m0\u001b[39m\n    at /home/user/project/tests/example.spec.ts:9:17"
+											},
+											"errors": [
+												{
+													"location": {
+														"file": "/home/user/project/tests/example.spec.ts",
+														"column": 17,
+														"line": 9
+													},
+													"message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m11\u001b[39m\nReceived: \u001b[31m0\u001b[39m\n\n\u001b[90m   at \u001b[39mexample.spec.ts:9\n\n\u001b[0m \u001b[90m  7 |\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m  8 |\u001b[39m \ttest(\u001b[32m'not substraction'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m \t\texpect(\u001b[35m1\u001b[39m \u001b[33m-\u001b[39m \u001b[35m1\u001b[39m)\u001b[33m.\u001b[39mtoBe(\u001b[35m11\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m    |\u001b[39m \t\t              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 10 |\u001b[39m \t})\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 11 |\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 12 |\u001b[39m\u001b[0m\n\n\u001b[2m    at /home/user/project/tests/example.spec.ts:9:17\u001b[22m"
+												}
+											],
+											"stdout": [],
+											"stderr": [],
+											"retry": 0,
+											"startTime": "2023-02-06T07:51:39.429Z",
+											"attachments": [],
+											"errorLocation": {
+												"file": "/home/user/project/tests/example.spec.ts",
+												"column": 17,
+												"line": 9
+											}
+										}
+									],
+									"status": "unexpected"
+								}
+							],
+							"id": "a30a6eba6312f6b87ea5-186793ad93ea839c6213",
+							"file": "example.spec.ts",
+							"line": 8,
+							"column": 6
+						}
+					]
+				}
+			]
+		}
+	],
+	"errors": []
+}

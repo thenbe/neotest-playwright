@@ -1,0 +1,28 @@
+{
+	"name": "neotest-playwright",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build": "rm -rf lua && tstl -p tsconfig.build.json && cp src/util.lua lua/neotest-playwright/util.lua",
+		"dev": "tstl -p tsconfig.build.json --watch",
+		"test": "vitest",
+		"check": "tsc --noEmit"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@gkzhb/lua-types-nvim": "0.0.6",
+		"@playwright/test": "1.30.0",
+		"@tsconfig/node18-strictest-esm": "1.0.1",
+		"@types/node": "18.11.19",
+		"@vitest/ui": "0.28.4",
+		"lua-types": "2.13.1",
+		"prettier": "2.8.3",
+		"tstl": "2.5.13",
+		"typescript": "4.9.4",
+		"typescript-to-lua": "1.12.1",
+		"vitest": "0.28.4"
+	}
+}
