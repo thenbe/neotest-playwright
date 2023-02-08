@@ -75,8 +75,7 @@ ____exports.buildSpec = function(args)
         context = {results_path = resultsPath, file = pos.path, stop_stream = stopStream},
         stream = function() return function()
             local newResults = streamData()
-            local json = vim.json
-            local ok, report = pcall(json.decode, newResults, {luanil = {object = true}})
+            local ok, report = pcall(vim.json.decode, newResults, {luanil = {object = true}})
             if not ok then
                 print("Error parsing results")
                 print(newResults)

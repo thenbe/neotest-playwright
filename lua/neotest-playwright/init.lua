@@ -60,8 +60,7 @@ ____exports.adapter = {
             print("No test output file found", resultsPath)
             return {}
         end
-        local json = vim.json
-        local ok, parsed = pcall(json.decode, data, {luanil = {object = true}})
+        local ok, parsed = pcall(vim.json.decode, data, {luanil = {object = true}})
         if not ok then
             print("Failed to parse test output json", resultsPath)
             return {}

@@ -1,4 +1,5 @@
-interface IVimExtended {
+// merged with the global IVim interface provided by "@gkzhb/lua-types-nvim"
+interface IVim {
 	json: {
 		decode: (
 			this: void,

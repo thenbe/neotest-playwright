@@ -89,10 +89,7 @@ export const adapter = {
 			return {};
 		}
 
-		// @ts-ignore
-		const json = vim.json as IVimExtended['json'];
-
-		const [ok, parsed] = pcall(json.decode, data, {
+		const [ok, parsed] = pcall(vim.json.decode, data, {
 			luanil: { object: true },
 		});
 

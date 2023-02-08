@@ -82,10 +82,7 @@ export const buildSpec: neotest.Adapter['build_spec'] = (args) => {
 		stream: () => () => {
 			const newResults = streamData();
 
-			// @ts-ignore
-			const json = vim.json as IVimExtended['json'];
-
-			const [ok, report] = pcall(json.decode, newResults, {
+			const [ok, report] = pcall(vim.json.decode, newResults, {
 				luanil: { object: true },
 			});
 
