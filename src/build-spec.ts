@@ -19,6 +19,7 @@ export const buildSpec: neotest.Adapter['build_spec'] = (args) => {
 
 	const pos = args.tree.data();
 
+	// playwright supports running tests by line number: file.spec.ts:123
 	let testFilter =
 		pos.type === 'test' || pos.type === 'namespace'
 			? `${pos.path}:${pos.range[0] + 1}`
