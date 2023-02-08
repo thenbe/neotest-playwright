@@ -4,10 +4,11 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"build": "rm -rf lua && tstl -p tsconfig.build.json && cp src/util.lua lua/neotest-playwright/util.lua",
-		"dev": "tstl -p tsconfig.build.json --watch",
+		"build": "rm -rf lua && tstl -p tsconfig.build.json && cp src/util.lua lua/neotest-playwright/util.lua && pnpm run fix-paths",
+		"dev": "find ./src ./scripts tsconfig* | entr -s 'pnpm run build'",
 		"test": "vitest",
-		"check": "tsc --noEmit"
+		"check": "tsc --noEmit",
+		"fix-paths": "tsx ./scripts/fix-require-paths.ts"
 	},
 	"keywords": [],
 	"author": "",
@@ -19,8 +20,11 @@
 		"@types/node": "18.13.0",
 		"@vitest/ui": "0.28.4",
 		"lua-types": "2.13.1",
+		"magic-string": "0.27.0",
 		"prettier": "2.8.4",
+		"tiny-glob": "0.2.9",
 		"tstl": "2.5.13",
+		"tsx": "3.12.3",
 		"typescript": "4.9.5",
 		"typescript-to-lua": "1.12.1",
 		"vitest": "0.28.4"

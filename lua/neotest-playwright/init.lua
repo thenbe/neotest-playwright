@@ -17,9 +17,9 @@ local function __TS__ArraySome(self, callbackfn, thisArg)
 end
 -- End of Lua Library inline imports
 local ____exports = {}
-local ____build_2Dspec = require("neotest-playwright/build-spec")
+local ____build_2Dspec = require('neotest-playwright.build-spec')
 local buildSpec = ____build_2Dspec.buildSpec
-local ____report = require("neotest-playwright/report")
+local ____report = require('neotest-playwright.report')
 local parseOutput = ____report.parseOutput
 local lib = require("neotest.lib")
 local function isTestFile(file_path)

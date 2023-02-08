@@ -31,10 +31,10 @@ end
 local ____exports = {}
 local getBinary, getConfig
 local util = require("neotest-playwright.util")
-local ____build_2Dcommand = require("neotest-playwright/build-command")
+local ____build_2Dcommand = require('neotest-playwright.build-command')
 local buildCommand = ____build_2Dcommand.buildCommand
 local COMMAND_PRESETS = ____build_2Dcommand.COMMAND_PRESETS
-local ____report = require("neotest-playwright/report")
+local ____report = require('neotest-playwright.report')
 local parseOutput = ____report.parseOutput
 local async = require("neotest.async")
 local lib = require("neotest.lib")
