@@ -2,7 +2,7 @@
 
 A [playwright](https://playwright.dev/) adapter for [neotest](https://github.com/nvim-neotest/neotest).
 
-Written in typescript and transpiled to Lua using [tstl](https://github.com/samchon/tstl).
+Written in typescript and transpiled to Lua using [tstl](https://github.com/TypeScriptToLua/TypeScriptToLua).
 
 ## Installation
 
