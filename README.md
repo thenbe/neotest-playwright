@@ -12,19 +12,21 @@ Using packer:
 
 ```lua
 use({
-  'nvim-neotest/neotest',
-  requires = {
-    ...,
-    'thenbe/neotest-playwright',
-  }
-  config = function()
-    require('neotest').setup({
-      ...,
-      adapters = {
-        require('neotest-playwright').adapter
-      }
-    })
-  end
+	"nvim-neotest/neotest",
+	requires = {
+		-- ...,
+		"thenbe/neotest-playwright",
+	},
+	config = function()
+		require("neotest").setup({
+			-- ...,
+			adapters = {
+				require("neotest-playwright").adapter({
+					preset = "headless",
+				}),
+			},
+		})
+	end,
 })
 ```
 
