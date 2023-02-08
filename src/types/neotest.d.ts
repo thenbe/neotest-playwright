@@ -129,12 +129,6 @@ declare module 'neotest' {
 	/* Nested tree structure with nodes containing data and having any number of
 	 * children */
 	class Tree {
-		// _data: unknown;
-		// _children: Tree[];
-		// _nodes: Record<string, Tree>;
-		// _key: (data: unknown) => string;
-		// _parent?: Tree;
-
 		data(): Position;
 		children(): Tree[];
 		nodes(): Record<string, Tree>;
@@ -149,22 +143,9 @@ declare module 'neotest' {
 		 * with the given data */
 		closest_node_with(data_attr: string): Tree | null;
 
-		// --- Parses a tree in the shape of nested lists.
-		// --- The head of the list is the root of the tree, and all following elements are its children.
-		// ---@param data any[]
-		// ---@return neotest.Tree
-		// function neotest.Tree.from_list(data, key)
-
 		/** Parses a tree in the shape of nested lists.
 		 * The head of the list is the root of the tree, and all following elements are its children. */
 		static from_list(data: unknown[], key: (data: unknown) => string): Tree;
-
-		// ---@param data any Node data
-		// ---@param children neotest.Tree[] Children of this node
-		// ---@param key fun(data: any): string
-		// ---@param parent? neotest.Tree
-		// ---@private
-		// function neotest.Tree:new(data, children, key, parent, nodes)
 
 		/** Create a new tree node */
 		constructor(
