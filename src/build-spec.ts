@@ -1,5 +1,6 @@
 import type * as neotest from 'neotest';
 import * as util from 'neotest-playwright.util';
+import { buildCommand, CommandOptions } from 'neotest-playwright/build-command';
 import { parseOutput } from 'neotest-playwright/report';
 import * as async from 'neotest.async';
 import * as lib from 'neotest.lib';
@@ -18,36 +19,40 @@ export const buildSpec: neotest.Adapter['build_spec'] = (args) => {
 
 	const pos = args.tree.data();
 
-	const binary = getBinary(pos.path);
-	const config = getConfig(pos.path);
-
-	const command = [binary, 'test', '--reporter=json'];
-
-	if (config && lib.files.exists(config)) {
-		command.push(`--config=${config}`);
-	}
-
-	// const env = getEnv(args[2]?.env || {});
-
 	let testFilter =
 		pos.type === 'test' || pos.type === 'namespace'
 			? `${pos.path}:${pos.range[0] + 1}`
 			: pos.path;
 
-	command.push(testFilter);
+	const binary = getBinary(pos.path);
+	const config = getConfig(pos.path);
 
-	if (args.extra_args) {
-		command.push(...args.extra_args);
+	const commandOptions: CommandOptions = {
+		reporter: 'json',
+		testFilter: testFilter,
+	};
+
+	if (config && lib.files.exists(config)) {
+		commandOptions.config = config;
 	}
 
+	// const env = getEnv(args[2]?.env || {});
+
+	// TODO: move extra_args to buildCommand
+	// if (args.extra_args) {
+	// 	command.push(...args.extra_args);
+	// }
+
 	const resultsPath = `${async.fn.tempname()}.json`;
+
+	const command = [binary, ...buildCommand(commandOptions)];
+
+	// @ts-ignore
+	print(vim.inspect(command));
 
 	lib.files.write(resultsPath, '');
 
 	const [streamData, stopStream] = lib.files.stream(resultsPath);
-
-	// @ts-ignore
-	print(vim.inspect(command));
 
 	return {
 		command,

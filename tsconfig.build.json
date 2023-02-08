@@ -17,6 +17,7 @@
 			"neotest.lib",
 			"neotest.async",
 			"neotest-playwright/build-spec",
+			"neotest-playwright/build-command",
 			"neotest-playwright/report",
 			"neotest-playwright.util" // copied manually
 		]

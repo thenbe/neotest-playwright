@@ -1,17 +1,9 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
--- Lua Library inline imports
-local function __TS__ArrayPushArray(self, items)
-    local len = #self
-    for i = 1, #items do
-        len = len + 1
-        self[len] = items[i]
-    end
-    return len
-end
--- End of Lua Library inline imports
 local ____exports = {}
 local getBinary, getConfig
 local util = require("neotest-playwright.util")
+local ____build_2Dcommand = require("neotest-playwright/build-command")
+local buildCommand = ____build_2Dcommand.buildCommand
 local ____report = require("neotest-playwright/report")
 local parseOutput = ____report.parseOutput
 local async = require("neotest.async")
@@ -26,21 +18,21 @@ ____exports.buildSpec = function(args)
         return
     end
     local pos = args.tree:data()
+    local testFilter = (pos.type == "test" or pos.type == "namespace") and (pos.path .. ":") .. tostring(pos.range[1] + 1) or pos.path
     local binary = getBinary(pos.path)
     local config = getConfig(pos.path)
-    local command = {binary, "test", "--reporter=json"}
+    local commandOptions = {reporter = "json", testFilter = testFilter}
     if config and lib.files.exists(config) then
-        command[#command + 1] = "--config=" .. config
-    end
-    local testFilter = (pos.type == "test" or pos.type == "namespace") and (pos.path .. ":") .. tostring(pos.range[1] + 1) or pos.path
-    command[#command + 1] = testFilter
-    if args.extra_args then
-        __TS__ArrayPushArray(command, args.extra_args)
+        commandOptions.config = config
     end
     local resultsPath = async.fn.tempname() .. ".json"
+    local command = {
+        binary,
+        unpack(buildCommand(commandOptions))
+    }
+    print(vim.inspect(command))
     lib.files.write(resultsPath, "")
     local streamData, stopStream = lib.files.stream(resultsPath)
-    print(vim.inspect(command))
     return {
         command = command,
         cwd = nil,
