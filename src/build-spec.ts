@@ -1,6 +1,10 @@
 import type * as neotest from 'neotest';
 import * as util from 'neotest-playwright.util';
-import { buildCommand, CommandOptions } from 'neotest-playwright/build-command';
+import {
+	buildCommand,
+	CommandOptions,
+	COMMAND_PRESETS,
+} from 'neotest-playwright/build-command';
 import { parseOutput } from 'neotest-playwright/report';
 import * as async from 'neotest.async';
 import * as lib from 'neotest.lib';
@@ -28,8 +32,17 @@ export const buildSpec: neotest.Adapter['build_spec'] = (args) => {
 	const binary = getBinary(pos.path);
 	const config = getConfig(pos.path);
 
+	// TODO: Document usage of preset. Show example/gif with page.pause()
+	// TODO: find better way to get preset name.
+	const presetName = args.extra_args?.find((x) => x.startsWith('preset='));
+
+	const preset =
+		presetName === 'preset=headed'
+			? COMMAND_PRESETS['COMMAND_HEADED']
+			: COMMAND_PRESETS['COMMAND_DEFAULT'];
+
 	const commandOptions: CommandOptions = {
-		reporter: 'json',
+		...preset,
 		testFilter: testFilter,
 	};
 
@@ -39,7 +52,8 @@ export const buildSpec: neotest.Adapter['build_spec'] = (args) => {
 
 	// const env = getEnv(args[2]?.env || {});
 
-	// TODO: move extra_args to buildCommand
+	// TODO: move extra_args to buildCommand.
+	// TODO: Don't include preset in extra_args
 	// if (args.extra_args) {
 	// 	command.push(...args.extra_args);
 	// }

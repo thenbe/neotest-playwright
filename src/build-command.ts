@@ -23,9 +23,15 @@ export const COMMAND_HEADED = {
 	timeout: 0,
 } satisfies CommandOptions;
 
+export const COMMAND_PRESETS = {
+	COMMAND_HEADED: COMMAND_HEADED,
+	COMMAND_DEFAULT: COMMAND_DEFAULT,
+};
+
 /** A function that takes in CommandOptions and returns a string. */
 export const buildCommand = (options: CommandOptions) => {
 	const o = { ...COMMAND_DEFAULT, ...options };
+
 	const command = [
 		'test',
 		`--reporter=${o.reporter}`,

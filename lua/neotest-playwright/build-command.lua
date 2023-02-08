@@ -40,6 +40,7 @@ ____exports.COMMAND_HEADED = {
     workers = 1,
     timeout = 0
 }
+____exports.COMMAND_PRESETS = {COMMAND_HEADED = ____exports.COMMAND_HEADED, COMMAND_DEFAULT = COMMAND_DEFAULT}
 --- A function that takes in CommandOptions and returns a string.
 ____exports.buildCommand = function(options)
     local o = __TS__ObjectAssign({}, COMMAND_DEFAULT, options)
