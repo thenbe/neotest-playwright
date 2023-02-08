@@ -7,6 +7,7 @@
 		"moduleResolution": "node",
 		"types": ["node", "lua-types/jit", "@gkzhb/lua-types-nvim"],
 		"resolveJsonModule": true,
+		"noImplicitThis": true,
 		"baseUrl": "src",
 		"paths": {
 			"neotest-playwright/*": ["*"]
