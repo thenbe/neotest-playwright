@@ -59,6 +59,8 @@ Clears preset options.
 
 Projects can be toggled on and off using the `:NeotestPlaywrightProject` command. Projects that are toggled on will be passed along to playwright using the `--project` flag.
 
+Project selection can be persisted across neovim sessions by setting `persist_project_selection` to true. Selection is scoped to the project's root directory.
+
 # Credits
 
 - [neotest-jest](https://github.com/haydenmeade/neotest-jest)
