@@ -4,13 +4,13 @@ A [playwright](https://playwright.dev/) adapter for [neotest](https://github.com
 
 Written in typescript and transpiled to Lua using [tstl](https://github.com/TypeScriptToLua/TypeScriptToLua).
 
-> ⚠️ This adapter is very much a work in progress and is not yet ready for public use.
+> ⚠️ This adapter is in an experimental state.
 
 ## Features
 
 - [ ] Discover, run, and parse the output of playwright tests
-- [x] On-the-fly presets
 - [x] Project selection + persistence
+- [x] On-the-fly presets
 
 ## Installation
 
@@ -41,29 +41,31 @@ use({
 
 ## Presets
 
-Presets can be used to debug your tests on the fly.
+Presets are a way to debug your tests on the fly.
 
-To select a preset, use the `:NeotestPlaywrightPreset` command.
+> To select a preset, use the `:NeotestPlaywrightPreset` command.
 
 ### `headed`
 
-> Applies the following options: `--headed --retries 0 --timeout 0 --workers 1 --max-failures 0`
+> Applies the following flags: `--headed --retries 0 --timeout 0 --workers 1 --max-failures 0`
 
-Runs tests in headed mode. Use with `await page.pause()` to open the playwright inspector and debug your locators.
+Runs tests in headed mode.
+
+> Tip: Use with `await page.pause()` to open the playwright inspector and debug your locators.
 
 ### `debug`
 
-> Applies the following option: `--debug`
+> Applies the following flags: `--debug`
 
 Playwright uses the `--debug` flag as a shortcut for multiple options. See [here](https://playwright.dev/docs/test-cli#reference) for more information.
 
 ### `none`
 
-Clears preset options.
+Does not apply any flags. Your tests will run as defined in your `playwright.config.ts` file.
 
 ## Projects
 
-Projects can be toggled on and off using the `:NeotestPlaywrightProject` command. Projects that are toggled on will be passed along to playwright using the `--project` flag.
+[Projects](https://playwright.dev/docs/test-advanced#projects) can be toggled on and off using the `:NeotestPlaywrightProject` command. Projects that are toggled on will be passed along to playwright using the `--project` flag.
 
 Project selection can be persisted across neovim sessions by setting `persist_project_selection` to true. Selection is scoped to the project's root directory.
 
