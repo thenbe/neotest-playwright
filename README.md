@@ -30,6 +30,29 @@ use({
 })
 ```
 
+## Presets
+
+Presets can be used to debug your tests on the fly.
+
+To select a preset, use the `:NeotestPlaywright preset` command.
+
+### `headed`
+
+Runs the tests in headed mode. Use with `await page.pause()` to open the playwright inspector and debug your locators.
+
+Applies the following options:
+`--headed --retries 0 --timeout 0 --workers 1 --max-failures 0`
+
+### `debug`
+
+Applies the following option: `--debug`
+
+> Playwright uses the `--debug` flag as a shortcut for multiple options. See [here](https://playwright.dev/docs/test-cli#reference) for more information.
+
+### `none`
+
+Clears preset options.
+
 # Credits
 
 - [neotest-jest](https://github.com/haydenmeade/neotest-jest)
