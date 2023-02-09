@@ -52,6 +52,10 @@ Playwright uses the `--debug` flag as a shortcut for multiple options. See [here
 
 Clears preset options.
 
+## Projects
+
+Projects can be toggled on and off using the `:NeotestPlaywrightProject` command. Projects that are toggled on will be passed along to playwright using the `--project` flag.
+
 # Credits
 
 - [neotest-jest](https://github.com/haydenmeade/neotest-jest)
