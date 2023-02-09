@@ -1,5 +1,6 @@
-import * as logger from 'neotest.logging';
 import type * as P from '@playwright/test/reporter';
+import * as logger from 'neotest.logging';
+import { selectMultiple } from './select-multiple';
 
 // TODO: replace vim.notify with logger.debug
 
@@ -57,7 +58,8 @@ export const create_project_command = () => {
 		() => {
 			const output = get_projects();
 			const options = parseProjects(output);
-			select_projects(options);
+			// select_projects(options);
+			selectMultiple(options);
 		},
 		{
 			nargs: 0,

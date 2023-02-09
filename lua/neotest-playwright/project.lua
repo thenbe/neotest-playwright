@@ -10,6 +10,8 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local logger = require("neotest.logging")
+local ____select_2Dmultiple = require('neotest-playwright.select-multiple')
+local selectMultiple = ____select_2Dmultiple.selectMultiple
 --- Returns the playwright config
 local function get_projects()
     local testFilter = "./does-not-exist"
@@ -49,7 +51,7 @@ ____exports.create_project_command = function()
         function()
             local output = get_projects()
             local options = parseProjects(output)
-            ____exports.select_projects(options)
+            selectMultiple(options)
         end,
         {nargs = 0}
     )
