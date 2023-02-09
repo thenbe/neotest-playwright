@@ -34,11 +34,11 @@ use({
 
 Presets can be used to debug your tests on the fly.
 
-To select a preset, use the `:NeotestPlaywright preset` command.
+To select a preset, use the `:NeotestPlaywrightPreset` command.
 
 ### `headed`
 
-Runs the tests in headed mode. Use with `await page.pause()` to open the playwright inspector and debug your locators.
+Runs tests in headed mode. Use with `await page.pause()` to open the playwright inspector and debug your locators.
 
 Applies the following options:
 `--headed --retries 0 --timeout 0 --workers 1 --max-failures 0`

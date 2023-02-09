@@ -31,7 +31,7 @@ export const select_preset = () => {
 
 export const create_preset_command = () => {
 	vim.api.nvim_create_user_command(
-		'NeotestPlaywright',
+		'NeotestPlaywrightPreset',
 		// @ts-expect-error until type is updated
 		() => {
 			const choice = select_preset();

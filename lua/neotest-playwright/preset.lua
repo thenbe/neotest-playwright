@@ -31,7 +31,7 @@ ____exports.select_preset = function()
 end
 ____exports.create_preset_command = function()
     vim.api.nvim_create_user_command(
-        "NeotestPlaywright",
+        "NeotestPlaywrightPreset",
         function()
             local choice = ____exports.select_preset()
             if choice == nil then
