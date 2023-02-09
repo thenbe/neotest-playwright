@@ -25,6 +25,8 @@ interface IVim {
 		) => void;
 	};
 
+	cmd: (this: void, cmd: string) => void;
+
 	// TODO: override api.nvim_create_user_command only, without affecting other api.* functions
 	// api: {
 	// 	nvim_create_user_command: (

@@ -56,6 +56,9 @@ export const selectMultiple = ({
 				}
 			}
 		}
+
+		// redraw the screen to avoid stacking multiple dialogs
+		vim.cmd('redraw');
 	}
 
 	return Array.from(selected);

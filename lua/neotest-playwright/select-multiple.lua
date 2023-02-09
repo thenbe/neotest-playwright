@@ -334,6 +334,7 @@ ____exports.selectMultiple = function(____bindingPattern0)
                 end
             end
         end
+        vim.cmd("redraw")
     end
     return __TS__ArrayFrom(selected)
 end

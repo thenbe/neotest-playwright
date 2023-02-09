@@ -75,7 +75,7 @@ export const selectProjects = (options: string[]) => {
 
 	vim.notify(
 		`Selected projects: ${vim.inspect(choice, {})}`,
-		vim.log.levels.INFO,
+		vim.log.levels.DEBUG,
 		{},
 	);
 

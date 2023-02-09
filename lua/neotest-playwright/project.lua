@@ -62,7 +62,7 @@ ____exports.selectProjects = function(options)
     logger.debug("neotest-playwright project", choice)
     vim.notify(
         "Selected projects: " .. tostring(vim.inspect(choice, {})),
-        vim.log.levels.INFO,
+        vim.log.levels.DEBUG,
         {}
     )
     return choice
