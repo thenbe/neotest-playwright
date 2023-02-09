@@ -1,10 +1,10 @@
 import * as logger from 'neotest.logging';
-import { config } from './config';
+import { options } from './adapter-options';
 import { isPreset, Preset } from './preset-options';
 
 export const set_preset = (preset: Preset) => {
 	logger.debug('neotest-playwright preset', preset);
-	config.options.preset = preset;
+	options.preset = preset;
 };
 
 export const select_preset = () => {
