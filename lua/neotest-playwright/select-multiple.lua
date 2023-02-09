@@ -220,12 +220,6 @@ do
     Set[Symbol.species] = Set
 end
 
-local function __TS__New(target, ...)
-    local instance = setmetatable({}, target.prototype)
-    instance:____constructor(...)
-    return instance
-end
-
 local function __TS__ArrayIndexOf(self, searchElement, fromIndex)
     if fromIndex == nil then
         fromIndex = 0
@@ -280,8 +274,15 @@ do
         return result
     end
 end
+
+local function __TS__New(target, ...)
+    local instance = setmetatable({}, target.prototype)
+    instance:____constructor(...)
+    return instance
+end
 -- End of Lua Library inline imports
 local ____exports = {}
+local determineInitialSelection
 --- Uses vim.ui.select to present a list of choices to the user. However,
 -- instead of disappearing when the user selects an option, the list remains
 -- open and the user can select multiple choices. The user can *keep toggling
@@ -292,6 +293,7 @@ local ____exports = {}
 -- 
 -- A final option "done" is added to the list to allow the user to close the list.
 ____exports.selectMultiple = function(____bindingPattern0)
+    local preselected
     local initial
     local choices
     local prompt
@@ -301,12 +303,13 @@ ____exports.selectMultiple = function(____bindingPattern0)
     if initial == nil then
         initial = "none"
     end
+    preselected = ____bindingPattern0.preselected
     local done = "done"
     local done_index = #choices + 1
     local ____array_0 = __TS__SparseArrayNew(unpack(choices))
     __TS__SparseArrayPush(____array_0, done)
     local all_choices = {__TS__SparseArraySpread(____array_0)}
-    local selected = initial == "all" and __TS__New(Set, choices) or __TS__New(Set)
+    local selected = determineInitialSelection(initial, choices, preselected)
     local choice
     local done_selected = false
     while not done_selected do
@@ -342,5 +345,14 @@ ____exports.selectMultiple = function(____bindingPattern0)
         vim.cmd("redraw")
     end
     return __TS__ArrayFrom(selected)
+end
+determineInitialSelection = function(initial, choices, preselected)
+    if preselected then
+        return __TS__New(Set, preselected)
+    elseif initial == "all" then
+        return __TS__New(Set, choices)
+    else
+        return __TS__New(Set)
+    end
 end
 return ____exports

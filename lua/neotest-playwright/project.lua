@@ -14,6 +14,7 @@ local logger = require("neotest.logging")
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
 local ____persist = require('neotest-playwright.persist')
+local loadProjectCache = ____persist.loadProjectCache
 local saveProjectCache = ____persist.saveProjectCache
 local ____select_2Dmultiple = require('neotest-playwright.select-multiple')
 local selectMultiple = ____select_2Dmultiple.selectMultiple
@@ -50,21 +51,34 @@ local function parseProjects(output)
     )
     return names
 end
+--- Returns a list of project names from the cached data.
+local function loadPreselectedProjects()
+    local cache = loadProjectCache()
+    if cache then
+        return cache.projects
+    else
+        return nil
+    end
+end
 ____exports.create_project_command = function()
     vim.api.nvim_create_user_command(
         "NeotestPlaywrightProject",
         function()
             local output = get_projects()
             local choices = parseProjects(output)
-            local selection = selectProjects(choices)
+            local preselected = nil
+            if options.persist_project_selection then
+                preselected = loadPreselectedProjects()
+            end
+            local selection = selectProjects(choices, preselected)
             setProjects(selection)
         end,
         {nargs = 0}
     )
 end
-selectProjects = function(choices)
+selectProjects = function(choices, preselected)
     local prompt = "Select projects to include in the next test run:"
-    local choice = selectMultiple({prompt = prompt, choices = choices, initial = "all"})
+    local choice = selectMultiple({prompt = prompt, choices = choices, initial = "all", preselected = preselected})
     logger.debug("neotest-playwright project", choice)
     return choice
 end

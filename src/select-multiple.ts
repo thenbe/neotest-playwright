@@ -13,16 +13,24 @@ export const selectMultiple = ({
 	prompt,
 	choices,
 	initial = 'none',
+	preselected,
 }: {
 	prompt: string;
+
 	choices: string[];
-	/** Whether to select all choices by default */
+
+	/** Whether to select all choices by default. Ignored if `preselected` is a
+	 * non-null array. */
 	initial?: 'all' | 'none';
+
+	/** An array of choices to select by default. If this is a non-null array,
+	 * then the `initial` option is ignored. */
+	preselected: string[] | null;
 }) => {
 	const done = 'done';
 	const done_index = choices.length + 1;
 	const all_choices = [...choices, done];
-	let selected = initial === 'all' ? new Set(choices) : new Set();
+	let selected = determineInitialSelection(initial, choices, preselected);
 	let choice: unknown;
 	let done_selected = false;
 
@@ -65,4 +73,18 @@ export const selectMultiple = ({
 	}
 
 	return Array.from(selected);
+};
+
+const determineInitialSelection = (
+	initial: string,
+	choices: string[],
+	preselected: string[] | null,
+) => {
+	if (preselected) {
+		return new Set(preselected);
+	} else if (initial === 'all') {
+		return new Set(choices);
+	} else {
+		return new Set();
+	}
 };

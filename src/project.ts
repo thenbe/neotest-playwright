@@ -1,7 +1,7 @@
 import type * as P from '@playwright/test/reporter';
 import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
-import { saveProjectCache } from './persist';
+import { loadProjectCache, saveProjectCache } from './persist';
 import { selectMultiple } from './select-multiple';
 
 // TODO: replace vim.notify with logger.debug
@@ -53,15 +53,36 @@ const parseProjects = (output: P.JSONReport) => {
 	return names;
 };
 
+/** Returns a list of project names from the cached data. */
+const loadPreselectedProjects = () => {
+	const cache = loadProjectCache();
+
+	if (cache) {
+		return cache.projects;
+	} else {
+		return null;
+	}
+};
+
 export const create_project_command = () => {
 	vim.api.nvim_create_user_command(
 		'NeotestPlaywrightProject',
 		// @ts-expect-error until type is updated
 		() => {
 			const output = get_projects();
-			// TODO: don't load from cache (even if it exists) if options.persist_project_selection is false
+
 			const choices = parseProjects(output);
-			const selection = selectProjects(choices);
+
+			let preselected = null;
+
+			// if options.persist_project_selection is false, avoid loading from cache
+			// even if it exists
+			if (options.persist_project_selection) {
+				preselected = loadPreselectedProjects();
+			}
+
+			const selection = selectProjects(choices, preselected);
+
 			setProjects(selection);
 		},
 		{
@@ -70,10 +91,15 @@ export const create_project_command = () => {
 	);
 };
 
-const selectProjects = (choices: string[]) => {
+const selectProjects = (choices: string[], preselected: string[] | null) => {
 	const prompt = 'Select projects to include in the next test run:';
 
-	const choice = selectMultiple({ prompt, choices, initial: 'all' });
+	const choice = selectMultiple({
+		prompt,
+		choices,
+		initial: 'all',
+		preselected,
+	});
 
 	logger.debug('neotest-playwright project', choice);
 
