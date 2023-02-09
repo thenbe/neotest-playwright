@@ -86,7 +86,7 @@ const selectProjects = (options: string[]) => {
 };
 
 const setProjects = (projects: string[]) => {
-	logger.error('neotest-playwright project', projects);
+	logger.debug('neotest-playwright project', projects);
 
 	options.projects = projects;
 };

@@ -72,7 +72,7 @@ selectProjects = function(options)
     return choice
 end
 setProjects = function(projects)
-    logger.error("neotest-playwright project", projects)
+    logger.debug("neotest-playwright project", projects)
     options.projects = projects
 end
 return ____exports
