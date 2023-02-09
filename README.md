@@ -39,11 +39,17 @@ use({
 })
 ```
 
+## Projects
+
+`neotest-playwright` allows you to conveniently toggle your playwright [Projects](https://playwright.dev/docs/test-advanced#projects) on and off. To activate (or deactivate) a project, use the `:NeotestPlaywrightProject` command. `neotest-playwright` will only include the projects you've activated in any subsequent playwright commands (using the `--project` flag). Your selection will persist until you either change it with `:NeotestPlaywrightProject`, or restart neovim.
+
+If you wish, you can choose to persist your project selection across neovim sessions by setting `persist_project_selection` to true (see example). Selection data is keyed by the project's root directory, meaning you can persist multiple distinct selections across different projects (or git worktrees).
+
 ## Presets
 
 Presets are a way to debug your tests on the fly.
 
-> To select a preset, use the `:NeotestPlaywrightPreset` command.
+> To select a preset, use the `:NeotestPlaywrightPreset` command. Once a preset is selected, it remains active until you either select another preset, clear it by selecting the `none` preset, or restart neovim.
 
 ### `headed`
 
@@ -62,12 +68,6 @@ Playwright uses the `--debug` flag as a shortcut for multiple options. See [here
 ### `none`
 
 Does not apply any flags. Your tests will run as defined in your `playwright.config.ts` file.
-
-## Projects
-
-[Projects](https://playwright.dev/docs/test-advanced#projects) can be toggled on and off using the `:NeotestPlaywrightProject` command. Projects that are toggled on will be passed along to playwright using the `--project` flag.
-
-Project selection can be persisted across neovim sessions by setting `persist_project_selection` to true. Selection is scoped to the project's root directory.
 
 # Credits
 
