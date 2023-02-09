@@ -29,7 +29,7 @@ export const loadCache = (): Cache | null => {
 /** Persists the selected projects to disk. Project selection is scoped
  * to project directory. */
 export const saveCache = (cache: Cache) => {
-	logger.info('neotest-playwright save(): Saving data to', dataFile);
+	logger.trace('neotest-playwright saveCache(): Saving data to', dataFile);
 
 	vim.fn.writefile([vim.fn.json_encode(cache)], dataFile);
 };
@@ -49,6 +49,8 @@ export const loadProjectCache = (): ProjectCache | null => {
 };
 
 export const saveProjectCache = (latest: ProjectCache) => {
+	logger.trace('neotest-playwright saveProjectCache():', latest);
+
 	const cache = loadCache() ?? {};
 
 	cache[current] = latest;

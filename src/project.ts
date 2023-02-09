@@ -59,6 +59,7 @@ export const create_project_command = () => {
 		// @ts-expect-error until type is updated
 		() => {
 			const output = get_projects();
+			// TODO: don't load from cache (even if it exists) if options.persist_project_selection is false
 			const options = parseProjects(output);
 			const selection = selectProjects(options);
 			setProjects(selection);

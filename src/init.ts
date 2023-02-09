@@ -11,7 +11,13 @@ export const adapter = config;
 
 setmetatable(adapter, {
 	__call(arg) {
-		logger.debug('neotest-playwright adapter', arg);
+		logger.debug('neotest-playwright adapter()', arg);
+
+		// Apply user config
+		config.options = {
+			...config.options,
+			...arg.options,
+		};
 
 		// TODO: apply env, cwd, getPlaywrightConfig, getPlaywrightBin from config
 

@@ -16,7 +16,7 @@ end
 --- Persists the selected projects to disk. Project selection is scoped
 -- to project directory.
 ____exports.saveCache = function(cache)
-    logger.info("neotest-playwright save(): Saving data to", dataFile)
+    logger.trace("neotest-playwright saveCache(): Saving data to", dataFile)
     vim.fn.writefile(
         {vim.fn.json_encode(cache)},
         dataFile
@@ -32,6 +32,7 @@ ____exports.loadProjectCache = function()
     return projectCache
 end
 ____exports.saveProjectCache = function(latest)
+    logger.trace("neotest-playwright saveProjectCache():", latest)
     local cache = ____exports.loadCache() or ({})
     cache[current] = latest
     ____exports.saveCache(cache)
