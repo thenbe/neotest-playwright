@@ -60,8 +60,8 @@ export const create_project_command = () => {
 		() => {
 			const output = get_projects();
 			// TODO: don't load from cache (even if it exists) if options.persist_project_selection is false
-			const options = parseProjects(output);
-			const selection = selectProjects(options);
+			const choices = parseProjects(output);
+			const selection = selectProjects(choices);
 			setProjects(selection);
 		},
 		{
@@ -70,10 +70,10 @@ export const create_project_command = () => {
 	);
 };
 
-const selectProjects = (options: string[]) => {
+const selectProjects = (choices: string[]) => {
 	const prompt = 'Select projects to include in the next test run:';
 
-	const choice = selectMultiple({ prompt, options, initial: 'all' });
+	const choice = selectMultiple({ prompt, choices, initial: 'all' });
 
 	logger.debug('neotest-playwright project', choice);
 

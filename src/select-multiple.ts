@@ -1,9 +1,9 @@
 /**
- * Uses vim.ui.select to present a list of options to the user. However,
+ * Uses vim.ui.select to present a list of choices to the user. However,
  * instead of disappearing when the user selects an option, the list remains
- * open and the user can select multiple options. The user can *keep toggling
- * options until they are satisfied with their selection. Then they can press
- * enter to close the list and return the selected options.
+ * open and the user can select multiple choices. The user can *keep toggling
+ * choices until they are satisfied with their selection. Then they can press
+ * enter to close the list and return the selected choices.
  *
  * An asterisk is used to indicate that an option is selected.
  *
@@ -11,24 +11,24 @@
  */
 export const selectMultiple = ({
 	prompt,
-	options,
+	choices,
 	initial = 'none',
 }: {
 	prompt: string;
-	options: string[];
-	/** Whether to select all options by default */
+	choices: string[];
+	/** Whether to select all choices by default */
 	initial?: 'all' | 'none';
 }) => {
 	const done = 'done';
-	const done_index = options.length + 1;
-	const all_options = [...options, done];
-	let selected = initial === 'all' ? new Set(options) : new Set();
+	const done_index = choices.length + 1;
+	const all_choices = [...choices, done];
+	let selected = initial === 'all' ? new Set(choices) : new Set();
 	let choice: unknown;
 	let done_selected = false;
 
 	while (!done_selected) {
 		vim.ui.select(
-			all_options,
+			all_choices,
 			{
 				prompt,
 				format_item: (item: string) => {
@@ -45,9 +45,9 @@ export const selectMultiple = ({
 			break;
 		} else {
 			// @ts-ignore
-			const index = all_options.indexOf(choice);
+			const index = all_choices.indexOf(choice);
 			if (index === -1) {
-				// user aborted the dialog, return the last selected options
+				// user aborted the dialog, return the last selected choices
 				done_selected = true;
 			} else if (index === done_index) {
 				done_selected = true;

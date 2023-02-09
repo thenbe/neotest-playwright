@@ -55,16 +55,16 @@ ____exports.create_project_command = function()
         "NeotestPlaywrightProject",
         function()
             local output = get_projects()
-            local options = parseProjects(output)
-            local selection = selectProjects(options)
+            local choices = parseProjects(output)
+            local selection = selectProjects(choices)
             setProjects(selection)
         end,
         {nargs = 0}
     )
 end
-selectProjects = function(options)
+selectProjects = function(choices)
     local prompt = "Select projects to include in the next test run:"
-    local choice = selectMultiple({prompt = prompt, options = options, initial = "all"})
+    local choice = selectMultiple({prompt = prompt, choices = choices, initial = "all"})
     logger.debug("neotest-playwright project", choice)
     return choice
 end

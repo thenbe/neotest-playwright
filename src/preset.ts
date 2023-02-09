@@ -8,13 +8,13 @@ export const set_preset = (preset: Preset) => {
 };
 
 export const select_preset = () => {
-	const options = ['headed', 'debug', 'none'] satisfies Preset[];
+	const choices = ['headed', 'debug', 'none'] satisfies Preset[];
 
 	const prompt = 'Select preset for neotest-playwright:';
 
 	let choice: unknown;
 
-	vim.ui.select(options, { prompt }, (c) => {
+	vim.ui.select(choices, { prompt }, (c) => {
 		choice = c;
 	});
 

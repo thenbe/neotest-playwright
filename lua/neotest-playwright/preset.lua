@@ -10,11 +10,11 @@ ____exports.set_preset = function(preset)
     options.preset = preset
 end
 ____exports.select_preset = function()
-    local options = {"headed", "debug", "none"}
+    local choices = {"headed", "debug", "none"}
     local prompt = "Select preset for neotest-playwright:"
     local choice
     vim.ui.select(
-        options,
+        choices,
         {prompt = prompt},
         function(c)
             choice = c
