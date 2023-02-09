@@ -1,4 +1,3 @@
-import type * as neotest from 'neotest';
 import * as util from 'neotest-playwright.util';
 import { buildCommand, CommandOptions } from 'neotest-playwright/build-command';
 import { parseOutput } from 'neotest-playwright/report';
@@ -6,9 +5,10 @@ import * as async from 'neotest.async';
 import * as lib from 'neotest.lib';
 import * as logger from 'neotest.logging';
 import { COMMAND_PRESETS, type Preset } from './preset-options';
+import type { Adapter } from './types/adapter';
 
 // @ts-ignore
-export const buildSpec: neotest.Adapter['build_spec'] = (args, p?: Preset) => {
+export const buildSpec: Adapter['build_spec'] = (args, p?: Preset) => {
 	if (!args) {
 		logger.error('No args');
 		return;

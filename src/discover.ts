@@ -1,11 +1,11 @@
-import type * as neotest from 'neotest';
 import * as lib from 'neotest.lib';
+import type { Adapter } from './types/adapter';
 
 export const root = lib.files.match_root_pattern('package.json');
 
 export const filterDir = ((name: string, _rel_path: string, _root: string) => {
 	return name !== 'node_modules';
-}) satisfies neotest.Adapter['filter_dir'];
+}) satisfies Adapter['filter_dir'];
 
 export const isTestFile = ((file_path: string | undefined): boolean => {
 	if (!file_path) {
@@ -18,7 +18,7 @@ export const isTestFile = ((file_path: string | undefined): boolean => {
 	const result = endings.some((ending) => file_path.endsWith(ending));
 
 	return result;
-}) satisfies neotest.Adapter['is_test_file'];
+}) satisfies Adapter['is_test_file'];
 
 export const discoverPositions = ((path: string) => {
 	const query = `
@@ -59,4 +59,4 @@ export const discoverPositions = ((path: string) => {
 		`;
 
 	return lib.treesitter.parse_positions(path, query, { nested_tests: true });
-}) satisfies neotest.Adapter['discover_positions'];
+}) satisfies Adapter['discover_positions'];

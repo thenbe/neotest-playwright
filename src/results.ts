@@ -1,7 +1,7 @@
-import type * as neotest from 'neotest';
 import { parseOutput } from 'neotest-playwright/report';
 import * as lib from 'neotest.lib';
 import * as logger from 'neotest.logging';
+import type { Adapter } from './types/adapter';
 
 export const results = ((spec, _result, _tree) => {
 	spec.context?.stop_stream();
@@ -27,4 +27,4 @@ export const results = ((spec, _result, _tree) => {
 	const results = parseOutput(parsed, resultsPath);
 
 	return results;
-}) satisfies neotest.Adapter['results'];
+}) satisfies Adapter['results'];

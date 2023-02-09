@@ -16,6 +16,7 @@ ____exports.config = {
     filter_dir = filterDir,
     discover_positions = discoverPositions,
     build_spec = buildSpec,
-    results = results
+    results = results,
+    options = {projects = {}}
 }
 return ____exports
