@@ -18,5 +18,6 @@ export const config = {
 	results: results,
 	options: {
 		projects: [],
+		preset: 'none',
 	},
 } satisfies Adapter;

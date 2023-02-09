@@ -17,6 +17,6 @@ ____exports.config = {
     discover_positions = discoverPositions,
     build_spec = buildSpec,
     results = results,
-    options = {projects = {}}
+    options = {projects = {}, preset = "none"}
 }
 return ____exports
