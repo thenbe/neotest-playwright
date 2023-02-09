@@ -66,11 +66,6 @@ selectProjects = function(options)
     local prompt = "Select projects to include in the next test run:"
     local choice = selectMultiple({prompt = prompt, options = options, initial = "all"})
     logger.debug("neotest-playwright project", choice)
-    vim.notify(
-        "Selected projects: " .. tostring(vim.inspect(choice, {})),
-        vim.log.levels.DEBUG,
-        {}
-    )
     return choice
 end
 setProjects = function(projects)

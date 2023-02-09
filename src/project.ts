@@ -77,12 +77,6 @@ const selectProjects = (options: string[]) => {
 
 	logger.debug('neotest-playwright project', choice);
 
-	vim.notify(
-		`Selected projects: ${vim.inspect(choice, {})}`,
-		vim.log.levels.DEBUG,
-		{},
-	);
-
 	// TODO: rm type cast
 	return choice as string[];
 };
