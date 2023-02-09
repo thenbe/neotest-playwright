@@ -291,8 +291,7 @@ local ____exports = {}
 -- An asterisk is used to indicate that an option is selected.
 -- 
 -- A final option "done" is added to the list to allow the user to close the list.
-____exports.selectMultiple = function(options)
-    local prompt = "Select projects to include in the next test run:"
+____exports.selectMultiple = function(prompt, options)
     local done = "done"
     local done_index = #options + 1
     local ____array_0 = __TS__SparseArrayNew(unpack(options))

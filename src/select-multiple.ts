@@ -9,8 +9,7 @@
  *
  * A final option "done" is added to the list to allow the user to close the list.
  */
-export const selectMultiple = (options: string[]) => {
-	const prompt = 'Select projects to include in the next test run:';
+export const selectMultiple = (prompt: string, options: string[]) => {
 	const done = 'done';
 	const done_index = options.length + 1;
 	const all_options = [...options, done];

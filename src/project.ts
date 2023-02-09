@@ -58,8 +58,7 @@ export const create_project_command = () => {
 		() => {
 			const output = get_projects();
 			const options = parseProjects(output);
-			// select_projects(options);
-			selectMultiple(options);
+			selectProjects(options);
 		},
 		{
 			nargs: 0,
@@ -67,16 +66,18 @@ export const create_project_command = () => {
 	);
 };
 
-export const select_projects = (options: string[]) => {
+export const selectProjects = (options: string[]) => {
 	const prompt = 'Select projects to include in the next test run:';
 
-	let choice: unknown;
-
-	vim.ui.select(options, { prompt }, (c) => {
-		choice = c;
-	});
+	const choice = selectMultiple(prompt, options);
 
 	logger.debug('neotest-playwright project', choice);
+
+	vim.notify(
+		`Selected projects: ${vim.inspect(choice, {})}`,
+		vim.log.levels.INFO,
+		{},
+	);
 
 	return choice;
 };

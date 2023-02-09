@@ -51,22 +51,20 @@ ____exports.create_project_command = function()
         function()
             local output = get_projects()
             local options = parseProjects(output)
-            selectMultiple(options)
+            ____exports.selectProjects(options)
         end,
         {nargs = 0}
     )
 end
-____exports.select_projects = function(options)
+____exports.selectProjects = function(options)
     local prompt = "Select projects to include in the next test run:"
-    local choice
-    vim.ui.select(
-        options,
-        {prompt = prompt},
-        function(c)
-            choice = c
-        end
-    )
+    local choice = selectMultiple(prompt, options)
     logger.debug("neotest-playwright project", choice)
+    vim.notify(
+        "Selected projects: " .. tostring(vim.inspect(choice, {})),
+        vim.log.levels.INFO,
+        {}
+    )
     return choice
 end
 return ____exports
