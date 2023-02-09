@@ -73,7 +73,9 @@ selectProjects = function(options)
 end
 setProjects = function(projects)
     logger.debug("neotest-playwright project", projects)
-    saveConfig({projects = projects})
+    if options.persist_project_selection then
+        saveConfig({projects = projects})
+    end
     options.projects = projects
 end
 --- Persists the selected projects to disk. Project selection is scoped

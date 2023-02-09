@@ -23,6 +23,9 @@ use({
       adapters = {
          require("neotest-playwright").adapter({
             -- ...,
+            options = {
+               persist_project_selection = false,
+            }
          }),
       },
    })

@@ -88,10 +88,9 @@ const selectProjects = (options: string[]) => {
 const setProjects = (projects: string[]) => {
 	logger.debug('neotest-playwright project', projects);
 
-	// if (options.persist_project_selection) {
-	// 	saveConfig({ projects });
-	// }
-	saveConfig({ projects });
+	if (options.persist_project_selection) {
+		saveConfig({ projects });
+	}
 
 	options.projects = projects;
 };
