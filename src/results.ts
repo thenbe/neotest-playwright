@@ -1,6 +1,7 @@
 import type * as neotest from 'neotest';
 import { parseOutput } from 'neotest-playwright/report';
 import * as lib from 'neotest.lib';
+import * as logger from 'neotest.logging';
 
 export const results = ((spec, _result, _tree) => {
 	spec.context?.stop_stream();
@@ -10,7 +11,7 @@ export const results = ((spec, _result, _tree) => {
 	const [success, data] = pcall(lib.files.read, resultsPath);
 
 	if (!success) {
-		print('No test output file found', resultsPath);
+		logger.error('No test output file found', resultsPath);
 		return {};
 	}
 
@@ -19,7 +20,7 @@ export const results = ((spec, _result, _tree) => {
 	});
 
 	if (!ok) {
-		print('Failed to parse test output json', resultsPath);
+		logger.error('Failed to parse test output json', resultsPath);
 		return {};
 	}
 

@@ -2,7 +2,12 @@ import MagicString from 'magic-string';
 import fs from 'node:fs';
 import glob from 'tiny-glob';
 
-const NO_REPLACE = ['neotest', 'neotest.lib', 'neotest.async'];
+const NO_REPLACE = [
+	'neotest',
+	'neotest.async',
+	'neotest.lib',
+	'neotest.logging',
+];
 
 const PREFIX = 'neotest-playwright';
 

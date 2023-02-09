@@ -1,5 +1,6 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
+local logger = require("neotest.logging")
 local ____config = require('neotest-playwright.config')
 local config = ____config.config
 local ____preset = require('neotest-playwright.preset')
@@ -9,8 +10,7 @@ ____exports.adapter = config
 setmetatable(
     ____exports.adapter,
     {__call = function(self, arg)
-        print("neotest-playwright config:")
-        print(vim.inspect(arg, {}))
+        logger.debug("neotest-playwright adapter", arg)
         return ____exports.adapter
     end}
 )

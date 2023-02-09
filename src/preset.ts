@@ -1,9 +1,10 @@
+import * as logger from 'neotest.logging';
 import { buildSpec } from './build-spec';
 import { config } from './config';
 import { isPreset, Preset } from './preset-options';
 
 export const set_preset = (preset: Preset) => {
-	print(`Setting preset to ${preset}`);
+	logger.debug('neotest-playwright preset', preset);
 	// @ts-ignore
 	config.build_spec = (args) => buildSpec(args, preset);
 };
@@ -18,6 +19,8 @@ export const select_preset = () => {
 	vim.ui.select(options, { prompt }, (c) => {
 		choice = c;
 	});
+
+	logger.debug('neotest-playwright preset', choice);
 
 	if (isPreset(choice)) {
 		return choice;

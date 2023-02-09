@@ -20,17 +20,16 @@ local ____report = require('neotest-playwright.report')
 local parseOutput = ____report.parseOutput
 local async = require("neotest.async")
 local lib = require("neotest.lib")
+local logger = require("neotest.logging")
 local ____preset_2Doptions = require('neotest-playwright.preset-options')
 local COMMAND_PRESETS = ____preset_2Doptions.COMMAND_PRESETS
 ____exports.buildSpec = function(args, p)
-    print("buildSpec")
-    print(vim.inspect(p, {}))
     if not args then
-        print("No args")
+        logger.error("No args")
         return
     end
     if not args.tree then
-        print("No args.tree")
+        logger.error("No args.tree")
         return
     end
     local pos = args.tree:data()
@@ -46,7 +45,7 @@ ____exports.buildSpec = function(args, p)
         binary,
         unpack(buildCommand(commandOptions))
     }
-    print(vim.inspect(command))
+    logger.debug("neotest-playwright command", command)
     lib.files.write(resultsPath, "")
     local streamData, stopStream = lib.files.stream(resultsPath)
     return {
@@ -57,8 +56,7 @@ ____exports.buildSpec = function(args, p)
             local newResults = streamData()
             local ok, report = pcall(vim.json.decode, newResults, {luanil = {object = true}})
             if not ok then
-                print("Error parsing results")
-                print(newResults)
+                logger.error("Error parsing results")
                 return {}
             end
             return parseOutput(report, resultsPath)
@@ -67,12 +65,13 @@ ____exports.buildSpec = function(args, p)
     }
 end
 getBinary = function(filePath)
-    print("getBinary", filePath)
     local node_modules = tostring(util.find_ancestor(filePath, "node_modules", true)) .. "/node_modules"
     local bin = node_modules .. "/.bin/playwright"
     if lib.files.exists(bin) then
+        logger.debug("playwright binary exists", bin)
         return bin
     else
+        logger.warn("playwright binary does not exist", bin)
         return "pnpm playwright"
     end
 end
@@ -80,9 +79,10 @@ getConfig = function(filePath)
     local configDir = util.find_ancestor(filePath, "playwright.config.ts", false)
     local config = tostring(configDir) .. "/playwright.config.ts"
     if lib.files.exists(config) then
+        logger.debug("playwright config", config)
         return config
     end
-    print("Unable to locate config file.", config)
+    logger.warn("Unable to locate config file.", config)
     return nil
 end
 return ____exports

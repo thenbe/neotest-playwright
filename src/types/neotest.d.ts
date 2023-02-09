@@ -229,3 +229,11 @@ declare module 'neotest.lib' {
 		) => LuaMultiReturn<[() => string, () => void]>;
 	}
 }
+
+declare module 'neotest.logging' {
+	const trace: (message: string, cause?: unknown) => void;
+	const debug: (message: string, cause?: unknown) => void;
+	const info: (message: string, cause?: unknown) => void;
+	const warn: (message: string, cause?: unknown) => void;
+	const error: (message: string, cause?: unknown) => void;
+}

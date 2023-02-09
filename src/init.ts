@@ -1,3 +1,4 @@
+import * as logger from 'neotest.logging';
 import { config } from './config';
 import { create_preset_command } from './preset';
 
@@ -8,14 +9,9 @@ export const adapter = config;
 
 setmetatable(adapter, {
 	__call(arg) {
-		// TODO: use better log technique
-		// if (config.debug) {
-		print('neotest-playwright config:');
-		print(vim.inspect(arg, {}));
-		// }
-		// TODO: apply env, cwd, getPlaywrightConfig, getPlaywrightBin from config
+		logger.debug('neotest-playwright adapter', arg);
 
-		// const updated = createAdapter(config);
+		// TODO: apply env, cwd, getPlaywrightConfig, getPlaywrightBin from config
 
 		return adapter;
 	},

@@ -13,8 +13,9 @@
 		"luaLibImport": "inline",
 		"noImplicitSelf": true,
 		"noResolvePaths": [
-			"neotest.lib",
 			"neotest.async",
+			"neotest.lib",
+			"neotest.logging",
 			"neotest-playwright.util" // copied manually
 		]
 	}
