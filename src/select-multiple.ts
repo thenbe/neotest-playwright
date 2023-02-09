@@ -44,8 +44,8 @@ export const selectMultiple = ({
 			// @ts-ignore
 			const index = all_options.indexOf(choice);
 			if (index === -1) {
-				// user aborted the dialog
-				return null;
+				// user aborted the dialog, return the last selected options
+				done_selected = true;
 			} else if (index === done_index) {
 				done_selected = true;
 			} else {

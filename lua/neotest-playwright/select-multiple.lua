@@ -323,7 +323,7 @@ ____exports.selectMultiple = function(____bindingPattern0)
         else
             local index = __TS__ArrayIndexOf(all_options, choice)
             if index == -1 then
-                return nil
+                done_selected = true
             elseif index == done_index then
                 done_selected = true
             else
