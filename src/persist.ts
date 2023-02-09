@@ -1,31 +1,57 @@
 import * as logger from 'neotest.logging';
+import type { Adapter } from './types/adapter';
 
-interface DataFile {
-	[path: string]: Data;
+type ProjectCache = Pick<Adapter['options'], 'projects'>;
+
+interface Cache {
+	[path: string]: ProjectCache;
 }
 
-interface Data {
-	projects: string[];
-}
+const current = vim.fn.getcwd();
+
+const dataPath = vim.fn.stdpath('data');
+const dataFile = `${dataPath}/neotest-playwright.json`;
+
+export const loadCache = (): Cache | null => {
+	logger.trace('neotest-playwright loadCache(): Loading cache from', dataFile);
+
+	const existing = vim.fn.readfile(dataFile);
+
+	if (existing.length === 0) {
+		return null;
+	}
+
+	const cache: Cache = vim.fn.json_decode(existing[0]);
+
+	return cache;
+};
 
 /** Persists the selected projects to disk. Project selection is scoped
  * to project directory. */
-export const saveConfig = (data: Data) => {
-	// persist the selected projects for the current project
-	const dataPath = vim.fn.stdpath('data');
-	const dataFile = `${dataPath}/neotest-playwright.json`;
-
-	// don't overwrite the existing data for other projects
-	const existing = vim.fn.readfile(dataFile);
-
-	const existingData: DataFile =
-		existing.length > 0 ? vim.fn.json_decode(existing[0]) : {};
-
-	const path = vim.fn.getcwd();
-
-	existingData[path] = data;
-
+export const saveCache = (cache: Cache) => {
 	logger.info('neotest-playwright save(): Saving data to', dataFile);
 
-	vim.fn.writefile([vim.fn.json_encode(existingData)], dataFile);
+	vim.fn.writefile([vim.fn.json_encode(cache)], dataFile);
+};
+
+export const loadProjectCache = (): ProjectCache | null => {
+	const cache = loadCache();
+
+	if (cache === null) {
+		return null;
+	}
+
+	const projectCache = cache[current] ?? null;
+
+	logger.trace('neotest-playwright loadProjectCache():', projectCache);
+
+	return projectCache;
+};
+
+export const saveProjectCache = (latest: ProjectCache) => {
+	const cache = loadCache() ?? {};
+
+	cache[current] = latest;
+
+	saveCache(cache);
 };

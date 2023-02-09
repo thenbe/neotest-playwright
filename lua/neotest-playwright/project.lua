@@ -14,7 +14,7 @@ local logger = require("neotest.logging")
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
 local ____persist = require('neotest-playwright.persist')
-local saveConfig = ____persist.saveConfig
+local saveProjectCache = ____persist.saveProjectCache
 local ____select_2Dmultiple = require('neotest-playwright.select-multiple')
 local selectMultiple = ____select_2Dmultiple.selectMultiple
 --- Returns the playwright config
@@ -76,7 +76,7 @@ end
 setProjects = function(projects)
     logger.debug("neotest-playwright project", projects)
     if options.persist_project_selection then
-        saveConfig({projects = projects})
+        saveProjectCache({projects = projects})
     end
     options.projects = projects
 end

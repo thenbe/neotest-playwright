@@ -1,7 +1,7 @@
 import type * as P from '@playwright/test/reporter';
 import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
-import { saveConfig } from './persist';
+import { saveProjectCache } from './persist';
 import { selectMultiple } from './select-multiple';
 
 // TODO: replace vim.notify with logger.debug
@@ -90,7 +90,7 @@ const setProjects = (projects: string[]) => {
 	logger.debug('neotest-playwright project', projects);
 
 	if (options.persist_project_selection) {
-		saveConfig({ projects });
+		saveProjectCache({ projects });
 	}
 
 	options.projects = projects;
