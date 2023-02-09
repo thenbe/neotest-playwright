@@ -21,10 +21,12 @@ local function __TS__ArrayFilter(self, callbackfn, thisArg)
 end
 -- End of Lua Library inline imports
 local ____exports = {}
+local logger = require("neotest.logging")
 --- A function that takes in CommandOptions and returns a string.
 ____exports.buildCommand = function(options)
     local o = options
     local command = {
+        o.bin,
         "test",
         "--reporter=json",
         o.debug and "--debug" or nil,
@@ -43,9 +45,13 @@ ____exports.buildCommand = function(options)
         ) or nil,
         o.testFilter and o.testFilter or nil
     }
-    return __TS__ArrayFilter(
+    local filtered = __TS__ArrayFilter(
         command,
-        function(____, x) return x ~= nil end
+        function(____, x)
+            return type(x) == "string"
+        end
     )
+    logger.debug("neotest-playwright command", command)
+    return filtered
 end
 return ____exports

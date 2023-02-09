@@ -1,15 +1,13 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
 local logger = require("neotest.logging")
-local ____build_2Dspec = require('neotest-playwright.build-spec')
-local buildSpec = ____build_2Dspec.buildSpec
 local ____config = require('neotest-playwright.config')
 local config = ____config.config
 local ____preset_2Doptions = require('neotest-playwright.preset-options')
 local isPreset = ____preset_2Doptions.isPreset
 ____exports.set_preset = function(preset)
     logger.debug("neotest-playwright preset", preset)
-    config.build_spec = function(args) return buildSpec(args, preset) end
+    config.options.preset = preset
 end
 ____exports.select_preset = function()
     local options = {"headed", "debug", "none"}

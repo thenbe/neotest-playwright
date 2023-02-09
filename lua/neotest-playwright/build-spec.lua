@@ -21,9 +21,11 @@ local parseOutput = ____report.parseOutput
 local async = require("neotest.async")
 local lib = require("neotest.lib")
 local logger = require("neotest.logging")
+local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
+local options = ____adapter_2Doptions.options
 local ____preset_2Doptions = require('neotest-playwright.preset-options')
 local COMMAND_PRESETS = ____preset_2Doptions.COMMAND_PRESETS
-____exports.buildSpec = function(args, p)
+____exports.buildSpec = function(args)
     if not args then
         logger.error("No args")
         return
@@ -34,22 +36,20 @@ ____exports.buildSpec = function(args, p)
     end
     local pos = args.tree:data()
     local testFilter = (pos.type == "test" or pos.type == "namespace") and (pos.path .. ":") .. tostring(pos.range[1] + 1) or pos.path
-    local binary = getBinary(pos.path)
-    local config = getConfig(pos.path)
-    local commandOptions = __TS__ObjectAssign({}, p and COMMAND_PRESETS[p] or ({}), {testFilter = testFilter})
-    if config and lib.files.exists(config) then
-        commandOptions.config = config
-    end
+    local commandOptions = __TS__ObjectAssign(
+        {},
+        COMMAND_PRESETS[options.preset],
+        {
+            bin = getBinary(pos.path),
+            config = getConfig(pos.path),
+            testFilter = testFilter
+        }
+    )
     local resultsPath = async.fn.tempname() .. ".json"
-    local command = {
-        binary,
-        unpack(buildCommand(commandOptions))
-    }
-    logger.debug("neotest-playwright command", command)
     lib.files.write(resultsPath, "")
     local streamData, stopStream = lib.files.stream(resultsPath)
     return {
-        command = command,
+        command = buildCommand(commandOptions),
         cwd = nil,
         context = {results_path = resultsPath, file = pos.path, stop_stream = stopStream},
         stream = function() return function()

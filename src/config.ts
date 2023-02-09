@@ -6,9 +6,10 @@ import {
 	root,
 } from 'neotest-playwright/discover';
 import { results } from 'neotest-playwright/results';
+import { options } from './adapter-options';
 import type { Adapter } from './types/adapter';
 
-export const config = {
+export const config: Adapter = {
 	name: 'neotest-playwright',
 	is_test_file: isTestFile,
 	root: root,
@@ -16,8 +17,5 @@ export const config = {
 	discover_positions: discoverPositions,
 	build_spec: buildSpec,
 	results: results,
-	options: {
-		projects: [],
-		preset: 'none',
-	},
-} satisfies Adapter;
+	options: options,
+};

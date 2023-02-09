@@ -1,4 +1,4 @@
-import type { CommandOptions } from './build-command';
+import type { CommandOptionsPreset } from './build-command';
 
 export const PRESET = {
 	HEADED: 'headed',
@@ -18,17 +18,17 @@ const COMMAND_HEADED = {
 	abortOnFailure: true,
 	workers: 1,
 	timeout: 0,
-} satisfies CommandOptions;
+} satisfies CommandOptionsPreset;
 
 const COMMAND_DEBUG = {
 	debug: true,
-} satisfies CommandOptions;
+} satisfies CommandOptionsPreset;
 
 /** No preset, use default options. */
-export const COMMAND_NONE = {} satisfies CommandOptions;
+export const COMMAND_NONE = {} satisfies CommandOptionsPreset;
 
 export const COMMAND_PRESETS = {
 	headed: COMMAND_HEADED,
 	debug: COMMAND_DEBUG,
 	none: COMMAND_NONE,
-} satisfies Record<Preset, CommandOptions>;
+} satisfies Record<Preset, CommandOptionsPreset>;

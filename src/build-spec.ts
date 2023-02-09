@@ -4,11 +4,12 @@ import { parseOutput } from 'neotest-playwright/report';
 import * as async from 'neotest.async';
 import * as lib from 'neotest.lib';
 import * as logger from 'neotest.logging';
-import { COMMAND_PRESETS, type Preset } from './preset-options';
+import { options } from './adapter-options';
+import { COMMAND_PRESETS } from './preset-options';
 import type { Adapter } from './types/adapter';
 
 // @ts-ignore
-export const buildSpec: Adapter['build_spec'] = (args, p?: Preset) => {
+export const buildSpec: Adapter['build_spec'] = (args) => {
 	if (!args) {
 		logger.error('No args');
 		return;
@@ -27,40 +28,28 @@ export const buildSpec: Adapter['build_spec'] = (args, p?: Preset) => {
 			? `${pos.path}:${pos.range[0] + 1}`
 			: pos.path;
 
-	const binary = getBinary(pos.path);
-	const config = getConfig(pos.path);
-
-	// TODO: Document usage of preset. Show example/gif with page.pause()
-
 	const commandOptions: CommandOptions = {
-		...(p ? COMMAND_PRESETS[p] : {}),
+		...COMMAND_PRESETS[options.preset],
+		bin: getBinary(pos.path),
+		config: getConfig(pos.path),
 		testFilter: testFilter,
 	};
-
-	if (config && lib.files.exists(config)) {
-		commandOptions.config = config;
-	}
 
 	// const env = getEnv(args[2]?.env || {});
 
 	// TODO: move extra_args to buildCommand.
-	// TODO: Don't include preset in extra_args
 	// if (args.extra_args) {
 	// 	command.push(...args.extra_args);
 	// }
 
 	const resultsPath = `${async.fn.tempname()}.json`;
 
-	const command = [binary, ...buildCommand(commandOptions)];
-
-	logger.debug('neotest-playwright command', command);
-
 	lib.files.write(resultsPath, '');
 
 	const [streamData, stopStream] = lib.files.stream(resultsPath);
 
 	return {
-		command,
+		command: buildCommand(commandOptions),
 		cwd: null, // TODO: get from user config
 		context: {
 			results_path: resultsPath,
