@@ -27,16 +27,14 @@ export const selectMultiple = ({
 	 * then the `initial` option is ignored. */
 	preselected: string[] | null;
 }) => {
-	const done = 'done';
-	const done_index = choices.length + 1;
-	const all_choices = [...choices, done];
 	let selected = determineInitialSelection(initial, choices, preselected);
 	let choice: unknown;
-	let done_selected = false;
 
-	while (!done_selected) {
+	let done = false;
+
+	while (!done) {
 		vim.ui.select(
-			all_choices,
+			choices,
 			{
 				prompt,
 				format_item: (item: string) => {
@@ -48,24 +46,17 @@ export const selectMultiple = ({
 			},
 		);
 
-		if (choice === done) {
-			done_selected = true;
+		// @ts-ignore
+		const index = choices.indexOf(choice);
+		done = index === -1;
+
+		if (done) {
+			// user aborted the dialog
 			break;
+		} else if (selected.has(choice)) {
+			selected.delete(choice);
 		} else {
-			// @ts-ignore
-			const index = all_choices.indexOf(choice);
-			if (index === -1) {
-				// user aborted the dialog, return the last selected choices
-				done_selected = true;
-			} else if (index === done_index) {
-				done_selected = true;
-			} else {
-				if (selected.has(choice)) {
-					selected.delete(choice);
-				} else {
-					selected.add(choice);
-				}
-			}
+			selected.add(choice);
 		}
 
 		// redraw the screen to avoid stacking multiple dialogs

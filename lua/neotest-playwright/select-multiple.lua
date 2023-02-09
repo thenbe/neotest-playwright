@@ -1,30 +1,5 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 -- Lua Library inline imports
-local function __TS__CountVarargs(...)
-    return select("#", ...)
-end
-
-local function __TS__SparseArrayNew(...)
-    local sparseArray = {...}
-    sparseArray.sparseLength = __TS__CountVarargs(...)
-    return sparseArray
-end
-
-local function __TS__SparseArrayPush(sparseArray, ...)
-    local args = {...}
-    local argsLen = __TS__CountVarargs(...)
-    local listLen = sparseArray.sparseLength
-    for i = 1, argsLen do
-        sparseArray[listLen + i] = args[i]
-    end
-    sparseArray.sparseLength = listLen + argsLen
-end
-
-local function __TS__SparseArraySpread(sparseArray)
-    local _unpack = unpack or table.unpack
-    return _unpack(sparseArray, 1, sparseArray.sparseLength)
-end
-
 local function __TS__Class(self)
     local c = {prototype = {}}
     c.prototype.__index = c.prototype
@@ -304,17 +279,12 @@ ____exports.selectMultiple = function(____bindingPattern0)
         initial = "none"
     end
     preselected = ____bindingPattern0.preselected
-    local done = "done"
-    local done_index = #choices + 1
-    local ____array_0 = __TS__SparseArrayNew(unpack(choices))
-    __TS__SparseArrayPush(____array_0, done)
-    local all_choices = {__TS__SparseArraySpread(____array_0)}
     local selected = determineInitialSelection(initial, choices, preselected)
     local choice
-    local done_selected = false
-    while not done_selected do
+    local done = false
+    while not done do
         vim.ui.select(
-            all_choices,
+            choices,
             {
                 prompt = prompt,
                 format_item = function(item)
@@ -325,22 +295,14 @@ ____exports.selectMultiple = function(____bindingPattern0)
                 choice = c
             end
         )
-        if choice == done then
-            done_selected = true
+        local index = __TS__ArrayIndexOf(choices, choice)
+        done = index == -1
+        if done then
             break
+        elseif selected:has(choice) then
+            selected:delete(choice)
         else
-            local index = __TS__ArrayIndexOf(all_choices, choice)
-            if index == -1 then
-                done_selected = true
-            elseif index == done_index then
-                done_selected = true
-            else
-                if selected:has(choice) then
-                    selected:delete(choice)
-                else
-                    selected:add(choice)
-                end
-            end
+            selected:add(choice)
         end
         vim.cmd("redraw")
     end
