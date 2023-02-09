@@ -37,7 +37,7 @@ export const buildCommand = (options: CommandOptions) => {
 	];
 
 	const filtered = command.filter((x): x is string => {
-		return typeof x === 'string';
+		return typeof x === 'string' && x.length > 0;
 	});
 
 	logger.debug('neotest-playwright command', command);

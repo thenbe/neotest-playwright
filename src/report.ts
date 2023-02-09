@@ -1,5 +1,6 @@
 import type * as P from '@playwright/test/reporter';
 import type * as neotest from 'neotest';
+import * as logger from 'neotest.logging';
 
 // ### Output ###
 
@@ -7,17 +8,18 @@ export const parseOutput = (
 	report: P.JSONReport,
 	output: neotest.Result['output'],
 ): neotest.Results => {
-	// if (report.errors.length > 1) {
-	// 	console.log('Encountered global errors');
-	// }
+	if (report.errors.length > 1) {
+		logger.warn('Global errors found in report', report.errors);
+	}
 
 	const root = report.suites[0];
 
-	// if (!root) {
-	// 	console.log('No test suites found in report');
-	// }
+	if (!root) {
+		logger.warn('No test suites found in report');
+		return {};
+	}
 
-	const results = parseSuite(root!, report, output);
+	const results = parseSuite(root, report, output);
 
 	return results;
 };
