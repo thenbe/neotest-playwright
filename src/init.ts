@@ -1,26 +1,10 @@
-import type * as neotest from 'neotest';
-import { buildSpec } from 'neotest-playwright/build-spec';
-import {
-	discoverPositions,
-	filterDir,
-	isTestFile,
-	root,
-} from 'neotest-playwright/discover';
-import { results } from 'neotest-playwright/results';
+import { createAdapter } from './adapter';
 import { create_preset_command } from './preset';
 
 // Initialize the adapter
 create_preset_command();
 
-export const adapter = {
-	name: 'neotest-playwright',
-	is_test_file: isTestFile,
-	root: root,
-	filter_dir: filterDir,
-	discover_positions: discoverPositions,
-	build_spec: buildSpec,
-	results: results,
-} satisfies neotest.Adapter;
+export const adapter = createAdapter();
 
 setmetatable(adapter, {
 	__call(config) {
@@ -30,6 +14,9 @@ setmetatable(adapter, {
 			print(vim.inspect(config, {}));
 		}
 		// TODO: apply env, cwd, getPlaywrightConfig, getPlaywrightBin from config
-		return adapter;
+
+		const updated = createAdapter(config);
+
+		return updated;
 	},
 });
