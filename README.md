@@ -4,9 +4,15 @@ A [playwright](https://playwright.dev/) adapter for [neotest](https://github.com
 
 Written in typescript and transpiled to Lua using [tstl](https://github.com/TypeScriptToLua/TypeScriptToLua).
 
-## Installation
-
 > ⚠️ This adapter is very much a work in progress and is not yet ready for public use.
+
+## Features
+
+- [ ] Discover, run, and parse the output of playwright tests
+- [x] On-the-fly presets
+- [x] Project selection + persistence
+
+## Installation
 
 Using packer:
 
