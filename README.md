@@ -45,6 +45,8 @@ use({
 
 If you wish, you can choose to persist your project selection across neovim sessions by setting `persist_project_selection` to true (see example). Selection data is keyed by the project's root directory, meaning you can persist multiple distinct selections across different projects (or git worktrees).
 
+[![asciicast](https://asciinema.org/a/558555.svg)](https://asciinema.org/a/558555)
+
 ## Presets
 
 Presets are a way to debug your tests on the fly.
