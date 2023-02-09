@@ -69,7 +69,7 @@ export const create_project_command = () => {
 export const selectProjects = (options: string[]) => {
 	const prompt = 'Select projects to include in the next test run:';
 
-	const choice = selectMultiple(prompt, options);
+	const choice = selectMultiple({ prompt, options });
 
 	logger.debug('neotest-playwright project', choice);
 
