@@ -13,20 +13,24 @@ export const selectMultiple = (options: string[]) => {
 	const prompt = 'Select projects to include in the next test run:';
 	const done = 'done';
 	const done_index = options.length + 1;
+	const all_options = [...options, done];
 	let selected = new Set();
 	let choice: unknown;
 	let done_selected = false;
 
 	while (!done_selected) {
-		const all_options = options.map((option) => {
-			return selected.has(option) ? `* ${option}` : option;
-		});
-
-		all_options.push(done);
-
-		vim.ui.select(all_options, { prompt }, (c) => {
-			choice = c;
-		});
+		vim.ui.select(
+			all_options,
+			{
+				prompt,
+				format_item: (item: string) => {
+					return selected.has(item) ? `* ${item}` : item;
+				},
+			},
+			(c) => {
+				choice = c;
+			},
+		);
 
 		if (choice === done) {
 			done_selected = true;
@@ -40,11 +44,10 @@ export const selectMultiple = (options: string[]) => {
 			} else if (index === done_index) {
 				done_selected = true;
 			} else {
-				const selected_option = options[index];
-				if (selected.has(selected_option)) {
-					selected.delete(selected_option);
+				if (selected.has(choice)) {
+					selected.delete(choice);
 				} else {
-					selected.add(selected_option);
+					selected.add(choice);
 				}
 			}
 		}

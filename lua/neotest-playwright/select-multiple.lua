@@ -1,5 +1,30 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 -- Lua Library inline imports
+local function __TS__CountVarargs(...)
+    return select("#", ...)
+end
+
+local function __TS__SparseArrayNew(...)
+    local sparseArray = {...}
+    sparseArray.sparseLength = __TS__CountVarargs(...)
+    return sparseArray
+end
+
+local function __TS__SparseArrayPush(sparseArray, ...)
+    local args = {...}
+    local argsLen = __TS__CountVarargs(...)
+    local listLen = sparseArray.sparseLength
+    for i = 1, argsLen do
+        sparseArray[listLen + i] = args[i]
+    end
+    sparseArray.sparseLength = listLen + argsLen
+end
+
+local function __TS__SparseArraySpread(sparseArray)
+    local _unpack = unpack or table.unpack
+    return _unpack(sparseArray, 1, sparseArray.sparseLength)
+end
+
 local function __TS__Class(self)
     local c = {prototype = {}}
     c.prototype.__index = c.prototype
@@ -201,14 +226,6 @@ local function __TS__New(target, ...)
     return instance
 end
 
-local function __TS__ArrayMap(self, callbackfn, thisArg)
-    local result = {}
-    for i = 1, #self do
-        result[i] = callbackfn(thisArg, self[i], i - 1, self)
-    end
-    return result
-end
-
 local function __TS__ArrayIndexOf(self, searchElement, fromIndex)
     if fromIndex == nil then
         fromIndex = 0
@@ -278,20 +295,21 @@ ____exports.selectMultiple = function(options)
     local prompt = "Select projects to include in the next test run:"
     local done = "done"
     local done_index = #options + 1
+    local ____array_0 = __TS__SparseArrayNew(unpack(options))
+    __TS__SparseArrayPush(____array_0, done)
+    local all_options = {__TS__SparseArraySpread(____array_0)}
     local selected = __TS__New(Set)
     local choice
     local done_selected = false
     while not done_selected do
-        local all_options = __TS__ArrayMap(
-            options,
-            function(____, option)
-                return selected:has(option) and "* " .. option or option
-            end
-        )
-        all_options[#all_options + 1] = done
         vim.ui.select(
             all_options,
-            {prompt = prompt},
+            {
+                prompt = prompt,
+                format_item = function(item)
+                    return selected:has(item) and "* " .. item or item
+                end
+            },
             function(c)
                 choice = c
             end
@@ -306,11 +324,10 @@ ____exports.selectMultiple = function(options)
             elseif index == done_index then
                 done_selected = true
             else
-                local selected_option = options[index + 1]
-                if selected:has(selected_option) then
-                    selected:delete(selected_option)
+                if selected:has(choice) then
+                    selected:delete(choice)
                 else
-                    selected:add(selected_option)
+                    selected:add(choice)
                 end
             end
         end

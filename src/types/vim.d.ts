@@ -17,7 +17,10 @@ interface IVim {
 		select: (
 			this: void,
 			items: string[],
-			opts: { prompt: string },
+			opts: {
+				prompt: string;
+				format_item?: (this: void, item: string) => string;
+			},
 			on_choice: (choice: string) => void,
 		) => void;
 	};
