@@ -22,7 +22,7 @@ use({
       -- ...,
       adapters = {
          require("neotest-playwright").adapter({
-            preset = "headless",
+            -- ...,
          }),
       },
    })
@@ -38,16 +38,15 @@ To select a preset, use the `:NeotestPlaywrightPreset` command.
 
 ### `headed`
 
-Runs tests in headed mode. Use with `await page.pause()` to open the playwright inspector and debug your locators.
+> Applies the following options: `--headed --retries 0 --timeout 0 --workers 1 --max-failures 0`
 
-Applies the following options:
-`--headed --retries 0 --timeout 0 --workers 1 --max-failures 0`
+Runs tests in headed mode. Use with `await page.pause()` to open the playwright inspector and debug your locators.
 
 ### `debug`
 
-Applies the following option: `--debug`
+> Applies the following option: `--debug`
 
-> Playwright uses the `--debug` flag as a shortcut for multiple options. See [here](https://playwright.dev/docs/test-cli#reference) for more information.
+Playwright uses the `--debug` flag as a shortcut for multiple options. See [here](https://playwright.dev/docs/test-cli#reference) for more information.
 
 ### `none`
 
