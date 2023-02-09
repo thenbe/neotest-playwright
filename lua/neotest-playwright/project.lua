@@ -9,10 +9,12 @@ local function __TS__ArrayMap(self, callbackfn, thisArg)
 end
 -- End of Lua Library inline imports
 local ____exports = {}
-local selectProjects, setProjects, saveConfig
+local selectProjects, setProjects
 local logger = require("neotest.logging")
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
+local ____persist = require('neotest-playwright.persist')
+local saveConfig = ____persist.saveConfig
 local ____select_2Dmultiple = require('neotest-playwright.select-multiple')
 local selectMultiple = ____select_2Dmultiple.selectMultiple
 --- Returns the playwright config
@@ -77,26 +79,5 @@ setProjects = function(projects)
         saveConfig({projects = projects})
     end
     options.projects = projects
-end
---- Persists the selected projects to disk. Project selection is scoped
--- to project directory.
-saveConfig = function(data)
-    local dataPath = vim.fn.stdpath("data")
-    local dataFile = dataPath .. "/neotest-playwright.json"
-    local existing = vim.fn.readfile(dataFile)
-    local ____temp_0
-    if #existing > 0 then
-        ____temp_0 = vim.fn.json_decode(existing[1])
-    else
-        ____temp_0 = {}
-    end
-    local existingData = ____temp_0
-    local path = vim.fn.getcwd()
-    existingData[path] = data
-    logger.info("neotest-playwright save(): Saving data to", dataFile)
-    vim.fn.writefile(
-        {vim.fn.json_encode(existingData)},
-        dataFile
-    )
 end
 return ____exports
