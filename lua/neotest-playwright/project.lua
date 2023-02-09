@@ -9,7 +9,10 @@ local function __TS__ArrayMap(self, callbackfn, thisArg)
 end
 -- End of Lua Library inline imports
 local ____exports = {}
+local selectProjects, setProjects
 local logger = require("neotest.logging")
+local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
+local options = ____adapter_2Doptions.options
 local ____select_2Dmultiple = require('neotest-playwright.select-multiple')
 local selectMultiple = ____select_2Dmultiple.selectMultiple
 --- Returns the playwright config
@@ -51,12 +54,13 @@ ____exports.create_project_command = function()
         function()
             local output = get_projects()
             local options = parseProjects(output)
-            ____exports.selectProjects(options)
+            local selection = selectProjects(options)
+            setProjects(selection)
         end,
         {nargs = 0}
     )
 end
-____exports.selectProjects = function(options)
+selectProjects = function(options)
     local prompt = "Select projects to include in the next test run:"
     local choice = selectMultiple({prompt = prompt, options = options, initial = "all"})
     logger.debug("neotest-playwright project", choice)
@@ -66,5 +70,9 @@ ____exports.selectProjects = function(options)
         {}
     )
     return choice
+end
+setProjects = function(projects)
+    logger.error("neotest-playwright project", projects)
+    options.projects = projects
 end
 return ____exports

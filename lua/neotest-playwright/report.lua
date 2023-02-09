@@ -30,8 +30,16 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local getSpecStatus, constructSpecKey, collectSpecErrors, toNeotestError
+local logger = require("neotest.logging")
 ____exports.parseOutput = function(report, output)
+    if #report.errors > 1 then
+        logger.warn("Global errors found in report", report.errors)
+    end
     local root = report.suites[1]
+    if not root then
+        logger.warn("No test suites found in report")
+        return {}
+    end
     local results = ____exports.parseSuite(root, report, output)
     return results
 end

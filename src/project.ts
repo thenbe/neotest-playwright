@@ -1,5 +1,6 @@
 import type * as P from '@playwright/test/reporter';
 import * as logger from 'neotest.logging';
+import { options } from './adapter-options';
 import { selectMultiple } from './select-multiple';
 
 // TODO: replace vim.notify with logger.debug
@@ -58,7 +59,8 @@ export const create_project_command = () => {
 		() => {
 			const output = get_projects();
 			const options = parseProjects(output);
-			selectProjects(options);
+			const selection = selectProjects(options);
+			setProjects(selection);
 		},
 		{
 			nargs: 0,
@@ -66,7 +68,7 @@ export const create_project_command = () => {
 	);
 };
 
-export const selectProjects = (options: string[]) => {
+const selectProjects = (options: string[]) => {
 	const prompt = 'Select projects to include in the next test run:';
 
 	const choice = selectMultiple({ prompt, options, initial: 'all' });
@@ -79,5 +81,12 @@ export const selectProjects = (options: string[]) => {
 		{},
 	);
 
-	return choice;
+	// TODO: rm type cast
+	return choice as string[];
+};
+
+const setProjects = (projects: string[]) => {
+	logger.error('neotest-playwright project', projects);
+
+	options.projects = projects;
 };

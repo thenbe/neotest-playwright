@@ -32,6 +32,7 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 		...COMMAND_PRESETS[options.preset],
 		bin: getBinary(pos.path),
 		config: getConfig(pos.path),
+		projects: options.projects,
 		testFilter: testFilter,
 	};
 

@@ -42,6 +42,7 @@ ____exports.buildSpec = function(args)
         {
             bin = getBinary(pos.path),
             config = getConfig(pos.path),
+            projects = options.projects,
             testFilter = testFilter
         }
     )

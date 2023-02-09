@@ -48,7 +48,7 @@ ____exports.buildCommand = function(options)
     local filtered = __TS__ArrayFilter(
         command,
         function(____, x)
-            return type(x) == "string"
+            return type(x) == "string" and #x > 0
         end
     )
     logger.debug("neotest-playwright command", command)
