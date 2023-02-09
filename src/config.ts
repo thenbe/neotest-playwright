@@ -9,7 +9,7 @@ import { results } from 'neotest-playwright/results';
 import { options } from './adapter-options';
 import type { Adapter } from './types/adapter';
 
-export const config: Adapter = {
+export const config: Readonly<Adapter> = {
 	name: 'neotest-playwright',
 	is_test_file: isTestFile,
 	root: root,
