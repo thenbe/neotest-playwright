@@ -7,6 +7,10 @@ import {
 	root,
 } from 'neotest-playwright/discover';
 import { results } from 'neotest-playwright/results';
+import { create_preset_command } from './preset';
+
+// Initialize the adapter
+create_preset_command();
 
 export const adapter = {
 	name: 'neotest-playwright',

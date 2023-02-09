@@ -9,6 +9,9 @@ local isTestFile = ____discover.isTestFile
 local root = ____discover.root
 local ____results = require('neotest-playwright.results')
 local results = ____results.results
+local ____preset = require('neotest-playwright.preset')
+local create_preset_command = ____preset.create_preset_command
+create_preset_command()
 ____exports.adapter = {
     name = "neotest-playwright",
     is_test_file = isTestFile,

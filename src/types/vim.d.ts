@@ -12,4 +12,23 @@ interface IVim {
 		fs_scandir: (this: void, path: string) => any[];
 		dirname: (this: void, path: string) => string;
 	};
+
+	ui: {
+		select: (
+			this: void,
+			items: string[],
+			opts: { prompt: string },
+			on_choice: (choice: string) => void,
+		) => void;
+	};
+
+	// TODO: override api.nvim_create_user_command only, without affecting other api.* functions
+	// api: {
+	// 	nvim_create_user_command: (
+	// 		this: void,
+	// 		name: string,
+	// 		fn: () => void,
+	// 		opts?: { nargs: 0 },
+	// 	) => void;
+	// };
 }
