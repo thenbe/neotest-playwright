@@ -8,7 +8,7 @@ import {
 } from 'neotest-playwright/discover';
 import { results } from 'neotest-playwright/results';
 
-const DEFAULT_ADAPTER = {
+export const config = {
 	name: 'neotest-playwright',
 	is_test_file: isTestFile,
 	root: root,
@@ -17,12 +17,3 @@ const DEFAULT_ADAPTER = {
 	build_spec: buildSpec,
 	results: results,
 } satisfies neotest.Adapter;
-
-/** Factory function for creating an adapter. */
-export const createAdapter = (
-	config?: Partial<neotest.Adapter>,
-): neotest.Adapter => {
-	const adapter = { ...DEFAULT_ADAPTER, ...config };
-
-	return adapter;
-};

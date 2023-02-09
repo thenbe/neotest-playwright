@@ -1,19 +1,29 @@
-export const set_preset = (preset: string) => {
-	print('set_preset', preset);
+import { buildSpec } from './build-spec';
+import { config } from './config';
+import { isPreset, Preset } from './preset-options';
+
+export const set_preset = (preset: Preset) => {
+	print(`Setting preset to ${preset}`);
+	// @ts-ignore
+	config.build_spec = (args) => buildSpec(args, preset);
 };
 
 export const select_preset = () => {
-	const options = ['headless', 'headed', 'debug'];
+	const options = ['headed', 'debug', 'none'] satisfies Preset[];
 
 	const prompt = 'Select preset for neotest-playwright:';
 
-	let choice: string | null = null;
+	let choice: unknown;
 
 	vim.ui.select(options, { prompt }, (c) => {
 		choice = c;
 	});
 
-	return choice;
+	if (isPreset(choice)) {
+		return choice;
+	} else {
+		return null;
+	}
 };
 
 export const create_preset_command = () => {
@@ -24,6 +34,7 @@ export const create_preset_command = () => {
 			const choice = select_preset();
 
 			if (choice === null) {
+				// nothing selected (user aborted the dialog)
 				return;
 			}
 

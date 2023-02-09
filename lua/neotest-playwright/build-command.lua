@@ -1,16 +1,5 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 -- Lua Library inline imports
-local function __TS__ObjectAssign(target, ...)
-    local sources = {...}
-    for i = 1, #sources do
-        local source = sources[i]
-        for key in pairs(source) do
-            target[key] = source[key]
-        end
-    end
-    return target
-end
-
 local function __TS__ArrayMap(self, callbackfn, thisArg)
     local result = {}
     for i = 1, #self do
@@ -32,21 +21,13 @@ local function __TS__ArrayFilter(self, callbackfn, thisArg)
 end
 -- End of Lua Library inline imports
 local ____exports = {}
-local COMMAND_DEFAULT = {abortOnFailure = false, reporter = "json"}
-____exports.COMMAND_HEADED = {
-    headed = true,
-    retries = 0,
-    abortOnFailure = true,
-    workers = 1,
-    timeout = 0
-}
-____exports.COMMAND_PRESETS = {COMMAND_HEADED = ____exports.COMMAND_HEADED, COMMAND_DEFAULT = COMMAND_DEFAULT}
 --- A function that takes in CommandOptions and returns a string.
 ____exports.buildCommand = function(options)
-    local o = __TS__ObjectAssign({}, COMMAND_DEFAULT, options)
+    local o = options
     local command = {
         "test",
-        "--reporter=" .. o.reporter,
+        "--reporter=json",
+        o.debug and "--debug" or nil,
         o.headed and "--headed" or nil,
         o.retries and "--retries=" .. tostring(o.retries) or nil,
         o.abortOnFailure and "-x" or nil,

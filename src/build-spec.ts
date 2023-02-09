@@ -1,16 +1,15 @@
 import type * as neotest from 'neotest';
 import * as util from 'neotest-playwright.util';
-import {
-	buildCommand,
-	CommandOptions,
-	COMMAND_PRESETS,
-} from 'neotest-playwright/build-command';
+import { buildCommand, CommandOptions } from 'neotest-playwright/build-command';
 import { parseOutput } from 'neotest-playwright/report';
 import * as async from 'neotest.async';
 import * as lib from 'neotest.lib';
+import { COMMAND_PRESETS, type Preset } from './preset-options';
 
 // @ts-ignore
-export const buildSpec: neotest.Adapter['build_spec'] = (args) => {
+export const buildSpec: neotest.Adapter['build_spec'] = (args, p?: Preset) => {
+	print('buildSpec');
+	print(vim.inspect(p, {}));
 	if (!args) {
 		print('No args');
 		return;
@@ -33,16 +32,9 @@ export const buildSpec: neotest.Adapter['build_spec'] = (args) => {
 	const config = getConfig(pos.path);
 
 	// TODO: Document usage of preset. Show example/gif with page.pause()
-	// TODO: find better way to get preset name.
-	const presetName = args.extra_args?.find((x) => x.startsWith('preset='));
-
-	const preset =
-		presetName === 'preset=headed'
-			? COMMAND_PRESETS['COMMAND_HEADED']
-			: COMMAND_PRESETS['COMMAND_DEFAULT'];
 
 	const commandOptions: CommandOptions = {
-		...preset,
+		...(p ? COMMAND_PRESETS[p] : {}),
 		testFilter: testFilter,
 	};
 
