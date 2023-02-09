@@ -180,10 +180,15 @@ declare module 'neotest.async' {
 
 declare module 'neotest.lib' {
 	namespace treesitter {
+		/** Read a file's contents from disk and parse test positions using the
+		 * given query. Executed in a subprocess to avoid blocking the editor if
+		 * possible. Since functions can't be serialised for RPC the build_position and
+		 * position_id options can be strings that will evaluate to globally
+		 * referencable functions (e.g. `'require("my_adapter")._build_position'`). */
 		const parse_positions: (
 			path: string,
 			query: string,
-			options: ParseOptions,
+			opts: ParseOptions,
 		) => import('neotest').Tree;
 
 		interface ParseOptions {
@@ -196,6 +201,11 @@ declare module 'neotest.lib' {
 				position: import('neotest').Position,
 				parents: import('neotest').Position[],
 			) => string;
+
+			/** https://github.com/nvim-neotest/neotest/issues/68#issuecomment-1242769159 */
+			build_position?: (
+				this: void,
+			) => import('neotest').Position | import('neotest').Position[];
 		}
 	}
 
