@@ -12,14 +12,17 @@
 export const selectMultiple = ({
 	prompt,
 	options,
+	initial = 'none',
 }: {
 	prompt: string;
 	options: string[];
+	/** Whether to select all options by default */
+	initial?: 'all' | 'none';
 }) => {
 	const done = 'done';
 	const done_index = options.length + 1;
 	const all_options = [...options, done];
-	let selected = new Set();
+	let selected = initial === 'all' ? new Set(options) : new Set();
 	let choice: unknown;
 	let done_selected = false;
 

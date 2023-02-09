@@ -292,16 +292,21 @@ local ____exports = {}
 -- 
 -- A final option "done" is added to the list to allow the user to close the list.
 ____exports.selectMultiple = function(____bindingPattern0)
+    local initial
     local options
     local prompt
     prompt = ____bindingPattern0.prompt
     options = ____bindingPattern0.options
+    initial = ____bindingPattern0.initial
+    if initial == nil then
+        initial = "none"
+    end
     local done = "done"
     local done_index = #options + 1
     local ____array_0 = __TS__SparseArrayNew(unpack(options))
     __TS__SparseArrayPush(____array_0, done)
     local all_options = {__TS__SparseArraySpread(____array_0)}
-    local selected = __TS__New(Set)
+    local selected = initial == "all" and __TS__New(Set, options) or __TS__New(Set)
     local choice
     local done_selected = false
     while not done_selected do
