@@ -9,6 +9,7 @@ ____exports.options = {
     persist_project_selection = false,
     get_playwright_command = getPlaywrightBinary,
     get_playwright_config = getPlaywrightConfig,
+    get_cwd = nil,
     env = {}
 }
 return ____exports

@@ -11,6 +11,7 @@ export interface AdapterOptions {
 	get_playwright_config: (this: void, file_path: string) => string | null;
 	/** Environment variables to pass to the playwright command. */
 	env: Record<string, string>;
+	get_cwd: null | ((this: void, file_path: string) => string);
 }
 
 export interface Adapter extends neotest.Adapter {

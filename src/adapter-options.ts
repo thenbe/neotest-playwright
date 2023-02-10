@@ -8,5 +8,6 @@ export const options: Adapter['options'] = {
 	persist_project_selection: false,
 	get_playwright_command: getPlaywrightBinary,
 	get_playwright_config: getPlaywrightConfig,
+	get_cwd: null,
 	env: {},
 };

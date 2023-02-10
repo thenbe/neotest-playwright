@@ -19,8 +19,6 @@ setmetatable(adapter, {
 			...arg.options,
 		};
 
-		// TODO: apply env, cwd, getPlaywrightConfig, getPlaywrightBin from config
-
 		// Apply user config
 		for (const [key, value] of pairs(updated)) {
 			// @ts-expect-error wip

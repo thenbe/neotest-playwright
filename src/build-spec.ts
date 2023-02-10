@@ -42,7 +42,8 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 
 	return {
 		command: buildCommand(commandOptions, args.extra_args ?? []),
-		cwd: null, // TODO: get from user config
+		cwd:
+			typeof options.get_cwd === 'function' ? options.get_cwd(pos.path) : null,
 		context: {
 			results_path: resultsPath,
 			file: pos.path,

@@ -180,7 +180,7 @@ ____exports.buildSpec = function(args)
     local streamData, stopStream = lib.files.stream(resultsPath)
     return {
         command = buildCommand(commandOptions, args.extra_args or ({})),
-        cwd = nil,
+        cwd = type(options.get_cwd) == "function" and options.get_cwd(pos.path) or nil,
         context = {results_path = resultsPath, file = pos.path, stop_stream = stopStream},
         stream = function() return function()
             local newResults = streamData()

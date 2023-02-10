@@ -48,6 +48,10 @@ use({
                --    return "path/to/playwright.config.ts"
                -- end,
 
+               -- get_cwd = function(file_path)
+               --    return "path/to/dir"
+               -- end,
+
                -- env = {
                --    HELLO = "world",
                -- },
