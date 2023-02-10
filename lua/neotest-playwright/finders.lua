@@ -139,12 +139,11 @@ ____exports.getPlaywrightBinary = function(filePath)
     local node_modules = tostring(util.find_ancestor(filePath, "node_modules", true)) .. "/node_modules"
     local bin = node_modules .. "/.bin/playwright"
     if lib.files.exists(bin) then
-        logger.debug("playwright binary exists", bin)
         return bin
     else
-        logger.error("playwright binary does not exist", bin)
+        logger.error("playwright binary does not exist at ", bin)
         error(
-            __TS__New(Error, "playwright binary does not exist"),
+            __TS__New(Error, ("Unable to locate playwright binary. Expected to find it at: " .. bin) .. " - To use a custom binary path, set the `get_playwright_command` option. See the docs for more info."),
             0
         )
     end
@@ -153,10 +152,9 @@ ____exports.getPlaywrightConfig = function(filePath)
     local configDir = util.find_ancestor(filePath, "playwright.config.ts", false)
     local config = tostring(configDir) .. "/playwright.config.ts"
     if lib.files.exists(config) then
-        logger.debug("playwright config", config)
         return config
     end
-    logger.warn("Unable to locate playwright config file.", config)
+    logger.info("Unable to locate playwright config file.")
     return nil
 end
 return ____exports

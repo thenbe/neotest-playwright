@@ -12,11 +12,14 @@ export const getPlaywrightBinary: AdapterOptions['get_playwright_command'] = (
 	const bin = `${node_modules}/.bin/playwright`;
 
 	if (lib.files.exists(bin)) {
-		logger.debug('playwright binary exists', bin);
 		return bin;
 	} else {
-		logger.error('playwright binary does not exist', bin);
-		throw new Error('playwright binary does not exist');
+		logger.error('playwright binary does not exist at ', bin);
+		throw new Error(
+			'Unable to locate playwright binary. Expected to find it at: ' +
+				bin +
+				' - To use a custom binary path, set the `get_playwright_command` option. See the docs for more info.',
+		);
 	}
 };
 
@@ -25,11 +28,10 @@ export const getPlaywrightConfig = (filePath: string) => {
 	const config = `${configDir}/playwright.config.ts`; // TODO: don't hardcode
 
 	if (lib.files.exists(config)) {
-		logger.debug('playwright config', config);
 		return config;
 	}
 
-	logger.warn('Unable to locate playwright config file.', config);
+	logger.info('Unable to locate playwright config file.');
 
 	return null;
 };
