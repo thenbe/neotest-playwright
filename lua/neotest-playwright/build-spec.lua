@@ -60,7 +60,7 @@ ____exports.buildSpec = function(args)
             end
             return parseOutput(report, resultsPath)
         end end,
-        env = {PLAYWRIGHT_JSON_OUTPUT_NAME = resultsPath}
+        env = __TS__ObjectAssign({PLAYWRIGHT_JSON_OUTPUT_NAME = resultsPath}, options.env)
     }
 end
 return ____exports

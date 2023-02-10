@@ -35,8 +35,6 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 		testFilter: testFilter,
 	};
 
-	// const env = getEnv(args[2]?.env || {});
-
 	// TODO: move extra_args to buildCommand.
 	// if (args.extra_args) {
 	// 	command.push(...args.extra_args);
@@ -77,8 +75,8 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 		// 	args,
 		// ),
 		env: {
-			// TODO: merge with user config
 			PLAYWRIGHT_JSON_OUTPUT_NAME: resultsPath,
+			...options.env,
 		},
 	};
 };
