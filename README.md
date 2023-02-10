@@ -39,6 +39,9 @@ use({
             -- ...,
             options = {
                persist_project_selection = false,
+               -- get_playwright_command = function(file_path)
+               --    return "path-to-playwright-binary"
+               -- end,
             }
          }),
       },

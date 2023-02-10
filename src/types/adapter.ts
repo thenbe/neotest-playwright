@@ -1,10 +1,12 @@
 import type * as neotest from 'neotest';
 import type { Preset } from 'neotest-playwright/preset-options';
 
-interface AdapterOptions {
+export interface AdapterOptions {
 	preset: Preset;
 	projects: string[];
 	persist_project_selection: boolean;
+	/** Given a test file path, return the path to the playwright binary. */
+	get_playwright_command: (this: void, file_path: string) => string;
 }
 
 export interface Adapter extends neotest.Adapter {

@@ -30,7 +30,7 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 
 	const commandOptions: CommandOptions = {
 		...COMMAND_PRESETS[options.preset],
-		bin: getPlaywrightBinary(pos.path),
+		bin: options.get_playwright_command(pos.path),
 		config: getConfig(pos.path),
 		projects: options.projects,
 		testFilter: testFilter,
@@ -82,21 +82,6 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 			PLAYWRIGHT_JSON_OUTPUT_NAME: resultsPath,
 		},
 	};
-};
-
-// Alt: use setmetatable to get value from user config
-const getPlaywrightBinary = (filePath: string) => {
-	const node_modules =
-		util.find_ancestor(filePath, 'node_modules', true) + '/node_modules';
-	const bin = `${node_modules}/.bin/playwright`; // TODO: , don't hardcode, get from user config
-
-	if (lib.files.exists(bin)) {
-		logger.debug('playwright binary exists', bin);
-		return bin;
-	} else {
-		logger.warn('playwright binary does not exist', bin);
-		return 'pnpm playwright'; // TODO: don't hardcode
-	}
 };
 
 const getConfig = (filePath: string) => {

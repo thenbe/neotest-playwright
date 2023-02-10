@@ -12,7 +12,7 @@ local function __TS__ObjectAssign(target, ...)
 end
 -- End of Lua Library inline imports
 local ____exports = {}
-local getBinary, getConfig
+local getConfig
 local util = require("neotest-playwright.util")
 local ____build_2Dcommand = require('neotest-playwright.build-command')
 local buildCommand = ____build_2Dcommand.buildCommand
@@ -40,7 +40,7 @@ ____exports.buildSpec = function(args)
         {},
         COMMAND_PRESETS[options.preset],
         {
-            bin = getBinary(pos.path),
+            bin = options.get_playwright_command(pos.path),
             config = getConfig(pos.path),
             projects = options.projects,
             testFilter = testFilter
@@ -64,17 +64,6 @@ ____exports.buildSpec = function(args)
         end end,
         env = {PLAYWRIGHT_JSON_OUTPUT_NAME = resultsPath}
     }
-end
-getBinary = function(filePath)
-    local node_modules = tostring(util.find_ancestor(filePath, "node_modules", true)) .. "/node_modules"
-    local bin = node_modules .. "/.bin/playwright"
-    if lib.files.exists(bin) then
-        logger.debug("playwright binary exists", bin)
-        return bin
-    else
-        logger.warn("playwright binary does not exist", bin)
-        return "pnpm playwright"
-    end
 end
 getConfig = function(filePath)
     local configDir = util.find_ancestor(filePath, "playwright.config.ts", false)
