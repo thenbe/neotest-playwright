@@ -12,6 +12,14 @@ Written in typescript and transpiled to Lua using [tstl](https://github.com/Type
 - [x] Project selection + persistence
 - [x] On-the-fly presets
 
+---
+
+## Configuration
+
+TODO
+
+---
+
 ## Installation
 
 Using packer:
@@ -47,6 +55,8 @@ If you wish, you can choose to persist your project selection across neovim sess
 
 [![asciicast](https://asciinema.org/a/558555.svg)](https://asciinema.org/a/558555)
 
+---
+
 ## Presets
 
 Presets are a way to debug your tests on the fly.
@@ -59,7 +69,7 @@ Presets are a way to debug your tests on the fly.
 
 Runs tests in headed mode.
 
-> Tip: Use with `await page.pause()` to open the playwright inspector and debug your locators.
+> 💡 Tip: Use with [`await page.pause()`](https://playwright.dev/docs/api/class-page#page-pause) to open the playwright inspector and debug your locators.
 
 ### `debug`
 
@@ -70,6 +80,8 @@ Playwright uses the `--debug` flag as a shortcut for multiple options. See [here
 ### `none`
 
 Does not apply any flags. Your tests will run as defined in your `playwright.config.ts` file.
+
+---
 
 # Credits
 
