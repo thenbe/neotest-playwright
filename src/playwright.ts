@@ -1,9 +1,21 @@
 import * as logger from 'neotest.logging';
+import { options } from './adapter-options';
+import { buildCommand } from './build-command';
 
 export const get_projects = () => {
-	const testFilter = './does-not-exist';
-	const cmd = `npx playwright test --list --reporter=json ${testFilter} `;
-	const output = run(cmd);
+	const filePath = vim.fn.expand('%:p');
+
+	const cmd = buildCommand(
+		{
+			bin: options.get_playwright_command(filePath),
+			config: options.get_playwright_config(filePath),
+			testFilter: './does-not-exist',
+		},
+		['--list'],
+	);
+
+	const output = run(cmd.join(' '));
+
 	return output;
 };
 
