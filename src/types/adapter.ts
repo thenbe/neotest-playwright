@@ -7,6 +7,8 @@ export interface AdapterOptions {
 	persist_project_selection: boolean;
 	/** Given a test file path, return the path to the playwright binary. */
 	get_playwright_command: (this: void, file_path: string) => string;
+	/** Given a test file path, return the path to the playwright config file. */
+	get_playwright_config: (this: void, file_path: string) => string | null;
 }
 
 export interface Adapter extends neotest.Adapter {

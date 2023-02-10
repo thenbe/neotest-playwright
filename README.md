@@ -40,7 +40,10 @@ use({
             options = {
                persist_project_selection = false,
                -- get_playwright_command = function(file_path)
-               --    return "path-to-playwright-binary"
+               --    return "path/to/playwright-binary"
+               -- end,
+               -- get_playwright_config = function(file_path)
+               --    return "path/to/playwright.config.ts"
                -- end,
             }
          }),

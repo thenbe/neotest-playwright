@@ -2,5 +2,12 @@
 local ____exports = {}
 local ____finders = require('neotest-playwright.finders')
 local getPlaywrightBinary = ____finders.getPlaywrightBinary
-____exports.options = {projects = {}, preset = "none", persist_project_selection = false, get_playwright_command = getPlaywrightBinary}
+local getPlaywrightConfig = ____finders.getPlaywrightConfig
+____exports.options = {
+    projects = {},
+    preset = "none",
+    persist_project_selection = false,
+    get_playwright_command = getPlaywrightBinary,
+    get_playwright_config = getPlaywrightConfig
+}
 return ____exports

@@ -149,4 +149,14 @@ ____exports.getPlaywrightBinary = function(filePath)
         )
     end
 end
+____exports.getPlaywrightConfig = function(filePath)
+    local configDir = util.find_ancestor(filePath, "playwright.config.ts", false)
+    local config = tostring(configDir) .. "/playwright.config.ts"
+    if lib.files.exists(config) then
+        logger.debug("playwright config", config)
+        return config
+    end
+    logger.warn("Unable to locate playwright config file.", config)
+    return nil
+end
 return ____exports

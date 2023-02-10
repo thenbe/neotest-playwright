@@ -19,3 +19,17 @@ export const getPlaywrightBinary: AdapterOptions['get_playwright_command'] = (
 		throw new Error('playwright binary does not exist');
 	}
 };
+
+export const getPlaywrightConfig = (filePath: string) => {
+	const configDir = util.find_ancestor(filePath, 'playwright.config.ts', false);
+	const config = `${configDir}/playwright.config.ts`; // TODO: don't hardcode
+
+	if (lib.files.exists(config)) {
+		logger.debug('playwright config', config);
+		return config;
+	}
+
+	logger.warn('Unable to locate playwright config file.', config);
+
+	return null;
+};

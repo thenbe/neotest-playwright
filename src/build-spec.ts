@@ -1,4 +1,3 @@
-import * as util from 'neotest-playwright.util';
 import { buildCommand, CommandOptions } from 'neotest-playwright/build-command';
 import { parseOutput } from 'neotest-playwright/report';
 import * as async from 'neotest.async';
@@ -31,7 +30,7 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 	const commandOptions: CommandOptions = {
 		...COMMAND_PRESETS[options.preset],
 		bin: options.get_playwright_command(pos.path),
-		config: getConfig(pos.path),
+		config: options.get_playwright_config(pos.path),
 		projects: options.projects,
 		testFilter: testFilter,
 	};
@@ -82,18 +81,4 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 			PLAYWRIGHT_JSON_OUTPUT_NAME: resultsPath,
 		},
 	};
-};
-
-const getConfig = (filePath: string) => {
-	const configDir = util.find_ancestor(filePath, 'playwright.config.ts', false);
-	const config = `${configDir}/playwright.config.ts`; // TODO: don't hardcode
-
-	if (lib.files.exists(config)) {
-		logger.debug('playwright config', config);
-		return config;
-	}
-
-	logger.warn('Unable to locate config file.', config);
-
-	return null;
 };

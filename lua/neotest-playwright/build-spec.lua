@@ -12,8 +12,6 @@ local function __TS__ObjectAssign(target, ...)
 end
 -- End of Lua Library inline imports
 local ____exports = {}
-local getConfig
-local util = require("neotest-playwright.util")
 local ____build_2Dcommand = require('neotest-playwright.build-command')
 local buildCommand = ____build_2Dcommand.buildCommand
 local ____report = require('neotest-playwright.report')
@@ -41,7 +39,7 @@ ____exports.buildSpec = function(args)
         COMMAND_PRESETS[options.preset],
         {
             bin = options.get_playwright_command(pos.path),
-            config = getConfig(pos.path),
+            config = options.get_playwright_config(pos.path),
             projects = options.projects,
             testFilter = testFilter
         }
@@ -64,15 +62,5 @@ ____exports.buildSpec = function(args)
         end end,
         env = {PLAYWRIGHT_JSON_OUTPUT_NAME = resultsPath}
     }
-end
-getConfig = function(filePath)
-    local configDir = util.find_ancestor(filePath, "playwright.config.ts", false)
-    local config = tostring(configDir) .. "/playwright.config.ts"
-    if lib.files.exists(config) then
-        logger.debug("playwright config", config)
-        return config
-    end
-    logger.warn("Unable to locate config file.", config)
-    return nil
 end
 return ____exports
