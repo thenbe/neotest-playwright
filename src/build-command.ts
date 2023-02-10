@@ -16,7 +16,7 @@ export interface CommandOptions {
 export type CommandOptionsPreset = Omit<CommandOptions, 'bin'>;
 
 /** A function that takes in CommandOptions and returns a string. */
-export const buildCommand = (options: CommandOptions) => {
+export const buildCommand = (options: CommandOptions, extraArgs: string[]) => {
 	const o = options;
 
 	const command = [
@@ -26,6 +26,7 @@ export const buildCommand = (options: CommandOptions) => {
 		o.debug ? '--debug' : null,
 		o.headed ? '--headed' : null,
 		o.retries ? `--retries=${o.retries}` : null,
+		...extraArgs,
 		o.abortOnFailure ? '-x' : null,
 		o.workers ? `--workers=${o.workers}` : null,
 		o.timeout ? `--timeout=${o.timeout}` : null,
@@ -40,7 +41,7 @@ export const buildCommand = (options: CommandOptions) => {
 		return typeof x === 'string' && x.length > 0;
 	});
 
-	logger.debug('neotest-playwright command', command);
+	logger.debug('neotest-playwright command', filtered);
 
 	return filtered;
 };

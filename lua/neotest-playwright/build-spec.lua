@@ -48,7 +48,7 @@ ____exports.buildSpec = function(args)
     lib.files.write(resultsPath, "")
     local streamData, stopStream = lib.files.stream(resultsPath)
     return {
-        command = buildCommand(commandOptions),
+        command = buildCommand(commandOptions, args.extra_args or ({})),
         cwd = nil,
         context = {results_path = resultsPath, file = pos.path, stop_stream = stopStream},
         stream = function() return function()

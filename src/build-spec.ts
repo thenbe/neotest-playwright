@@ -35,11 +35,6 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 		testFilter: testFilter,
 	};
 
-	// TODO: move extra_args to buildCommand.
-	// if (args.extra_args) {
-	// 	command.push(...args.extra_args);
-	// }
-
 	const resultsPath = `${async.fn.tempname()}.json`;
 
 	lib.files.write(resultsPath, '');
@@ -47,7 +42,7 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 	const [streamData, stopStream] = lib.files.stream(resultsPath);
 
 	return {
-		command: buildCommand(commandOptions),
+		command: buildCommand(commandOptions, args.extra_args ?? []),
 		cwd: null, // TODO: get from user config
 		context: {
 			results_path: resultsPath,
