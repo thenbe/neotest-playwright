@@ -19,29 +19,27 @@ export type CommandOptionsPreset = Omit<CommandOptions, 'bin'>;
 export const buildCommand = (options: CommandOptions, extraArgs: string[]) => {
 	const o = options;
 
-	const command = [
-		o.bin,
-		'test',
-		`--reporter=json`,
-		o.debug ? '--debug' : null,
-		o.headed ? '--headed' : null,
-		o.retries ? `--retries=${o.retries}` : null,
-		...extraArgs,
-		o.abortOnFailure ? '-x' : null,
-		o.workers ? `--workers=${o.workers}` : null,
-		o.timeout ? `--timeout=${o.timeout}` : null,
-		o.config ? `--config=${o.config}` : null,
-		o.projects
-			? o.projects.map((project) => `--project=${project}`).join(' ')
-			: null,
-		o.testFilter ? `${o.testFilter}` : null,
-	];
+	const command: string[] = [];
 
-	const filtered = command.filter((x): x is string => {
-		return typeof x === 'string' && x.length > 0;
-	});
+	command.push(o.bin);
+	command.push('test');
+	command.push(`--reporter=json`);
+	if (o.debug === true) command.push('--debug');
+	if (o.headed === true) command.push('--headed');
+	if (o.retries !== undefined) command.push(`--retries=${o.retries}`);
+	if (o.abortOnFailure === true) command.push('-x');
+	if (o.workers !== undefined) command.push(`--workers=${o.workers}`);
+	if (o.timeout !== undefined) command.push(`--timeout=${o.timeout}`);
+	if (o.config !== undefined) command.push(`--config=${o.config}`);
+	if (o.projects !== undefined) {
+		for (const project of o.projects) {
+			command.push(`--project=${project}`);
+		}
+	}
+	command.push(...extraArgs);
+	if (o.testFilter !== undefined) command.push(o.testFilter);
 
-	logger.debug('neotest-playwright command', filtered);
+	logger.debug('neotest-playwright command', command);
 
-	return filtered;
+	return command;
 };
