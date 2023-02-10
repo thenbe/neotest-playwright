@@ -26,7 +26,7 @@ declare module 'neotest' {
 	interface RunSpec {
 		command: string[];
 		env?: Record<string, string>;
-		cwd?: string;
+		cwd?: string | null;
 		/* Arbitrary data to preserve state between running and result collection */
 		context: Context;
 		/** Arguments for strategy */

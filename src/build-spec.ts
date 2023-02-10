@@ -7,7 +7,6 @@ import { options } from './adapter-options';
 import { COMMAND_PRESETS } from './preset-options';
 import type { Adapter } from './types/adapter';
 
-// @ts-ignore
 export const buildSpec: Adapter['build_spec'] = (args) => {
 	if (!args) {
 		logger.error('No args');
@@ -60,7 +59,7 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 
 			if (!ok) {
 				logger.error('Error parsing results');
-				return [];
+				throw new Error('Error parsing results');
 			}
 
 			return parseOutput(report, resultsPath);
