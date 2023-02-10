@@ -1,4 +1,4 @@
-// TODO: replace vim.notify with logger.debug
+import * as logger from 'neotest.logging';
 
 export const get_projects = () => {
 	const testFilter = './does-not-exist';
@@ -12,30 +12,24 @@ const run = (cmd: string) => {
 	const [handle, errmsg] = io.popen(cmd);
 
 	if (typeof errmsg === 'string') {
-		vim.notify(errmsg, vim.log.levels.ERROR, {});
+		logger.error(errmsg);
 	}
 
 	if (!handle) {
-		vim.notify(`Failed to execute command: ${cmd}`, vim.log.levels.ERROR, {});
+		logger.error(`Failed to execute command: ${cmd}`);
 		return;
 	}
 
 	const output = handle.read('*a');
 	handle.close();
 
-	// print(output);
-
 	if (typeof output !== 'string') {
-		vim.notify(
-			`Failed to read output from command: ${cmd}`,
-			vim.log.levels.ERROR,
-			{},
-		);
+		logger.error(`Failed to read output from command: ${cmd}`);
 		return;
 	}
 
 	if (output === '') {
-		vim.notify(`No output from command: ${cmd}`, vim.log.levels.ERROR, {});
+		logger.error(`No output from command: ${cmd}`);
 		return;
 	}
 

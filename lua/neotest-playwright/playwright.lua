@@ -1,6 +1,7 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
 local run
+local logger = require("neotest.logging")
 ____exports.get_projects = function()
     local testFilter = "./does-not-exist"
     local cmd = ("npx playwright test --list --reporter=json " .. testFilter) .. " "
@@ -11,20 +12,20 @@ end
 run = function(cmd)
     local handle, errmsg = io.popen(cmd)
     if type(errmsg) == "string" then
-        vim.notify(errmsg, vim.log.levels.ERROR, {})
+        logger.error(errmsg)
     end
     if not handle then
-        vim.notify("Failed to execute command: " .. cmd, vim.log.levels.ERROR, {})
+        logger.error("Failed to execute command: " .. cmd)
         return
     end
     local output = handle:read("*a")
     handle:close()
     if type(output) ~= "string" then
-        vim.notify("Failed to read output from command: " .. cmd, vim.log.levels.ERROR, {})
+        logger.error("Failed to read output from command: " .. cmd)
         return
     end
     if output == "" then
-        vim.notify("No output from command: " .. cmd, vim.log.levels.ERROR, {})
+        logger.error("No output from command: " .. cmd)
         return
     end
     local parsed = vim.fn.json_decode(output)

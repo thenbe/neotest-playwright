@@ -14,12 +14,6 @@ Written in typescript and transpiled to Lua using [tstl](https://github.com/Type
 
 ---
 
-## Configuration
-
-TODO
-
----
-
 ## Installation
 
 Using packer:
