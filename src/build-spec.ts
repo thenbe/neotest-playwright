@@ -30,7 +30,7 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 
 	const commandOptions: CommandOptions = {
 		...COMMAND_PRESETS[options.preset],
-		bin: getBinary(pos.path),
+		bin: getPlaywrightBinary(pos.path),
 		config: getConfig(pos.path),
 		projects: options.projects,
 		testFilter: testFilter,
@@ -85,7 +85,7 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 };
 
 // Alt: use setmetatable to get value from user config
-const getBinary = (filePath: string) => {
+const getPlaywrightBinary = (filePath: string) => {
 	const node_modules =
 		util.find_ancestor(filePath, 'node_modules', true) + '/node_modules';
 	const bin = `${node_modules}/.bin/playwright`; // TODO: , don't hardcode, get from user config
