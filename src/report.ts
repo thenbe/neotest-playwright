@@ -23,14 +23,24 @@ export const parseOutput = (
 	output: neotest.Result['output'],
 ): neotest.Results => {
 	if (report.errors.length > 1) {
-		logger.warn('Global errors found in report', report.errors);
+		const msg = 'Global errors found in report';
+		logger.warn(msg, report.errors);
+		vim.defer_fn(
+			() => vim.cmd(`echohl WarningMsg | echo "${msg}" | echohl None`),
+			0,
+		);
 	}
 
 	const root = report.suites[0];
 
 	if (!root) {
-		logger.warn('No test suites found in report');
-		throw new Error('No test suites found in report');
+		const msg = 'No test suites found in report';
+		logger.error(msg);
+		vim.defer_fn(
+			() => vim.cmd(`echohl WarningMsg | echo "${msg}" | echohl None`),
+			0,
+		);
+		return {};
 	}
 
 	const results = parseSuite(root, report, output);

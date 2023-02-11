@@ -177,15 +177,22 @@ ____exports.decodeOutput = function(data)
 end
 ____exports.parseOutput = function(report, output)
     if #report.errors > 1 then
-        logger.warn("Global errors found in report", report.errors)
+        local msg = "Global errors found in report"
+        logger.warn(msg, report.errors)
+        vim.defer_fn(
+            function() return vim.cmd(("echohl WarningMsg | echo \"" .. msg) .. "\" | echohl None") end,
+            0
+        )
     end
     local root = report.suites[1]
     if not root then
-        logger.warn("No test suites found in report")
-        error(
-            __TS__New(Error, "No test suites found in report"),
+        local msg = "No test suites found in report"
+        logger.error(msg)
+        vim.defer_fn(
+            function() return vim.cmd(("echohl WarningMsg | echo \"" .. msg) .. "\" | echohl None") end,
             0
         )
+        return {}
     end
     local results = ____exports.parseSuite(root, report, output)
     return results
