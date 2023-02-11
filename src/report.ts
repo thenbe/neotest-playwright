@@ -52,12 +52,7 @@ export const parseSuite = (
 
 		const specResults = parseSpec(spec);
 
-		results[key] = {
-			...specResults,
-
-			// all suites have the same output file path
-			output,
-		};
+		results[key] = specResults;
 	}
 
 	// Recursively parse child suites

@@ -41,7 +41,7 @@ declare module 'neotest' {
 	interface Result {
 		status: 'passed' | 'failed' | 'skipped';
 		/** Path to file containing full output data */
-		output: string;
+		output?: string;
 		/** Shortened output string */
 		short: string;
 		errors: Error[];

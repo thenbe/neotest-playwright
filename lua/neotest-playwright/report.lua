@@ -195,7 +195,7 @@ ____exports.parseSuite = function(suite, report, output)
     for ____, spec in ipairs(suite.specs) do
         local key = constructSpecKey(report, spec, suite)
         local specResults = ____exports.parseSpec(spec)
-        results[key] = __TS__ObjectAssign({}, specResults, {output = output})
+        results[key] = specResults
     end
     for ____, child in ipairs(suite.suites or ({})) do
         local childResults = ____exports.parseSuite(child, report, output)
