@@ -137,15 +137,19 @@ local decodeOutput = ____report.decodeOutput
 local parseOutput = ____report.parseOutput
 local lib = require("neotest.lib")
 local logger = require("neotest.logging")
-____exports.results = function(spec, _result, _tree)
+____exports.results = function(spec, result, _tree)
     local resultsPath = spec.context.results_path
     local success, data = pcall(lib.files.read, resultsPath)
     if not success then
-        logger.error("No test output file found", resultsPath)
-        error(
-            __TS__New(Error, "No test output file found"),
-            0
-        )
+        if result.code == 129 then
+            return {}
+        else
+            logger.error("No test output file found", resultsPath)
+            error(
+                __TS__New(Error, "No test output file found"),
+                0
+            )
+        end
     end
     local decoded = decodeOutput(data)
     local results = parseOutput(decoded, resultsPath)
