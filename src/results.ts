@@ -4,9 +4,9 @@ import * as logger from 'neotest.logging';
 import type { Adapter } from './types/adapter';
 
 export const results = ((spec, _result, _tree) => {
-	spec.context?.stop_stream();
+	spec.context.stop_stream();
 
-	const resultsPath = spec.context?.results_path;
+	const resultsPath = spec.context.results_path;
 
 	const [success, data] = pcall(lib.files.read, resultsPath);
 

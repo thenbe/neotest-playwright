@@ -138,12 +138,8 @@ local parseOutput = ____report.parseOutput
 local lib = require("neotest.lib")
 local logger = require("neotest.logging")
 ____exports.results = function(spec, _result, _tree)
-    local ____opt_0 = spec.context
-    if ____opt_0 ~= nil then
-        ____opt_0:stop_stream()
-    end
-    local ____opt_2 = spec.context
-    local resultsPath = ____opt_2 and ____opt_2.results_path
+    spec.context:stop_stream()
+    local resultsPath = spec.context.results_path
     local success, data = pcall(lib.files.read, resultsPath)
     if not success then
         logger.error("No test output file found", resultsPath)
