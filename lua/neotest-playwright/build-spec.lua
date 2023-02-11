@@ -10,45 +10,6 @@ local function __TS__ObjectAssign(target, ...)
     end
     return target
 end
-
-local function __TS__ArrayFilter(self, callbackfn, thisArg)
-    local result = {}
-    local len = 0
-    for i = 1, #self do
-        if callbackfn(thisArg, self[i], i - 1, self) then
-            len = len + 1
-            result[len] = self[i]
-        end
-    end
-    return result
-end
-
-local function __TS__ArrayIsArray(value)
-    return type(value) == "table" and (value[1] ~= nil or next(value) == nil)
-end
-
-local function __TS__ArrayConcat(self, ...)
-    local items = {...}
-    local result = {}
-    local len = 0
-    for i = 1, #self do
-        len = len + 1
-        result[len] = self[i]
-    end
-    for i = 1, #items do
-        local item = items[i]
-        if __TS__ArrayIsArray(item) then
-            for j = 1, #item do
-                len = len + 1
-                result[len] = item[j]
-            end
-        else
-            len = len + 1
-            result[len] = item
-        end
-    end
-    return result
-end
 -- End of Lua Library inline imports
 local ____exports = {}
 local getExtraArgs
@@ -91,14 +52,15 @@ ____exports.buildSpec = function(args)
     }
 end
 getExtraArgs = function(...)
-    local args = {...}
-    local extraArgs = __TS__ArrayFilter(
-        args,
-        function(____, arg) return arg ~= nil end
-    )
-    return __TS__ArrayConcat(
-        {},
-        unpack(extraArgs)
-    )
+    local argArrays = {...}
+    local args = {}
+    for ____, argArray in ipairs(argArrays) do
+        for ____, arg in ipairs(argArray or ({})) do
+            if type(arg) == "string" and #arg > 0 then
+                args[#args + 1] = arg
+            end
+        end
+    end
+    return args
 end
 return ____exports
