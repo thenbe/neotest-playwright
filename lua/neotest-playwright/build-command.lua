@@ -10,16 +10,18 @@ local function __TS__ArrayPushArray(self, items)
 end
 -- End of Lua Library inline imports
 local ____exports = {}
+local buildReporters
 local logger = require("neotest.logging")
 --- A function that takes in CommandOptions and returns a string.
 ____exports.buildCommand = function(options, extraArgs)
     local o = options
-    local reporters = o.reporters or ({"json", "list"})
+    local reporters = o.reporters or ({"list", "json"})
+    local reportersArg = buildReporters(reporters)
     local command = {}
     command[#command + 1] = o.bin
     command[#command + 1] = "test"
-    for ____, reporter in ipairs(reporters) do
-        command[#command + 1] = "--reporter=" .. reporter
+    if reportersArg ~= nil then
+        command[#command + 1] = reportersArg
     end
     if o.debug == true then
         command[#command + 1] = "--debug"
@@ -55,5 +57,13 @@ ____exports.buildCommand = function(options, extraArgs)
     end
     logger.debug("neotest-playwright command", command)
     return command
+end
+--- Returns `--reporter=${reporters[0]},${reporters[1]},...`
+buildReporters = function(reporters)
+    if #reporters == 0 then
+        return nil
+    else
+        return "--reporter=" .. table.concat(reporters, ",")
+    end
 end
 return ____exports

@@ -19,15 +19,14 @@ export type CommandOptionsPreset = Omit<CommandOptions, 'bin'>;
 /** A function that takes in CommandOptions and returns a string. */
 export const buildCommand = (options: CommandOptions, extraArgs: string[]) => {
 	const o = options;
-	const reporters = o.reporters ?? ['json', 'list'];
+	const reporters = o.reporters ?? ['list', 'json'];
+	const reportersArg = buildReporters(reporters);
 
 	const command: string[] = [];
 
 	command.push(o.bin);
 	command.push('test');
-	for (const reporter of reporters) {
-		command.push(`--reporter=${reporter}`);
-	}
+	if (reportersArg !== null) command.push(reportersArg);
 	if (o.debug === true) command.push('--debug');
 	if (o.headed === true) command.push('--headed');
 	if (o.retries !== undefined) command.push(`--retries=${o.retries}`);
@@ -48,4 +47,13 @@ export const buildCommand = (options: CommandOptions, extraArgs: string[]) => {
 	logger.debug('neotest-playwright command', command);
 
 	return command;
+};
+
+/** Returns `--reporter=${reporters[0]},${reporters[1]},...` */
+const buildReporters = (reporters: string[]) => {
+	if (reporters.length === 0) {
+		return null;
+	} else {
+		return `--reporter=${reporters.join(',')}`;
+	}
 };
