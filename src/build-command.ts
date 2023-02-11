@@ -9,6 +9,7 @@ export interface CommandOptions {
 	workers?: number;
 	timeout?: number;
 	config?: string | null;
+	reporters?: string[];
 	projects?: string[];
 	testFilter?: string;
 }
@@ -18,12 +19,15 @@ export type CommandOptionsPreset = Omit<CommandOptions, 'bin'>;
 /** A function that takes in CommandOptions and returns a string. */
 export const buildCommand = (options: CommandOptions, extraArgs: string[]) => {
 	const o = options;
+	const reporters = o.reporters ?? ['json', 'list'];
 
 	const command: string[] = [];
 
 	command.push(o.bin);
 	command.push('test');
-	command.push(`--reporter=json`);
+	for (const reporter of reporters) {
+		command.push(`--reporter=${reporter}`);
+	}
 	if (o.debug === true) command.push('--debug');
 	if (o.headed === true) command.push('--headed');
 	if (o.retries !== undefined) command.push(`--retries=${o.retries}`);

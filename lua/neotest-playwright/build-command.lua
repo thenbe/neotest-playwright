@@ -14,10 +14,13 @@ local logger = require("neotest.logging")
 --- A function that takes in CommandOptions and returns a string.
 ____exports.buildCommand = function(options, extraArgs)
     local o = options
+    local reporters = o.reporters or ({"json", "list"})
     local command = {}
     command[#command + 1] = o.bin
     command[#command + 1] = "test"
-    command[#command + 1] = "--reporter=json"
+    for ____, reporter in ipairs(reporters) do
+        command[#command + 1] = "--reporter=" .. reporter
+    end
     if o.debug == true then
         command[#command + 1] = "--debug"
     end
