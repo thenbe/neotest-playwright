@@ -34,8 +34,10 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 
 	const resultsPath = `${async.fn.tempname()}.json`;
 
+	const extraArgs = getExtraArgs(args.extra_args, options.extra_args);
+
 	return {
-		command: buildCommand(commandOptions, args.extra_args ?? []),
+		command: buildCommand(commandOptions, extraArgs),
 		cwd:
 			typeof options.get_cwd === 'function' ? options.get_cwd(pos.path) : null,
 		context: {
@@ -51,4 +53,9 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 			...options.env,
 		},
 	};
+};
+
+const getExtraArgs = (...args: (string[] | undefined)[]): string[] => {
+	const extraArgs = args.filter((arg) => arg !== undefined) as string[][];
+	return ([] as string[]).concat(...extraArgs);
 };

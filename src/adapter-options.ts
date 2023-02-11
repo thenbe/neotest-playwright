@@ -10,4 +10,5 @@ export const options: Adapter['options'] = {
 	get_playwright_config: getPlaywrightConfig,
 	get_cwd: null,
 	env: {},
+	extra_args: [],
 };

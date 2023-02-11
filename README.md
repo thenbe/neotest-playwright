@@ -49,6 +49,15 @@ use({
                -- env = {
                --    HELLO = "world",
                -- },
+
+               -- Extra args to always pass to playwright.
+               -- These are merged with any extra_arg passed
+               -- to neotest's run command.
+               -- extra_args = {
+               --    "--retries=0",
+               --    "--max-failures=5",
+               -- },
+
             }
          }),
       },

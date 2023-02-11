@@ -10,6 +10,7 @@ ____exports.options = {
     get_playwright_command = getPlaywrightBinary,
     get_playwright_config = getPlaywrightConfig,
     get_cwd = nil,
-    env = {}
+    env = {},
+    extra_args = {}
 }
 return ____exports

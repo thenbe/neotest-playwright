@@ -10,8 +10,48 @@ local function __TS__ObjectAssign(target, ...)
     end
     return target
 end
+
+local function __TS__ArrayFilter(self, callbackfn, thisArg)
+    local result = {}
+    local len = 0
+    for i = 1, #self do
+        if callbackfn(thisArg, self[i], i - 1, self) then
+            len = len + 1
+            result[len] = self[i]
+        end
+    end
+    return result
+end
+
+local function __TS__ArrayIsArray(value)
+    return type(value) == "table" and (value[1] ~= nil or next(value) == nil)
+end
+
+local function __TS__ArrayConcat(self, ...)
+    local items = {...}
+    local result = {}
+    local len = 0
+    for i = 1, #self do
+        len = len + 1
+        result[len] = self[i]
+    end
+    for i = 1, #items do
+        local item = items[i]
+        if __TS__ArrayIsArray(item) then
+            for j = 1, #item do
+                len = len + 1
+                result[len] = item[j]
+            end
+        else
+            len = len + 1
+            result[len] = item
+        end
+    end
+    return result
+end
 -- End of Lua Library inline imports
 local ____exports = {}
+local getExtraArgs
 local ____build_2Dcommand = require('neotest-playwright.build-command')
 local buildCommand = ____build_2Dcommand.buildCommand
 local async = require("neotest.async")
@@ -42,11 +82,23 @@ ____exports.buildSpec = function(args)
         }
     )
     local resultsPath = async.fn.tempname() .. ".json"
+    local extraArgs = getExtraArgs(args.extra_args, options.extra_args)
     return {
-        command = buildCommand(commandOptions, args.extra_args or ({})),
+        command = buildCommand(commandOptions, extraArgs),
         cwd = type(options.get_cwd) == "function" and options.get_cwd(pos.path) or nil,
         context = {results_path = resultsPath, file = pos.path},
         env = __TS__ObjectAssign({PLAYWRIGHT_JSON_OUTPUT_NAME = resultsPath}, options.env)
     }
+end
+getExtraArgs = function(...)
+    local args = {...}
+    local extraArgs = __TS__ArrayFilter(
+        args,
+        function(____, arg) return arg ~= nil end
+    )
+    return __TS__ArrayConcat(
+        {},
+        unpack(extraArgs)
+    )
 end
 return ____exports
