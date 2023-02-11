@@ -5,6 +5,19 @@ import * as logger from 'neotest.logging';
 
 // ### Output ###
 
+export const decodeOutput = (data: string): P.JSONReport => {
+	const [ok, parsed] = pcall(vim.json.decode, data, {
+		luanil: { object: true },
+	});
+
+	if (!ok) {
+		logger.error('Failed to parse test output json');
+		throw new Error('Failed to parse test output json');
+	}
+
+	return parsed;
+};
+
 export const parseOutput = (
 	report: P.JSONReport,
 	output: neotest.Result['output'],

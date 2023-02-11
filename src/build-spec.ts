@@ -1,5 +1,5 @@
 import { buildCommand, CommandOptions } from 'neotest-playwright/build-command';
-import { parseOutput } from 'neotest-playwright/report';
+import { decodeOutput, parseOutput } from 'neotest-playwright/report';
 import * as async from 'neotest.async';
 import * as lib from 'neotest.lib';
 import * as logger from 'neotest.logging';
@@ -54,16 +54,9 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 		stream: () => () => {
 			const newResults = streamData();
 
-			const [ok, report] = pcall(vim.json.decode, newResults, {
-				luanil: { object: true },
-			});
+			const decoded = decodeOutput(newResults);
 
-			if (!ok) {
-				logger.error('Error parsing results');
-				throw new Error('Error parsing results');
-			}
-
-			return parseOutput(report, resultsPath);
+			return parseOutput(decoded, resultsPath);
 		},
 		// strategy: getStrategyConfig(
 		// 	getDefaultStrategyConfig(args.strategy, command, cwd) || {},

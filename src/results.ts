@@ -1,4 +1,4 @@
-import { parseOutput } from 'neotest-playwright/report';
+import { decodeOutput, parseOutput } from 'neotest-playwright/report';
 import * as lib from 'neotest.lib';
 import * as logger from 'neotest.logging';
 import type { Adapter } from './types/adapter';
@@ -12,19 +12,12 @@ export const results = ((spec, _result, _tree) => {
 
 	if (!success) {
 		logger.error('No test output file found', resultsPath);
-		return {};
+		throw new Error('No test output file found');
 	}
 
-	const [ok, parsed] = pcall(vim.json.decode, data, {
-		luanil: { object: true },
-	});
+	const decoded = decodeOutput(data);
 
-	if (!ok) {
-		logger.error('Failed to parse test output json', resultsPath);
-		return {};
-	}
-
-	const results = parseOutput(parsed, resultsPath);
+	const results = parseOutput(decoded, resultsPath);
 
 	return results;
 }) satisfies Adapter['results'];
