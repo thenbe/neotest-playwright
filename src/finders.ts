@@ -18,7 +18,7 @@ export const getPlaywrightBinary: AdapterOptions['get_playwright_command'] = (
 		throw new Error(
 			'Unable to locate playwright binary. Expected to find it at: ' +
 				bin +
-				' - To use a custom binary path, set the `get_playwright_command` option. See the docs for more info.',
+				' - If you are in a monorepo, try running this command from a buffer in the subrepo that contains the playwright binary. Otherwise, to use a custom binary path, set the `get_playwright_command` option. See the docs for more info.',
 		);
 	}
 };

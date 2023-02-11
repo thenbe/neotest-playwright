@@ -143,7 +143,7 @@ ____exports.getPlaywrightBinary = function(filePath)
     else
         logger.error("playwright binary does not exist at ", bin)
         error(
-            __TS__New(Error, ("Unable to locate playwright binary. Expected to find it at: " .. bin) .. " - To use a custom binary path, set the `get_playwright_command` option. See the docs for more info."),
+            __TS__New(Error, ("Unable to locate playwright binary. Expected to find it at: " .. bin) .. " - If you are in a monorepo, try running this command from a buffer in the subrepo that contains the playwright binary. Otherwise, to use a custom binary path, set the `get_playwright_command` option. See the docs for more info."),
             0
         )
     end
