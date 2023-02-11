@@ -1,7 +1,5 @@
 import { buildCommand, CommandOptions } from 'neotest-playwright/build-command';
-import { decodeOutput, parseOutput } from 'neotest-playwright/report';
 import * as async from 'neotest.async';
-import * as lib from 'neotest.lib';
 import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
 import { COMMAND_PRESETS } from './preset-options';
@@ -36,10 +34,6 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 
 	const resultsPath = `${async.fn.tempname()}.json`;
 
-	lib.files.write(resultsPath, '');
-
-	const [streamData, stopStream] = lib.files.stream(resultsPath);
-
 	return {
 		command: buildCommand(commandOptions, args.extra_args ?? []),
 		cwd:
@@ -47,16 +41,6 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 		context: {
 			results_path: resultsPath,
 			file: pos.path,
-			stop_stream: stopStream,
-		},
-
-		// TODO: what's the difference between stream and Adapter.Result?
-		stream: () => () => {
-			const newResults = streamData();
-
-			const decoded = decodeOutput(newResults);
-
-			return parseOutput(decoded, resultsPath);
 		},
 		// strategy: getStrategyConfig(
 		// 	getDefaultStrategyConfig(args.strategy, command, cwd) || {},

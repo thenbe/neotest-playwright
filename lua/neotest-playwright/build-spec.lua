@@ -14,11 +14,7 @@ end
 local ____exports = {}
 local ____build_2Dcommand = require('neotest-playwright.build-command')
 local buildCommand = ____build_2Dcommand.buildCommand
-local ____report = require('neotest-playwright.report')
-local decodeOutput = ____report.decodeOutput
-local parseOutput = ____report.parseOutput
 local async = require("neotest.async")
-local lib = require("neotest.lib")
 local logger = require("neotest.logging")
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
@@ -46,17 +42,10 @@ ____exports.buildSpec = function(args)
         }
     )
     local resultsPath = async.fn.tempname() .. ".json"
-    lib.files.write(resultsPath, "")
-    local streamData, stopStream = lib.files.stream(resultsPath)
     return {
         command = buildCommand(commandOptions, args.extra_args or ({})),
         cwd = type(options.get_cwd) == "function" and options.get_cwd(pos.path) or nil,
-        context = {results_path = resultsPath, file = pos.path, stop_stream = stopStream},
-        stream = function() return function()
-            local newResults = streamData()
-            local decoded = decodeOutput(newResults)
-            return parseOutput(decoded, resultsPath)
-        end end,
+        context = {results_path = resultsPath, file = pos.path},
         env = __TS__ObjectAssign({PLAYWRIGHT_JSON_OUTPUT_NAME = resultsPath}, options.env)
     }
 end

@@ -20,7 +20,6 @@ declare module 'neotest' {
 	interface Context {
 		results_path: string;
 		file: string;
-		stop_stream: () => void;
 	}
 
 	interface RunSpec {
@@ -31,7 +30,7 @@ declare module 'neotest' {
 		context: Context;
 		/** Arguments for strategy */
 		strategy?: Record<string, unknown>;
-		stream: (output_stream: () => string[]) => () => Record<string, Result>;
+		stream?: (output_stream: () => string[]) => () => Record<string, Result>;
 	}
 
 	interface StrategyResult {

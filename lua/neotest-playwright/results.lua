@@ -138,7 +138,6 @@ local parseOutput = ____report.parseOutput
 local lib = require("neotest.lib")
 local logger = require("neotest.logging")
 ____exports.results = function(spec, _result, _tree)
-    spec.context:stop_stream()
     local resultsPath = spec.context.results_path
     local success, data = pcall(lib.files.read, resultsPath)
     if not success then
