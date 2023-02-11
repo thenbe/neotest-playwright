@@ -13,7 +13,7 @@ const parseProjects = (output: P.JSONReport) => {
 };
 
 /** Returns a list of project names from the cached data. */
-const loadPreselectedProjects = () => {
+export const loadPreselectedProjects = () => {
 	const cache = loadProjectCache();
 
 	if (cache) {

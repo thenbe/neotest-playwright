@@ -29,7 +29,7 @@ local function parseProjects(output)
     return names
 end
 --- Returns a list of project names from the cached data.
-local function loadPreselectedProjects()
+____exports.loadPreselectedProjects = function()
     local cache = loadProjectCache()
     if cache then
         return cache.projects
@@ -45,7 +45,7 @@ ____exports.create_project_command = function()
             local choices = parseProjects(output)
             local preselected = nil
             if options.persist_project_selection then
-                preselected = loadPreselectedProjects()
+                preselected = ____exports.loadPreselectedProjects()
             end
             local selection = selectProjects(choices, preselected)
             setProjects(selection)
