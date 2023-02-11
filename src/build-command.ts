@@ -33,7 +33,9 @@ export const buildCommand = (options: CommandOptions, extraArgs: string[]) => {
 	if (o.config !== undefined) command.push(`--config=${o.config}`);
 	if (o.projects !== undefined) {
 		for (const project of o.projects) {
-			command.push(`--project=${project}`);
+			if (typeof project === 'string' && project.length > 0) {
+				command.push(`--project=${project}`);
+			}
 		}
 	}
 	command.push(...extraArgs);

@@ -41,7 +41,9 @@ ____exports.buildCommand = function(options, extraArgs)
     end
     if o.projects ~= nil then
         for ____, project in ipairs(o.projects) do
-            command[#command + 1] = "--project=" .. project
+            if type(project) == "string" and #project > 0 then
+                command[#command + 1] = "--project=" .. project
+            end
         end
     end
     __TS__ArrayPushArray(command, extraArgs)
