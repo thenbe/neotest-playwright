@@ -55,16 +55,7 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 	};
 };
 
-const getExtraArgs = (...argArrays: (string[] | undefined)[]): string[] => {
-	const args: string[] = [];
-
-	for (const argArray of argArrays) {
-		for (const arg of argArray || []) {
-			if (typeof arg === 'string' && arg.length > 0) {
-				args.push(arg);
-			}
-		}
-	}
-
-	return args;
+const getExtraArgs = (...args: (string[] | undefined)[]): string[] => {
+	const extraArgs = args.filter((arg) => arg !== undefined) as string[][];
+	return ([] as string[]).concat(...extraArgs);
 };
