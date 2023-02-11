@@ -200,4 +200,12 @@ function M.find_ancestor(startpath, name, is_dir)
 	end)
 end
 
+function M.cleanAnsi(s)
+	return s:gsub("\x1b%[%d+;%d+;%d+;%d+;%d+m", "")
+		:gsub("\x1b%[%d+;%d+;%d+;%d+m", "")
+		:gsub("\x1b%[%d+;%d+;%d+m", "")
+		:gsub("\x1b%[%d+;%d+m", "")
+		:gsub("\x1b%[%d+m", "")
+end
+
 return M

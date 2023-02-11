@@ -10,4 +10,6 @@ declare module 'neotest-playwright.util' {
 		name: string,
 		is_dir: boolean,
 	) => string | null;
+
+	const cleanAnsi: (str: string) => string;
 }

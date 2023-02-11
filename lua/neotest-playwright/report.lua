@@ -30,6 +30,8 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local getSpecStatus, constructSpecKey, collectSpecErrors, toNeotestError
+local ____neotest_2Dplaywright_2Eutil = require("neotest-playwright.util")
+local cleanAnsi = ____neotest_2Dplaywright_2Eutil.cleanAnsi
 local logger = require("neotest.logging")
 ____exports.parseOutput = function(report, output)
     if #report.errors > 1 then
@@ -97,8 +99,8 @@ collectSpecErrors = function(spec)
 end
 --- Convert Playwright error to neotest error
 toNeotestError = function(____error)
-    local ____error_message_4 = ____error.message
+    local ____cleanAnsi_result_4 = cleanAnsi(____error.message)
     local ____opt_2 = ____error.location
-    return {message = ____error_message_4, line = ____opt_2 and ____opt_2.line or 0}
+    return {message = ____cleanAnsi_result_4, line = ____opt_2 and ____opt_2.line or 0}
 end
 return ____exports

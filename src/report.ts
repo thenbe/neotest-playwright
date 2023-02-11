@@ -1,5 +1,6 @@
 import type * as P from '@playwright/test/reporter';
 import type * as neotest from 'neotest';
+import { cleanAnsi } from 'neotest-playwright.util';
 import * as logger from 'neotest.logging';
 
 // ### Output ###
@@ -114,7 +115,7 @@ const collectSpecErrors = (spec: P.JSONReportSpec): P.JSONReportError[] => {
 /** Convert Playwright error to neotest error */
 const toNeotestError = (error: P.JSONReportError): neotest.Error => {
 	return {
-		message: error.message,
+		message: cleanAnsi(error.message),
 		line: error.location?.line ?? 0,
 	};
 };
