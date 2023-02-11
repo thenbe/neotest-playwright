@@ -7,11 +7,14 @@ local options = ____adapter_2Doptions.options
 local ____build_2Dcommand = require('neotest-playwright.build-command')
 local buildCommand = ____build_2Dcommand.buildCommand
 ____exports.get_projects = function()
-    local filePath = vim.fn.expand("%:p")
+    local path = vim.fn.expand("%:p")
+    if path == "" then
+        path = vim.fn.getcwd()
+    end
     local cmd = buildCommand(
         {
-            bin = options.get_playwright_command(filePath),
-            config = options.get_playwright_config(filePath),
+            bin = options.get_playwright_command(path),
+            config = options.get_playwright_config(path),
             testFilter = "./does-not-exist"
         },
         {"--list"}

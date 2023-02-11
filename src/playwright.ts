@@ -3,12 +3,20 @@ import { options } from './adapter-options';
 import { buildCommand } from './build-command';
 
 export const get_projects = () => {
-	const filePath = vim.fn.expand('%:p');
+	// For better monorepo support, we try to resolve the
+	// playwright binary and playwright config from the current
+	// buffer's path. Else, if no buffer is open, we fall back
+	// to the current working directory.
+	let path = vim.fn.expand('%:p');
+
+	if (path === '') {
+		path = vim.fn.getcwd();
+	}
 
 	const cmd = buildCommand(
 		{
-			bin: options.get_playwright_command(filePath),
-			config: options.get_playwright_config(filePath),
+			bin: options.get_playwright_command(path),
+			config: options.get_playwright_config(path),
 			testFilter: './does-not-exist',
 		},
 		['--list'],
