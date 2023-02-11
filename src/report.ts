@@ -30,7 +30,7 @@ export const parseOutput = (
 
 	if (!root) {
 		logger.warn('No test suites found in report');
-		return {};
+		throw new Error('No test suites found in report');
 	}
 
 	const results = parseSuite(root, report, output);
@@ -48,7 +48,7 @@ export const parseSuite = (
 	let results: neotest.Results = {};
 
 	for (const spec of suite.specs) {
-		const key = constructSpecKey(report, spec);
+		const key = constructSpecKey(report, spec, suite);
 
 		const specResults = parseSpec(spec);
 
@@ -96,17 +96,26 @@ const getSpecStatus = (spec: P.JSONReportSpec): neotest.Result['status'] => {
 	}
 };
 
+// FIX: fix identification issue. `neotest.lib.treesitter.parse_positions`
+// has `position_id` parameter we might be able to use.
 const constructSpecKey = (
 	report: P.JSONReport,
 	spec: P.JSONReportSpec,
+	suite: P.JSONReportSuite,
 ): neotest.ResultKey => {
 	const dir = report.config.rootDir;
 	const file = spec.file;
 	const name = spec.title;
+	const suiteName = suite.title;
+	const isPartOfDescribe = suiteName !== file;
 
-	// FIX: fix identification issue. `neotest.lib.treesitter.parse_positions`
-	// has `position_id` parameter we might be able to use.
-	const key = `${dir}/${file}::${name}`;
+	let key: string;
+
+	if (isPartOfDescribe) {
+		key = `${dir}/${file}::${suiteName}::${name}`;
+	} else {
+		key = `${dir}/${file}::${name}`;
+	}
 
 	return key;
 };

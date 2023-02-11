@@ -182,7 +182,10 @@ ____exports.parseOutput = function(report, output)
     local root = report.suites[1]
     if not root then
         logger.warn("No test suites found in report")
-        return {}
+        error(
+            __TS__New(Error, "No test suites found in report"),
+            0
+        )
     end
     local results = ____exports.parseSuite(root, report, output)
     return results
@@ -190,7 +193,7 @@ end
 ____exports.parseSuite = function(suite, report, output)
     local results = {}
     for ____, spec in ipairs(suite.specs) do
-        local key = constructSpecKey(report, spec)
+        local key = constructSpecKey(report, spec, suite)
         local specResults = ____exports.parseSpec(spec)
         results[key] = __TS__ObjectAssign({}, specResults, {output = output})
     end
@@ -221,11 +224,18 @@ getSpecStatus = function(spec)
         end
     end
 end
-constructSpecKey = function(report, spec)
+constructSpecKey = function(report, spec, suite)
     local dir = report.config.rootDir
     local file = spec.file
     local name = spec.title
-    local key = (((dir .. "/") .. file) .. "::") .. name
+    local suiteName = suite.title
+    local isPartOfDescribe = suiteName ~= file
+    local key
+    if isPartOfDescribe then
+        key = (((((dir .. "/") .. file) .. "::") .. suiteName) .. "::") .. name
+    else
+        key = (((dir .. "/") .. file) .. "::") .. name
+    end
     return key
 end
 --- Collect all errors from a spec by traversing spec -> tests[] -> results[].
