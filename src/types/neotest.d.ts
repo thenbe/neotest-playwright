@@ -7,6 +7,8 @@ interface NodeMatch<T extends MatchType> {
 	[`${T}.definition`]: LuaUserdata;
 }
 
+type Range = LuaMultiReturn<[number, number, number, number]>;
+
 declare module 'neotest' {
 	interface Position {
 		id?: string;
@@ -14,7 +16,7 @@ declare module 'neotest' {
 		name: string;
 		path: string;
 		/** [start_row, start_col, end_row, end_col] */
-		range: [number, number, number, number];
+		range: Range;
 		/** Whether the test can have children */
 		is_sterile?: boolean;
 	}

@@ -196,7 +196,7 @@ ____exports._build_position = function(filePath, source, capturedNodes)
     local match_type = getMatchType(capturedNodes)
     local name = vim.treesitter.get_node_text(capturedNodes[match_type .. ".name"], source)
     local definition = capturedNodes[match_type .. ".definition"]
-    local range = definition:range()
+    local range = {definition:range()}
     if match_type == "namespace" then
         return {type = match_type, range = range, path = filePath, name = name}
     elseif match_type == "test" then

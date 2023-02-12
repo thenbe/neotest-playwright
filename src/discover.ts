@@ -89,8 +89,7 @@ export const _build_position: BuildPosition = (
 	) as string;
 
 	const definition = capturedNodes[`${match_type}.definition`];
-	// FIX: get proper range
-	const range = definition.range();
+	const range = [definition.range()] as unknown as Range;
 
 	if (match_type === 'namespace') {
 		return {
