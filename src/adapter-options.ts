@@ -11,4 +11,5 @@ export const options: Adapter['options'] = {
 	get_cwd: null,
 	env: {},
 	extra_args: [],
+	tempDataFile: vim.fn.stdpath('data') + '/neotest-playwright-test-list.json',
 };

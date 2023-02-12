@@ -15,6 +15,7 @@ export interface AdapterOptions {
 	/** Extra arguments to pass to the playwright command. These are merged with
 	 * any extra_args passed to the neotest run command. */
 	extra_args: string[];
+	tempDataFile: string;
 }
 
 export interface Adapter extends neotest.Adapter {
