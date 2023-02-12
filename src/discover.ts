@@ -62,7 +62,7 @@ export const discoverPositions = ((path: string) => {
 
 	return lib.treesitter.parse_positions(path, query, {
 		nested_tests: true,
-		position_id: 'require("neotest-playwright.discover")._position_id',
+		// position_id: 'require("neotest-playwright.discover")._position_id',
 		build_position: 'require("neotest-playwright.discover")._build_position',
 	});
 }) satisfies Adapter['discover_positions'];
