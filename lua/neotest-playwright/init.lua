@@ -15,6 +15,8 @@ local ____exports = {}
 local logger = require("neotest.logging")
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
+local ____commands = require('neotest-playwright.commands')
+local create_refresh_command = ____commands.create_refresh_command
 local ____config = require('neotest-playwright.config')
 local config = ____config.config
 local ____preset = require('neotest-playwright.preset')
@@ -24,6 +26,7 @@ local create_project_command = ____project.create_project_command
 local loadPreselectedProjects = ____project.loadPreselectedProjects
 create_preset_command()
 create_project_command()
+create_refresh_command()
 ____exports.adapter = config
 setmetatable(
     ____exports.adapter,

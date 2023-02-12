@@ -23,6 +23,30 @@ export const get_projects = () => {
 		['--list'],
 	);
 
+	// TODO: Consider reading from report file once pre-run
+	// resolution is implemented.
+	const output = run(cmd.join(' '));
+
+	return output;
+};
+
+// TODO: DRY with get_projects
+export const getTests = () => {
+	let path = vim.fn.expand('%:p');
+
+	if (path === '') {
+		path = vim.fn.getcwd();
+	}
+
+	const cmd = buildCommand(
+		{
+			bin: options.get_playwright_command(path),
+			config: options.get_playwright_config(path),
+			reporters: ['json'],
+		},
+		['--list'],
+	);
+
 	const output = run(cmd.join(' '));
 
 	return output;
@@ -54,6 +78,7 @@ const run = (cmd: string) => {
 		return;
 	}
 
+	// TODO: difference VS vim.json.decode
 	const parsed = vim.fn.json_decode(output);
 
 	return parsed;

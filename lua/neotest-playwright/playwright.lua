@@ -23,6 +23,22 @@ ____exports.get_projects = function()
     local output = run(table.concat(cmd, " "))
     return output
 end
+____exports.getTests = function()
+    local path = vim.fn.expand("%:p")
+    if path == "" then
+        path = vim.fn.getcwd()
+    end
+    local cmd = buildCommand(
+        {
+            bin = options.get_playwright_command(path),
+            config = options.get_playwright_config(path),
+            reporters = {"json"}
+        },
+        {"--list"}
+    )
+    local output = run(table.concat(cmd, " "))
+    return output
+end
 --- Returns the playwright config
 run = function(cmd)
     local handle, errmsg = io.popen(cmd)

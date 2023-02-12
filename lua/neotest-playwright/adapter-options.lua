@@ -11,6 +11,7 @@ ____exports.options = {
     get_playwright_config = getPlaywrightConfig,
     get_cwd = nil,
     env = {},
-    extra_args = {}
+    extra_args = {},
+    tempDataFile = vim.fn.stdpath("data") .. "/neotest-playwright-test-list.json"
 }
 return ____exports
