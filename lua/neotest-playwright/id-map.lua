@@ -130,29 +130,111 @@ do
     TypeError = createErrorClass(nil, "TypeError")
     URIError = createErrorClass(nil, "URIError")
 end
+
+local function __TS__ArrayJoin(self, separator)
+    if separator == nil then
+        separator = ","
+    end
+    local parts = {}
+    for i = 1, #self do
+        parts[i] = tostring(self[i])
+    end
+    return table.concat(parts, separator)
+end
+
+local __TS__StringSplit
+do
+    local sub = string.sub
+    local find = string.find
+    function __TS__StringSplit(source, separator, limit)
+        if limit == nil then
+            limit = 4294967295
+        end
+        if limit == 0 then
+            return {}
+        end
+        local result = {}
+        local resultIndex = 1
+        if separator == nil or separator == "" then
+            for i = 1, #source do
+                result[resultIndex] = sub(source, i, i)
+                resultIndex = resultIndex + 1
+            end
+        else
+            local currentPos = 1
+            while resultIndex <= limit do
+                local startPos, endPos = find(source, separator, currentPos, true)
+                if not startPos then
+                    break
+                end
+                result[resultIndex] = sub(source, currentPos, startPos - 1)
+                resultIndex = resultIndex + 1
+                currentPos = endPos + 1
+            end
+            if resultIndex <= limit then
+                result[resultIndex] = sub(source, currentPos)
+            end
+        end
+        return result
+    end
+end
 -- End of Lua Library inline imports
 local ____exports = {}
 local ____report = require('neotest-playwright.report')
-local decodeOutput = ____report.decodeOutput
-local parseOutput = ____report.parseOutput
-local lib = require("neotest.lib")
-local logger = require("neotest.logging")
-____exports.results = function(spec, result, _tree)
-    local resultsPath = spec.context.results_path
-    local success, data = pcall(lib.files.read, resultsPath)
-    if not success then
-        if result.code == 129 then
-            return {}
+local flattenSpecs = ____report.flattenSpecs
+--- Function to write the mapping to a plain text file
+____exports.writeIdMap = function(idMap, filePath)
+    local handle, errmsg = io.open(filePath, "w")
+    if not handle then
+        error(
+            __TS__New(Error, (("Could not open file " .. filePath) .. ": ") .. errmsg),
+            0
+        )
+    end
+    for tsId, playwrightIds in pairs(idMap) do
+        handle:write(((tostring(tsId) .. " ") .. __TS__ArrayJoin(playwrightIds, ",")) .. "\n")
+    end
+    handle:close()
+end
+--- Function to read the mapping from a plain text file
+____exports.readIdMap = function(filePath)
+    local handle, errmsg = io.open(filePath, "r")
+    if not handle then
+        error(
+            __TS__New(Error, (("Could not open file " .. filePath) .. ": ") .. errmsg),
+            0
+        )
+    end
+    local idMap = {}
+    for line in handle:lines() do
+        local tsId, playwrightIds = unpack(__TS__StringSplit(line, " "))
+        idMap[tsId] = __TS__StringSplit(playwrightIds, ",")
+    end
+    handle:close()
+    return idMap
+end
+____exports.withTreesitterIds = function(report)
+    local idMap = {}
+    local root = report.suites[1]
+    local specs = flattenSpecs(root)
+    for ____, spec in ipairs(specs) do
+        local isNamespaced = spec.file ~= spec.title
+        local tsId
+        if isNamespaced then
+            tsId = (((spec.file .. "::") .. spec.suiteTitle) .. "::") .. spec.title
         else
-            logger.error("No test output file found", resultsPath)
-            error(
-                __TS__New(Error, "No test output file found"),
-                0
-            )
+            tsId = (spec.file .. "::") .. spec.title
+        end
+        local ____opt_0 = spec.tests[1]
+        local titleWithProject = (tostring(____opt_0 and ____opt_0.projectId) .. "::") .. spec.title
+        local extra = {playwrightId = spec.id, titleWithProject = titleWithProject}
+        if idMap[tsId] then
+            local ____idMap_tsId_2 = idMap[tsId]
+            ____idMap_tsId_2[#____idMap_tsId_2 + 1] = extra
+        else
+            idMap[tsId] = {extra}
         end
     end
-    local decoded = decodeOutput(data)
-    local results = parseOutput(decoded)
-    return results
+    return idMap
 end
 return ____exports

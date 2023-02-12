@@ -1,14 +1,32 @@
 declare function print(...args: unknown[]): void;
 
+type MatchType = 'namespace' | 'test';
+
+interface NodeMatch<T extends MatchType> {
+	[`${T}.name`]: LuaUserdata;
+	[`${T}.definition`]: LuaUserdata;
+}
+
 declare module 'neotest' {
 	interface Position {
-		id: string;
+		id?: string;
 		type: 'dir' | 'file' | 'namespace' | 'test';
 		name: string;
 		path: string;
 		/** [start_row, start_col, end_row, end_col] */
 		range: [number, number, number, number];
+		/** Whether the test can have children */
+		is_sterile?: boolean;
 	}
+
+	type BuildPosition = (
+		this: void,
+		file_path: string,
+		source: string,
+		captured_nodes: NodeMatch,
+	) => Position | Position[];
+
+	type PositionId = (position: Position, parents: Position[]) => string;
 
 	interface RunArgs {
 		extra_args?: string[];
@@ -185,6 +203,7 @@ declare module 'neotest.lib' {
 		 * position_id options can be strings that will evaluate to globally
 		 * referencable functions (e.g. `'require("my_adapter")._build_position'`). */
 		const parse_positions: (
+			this: void,
 			path: string,
 			query: string,
 			opts: ParseOptions,
@@ -196,15 +215,16 @@ declare module 'neotest.lib' {
 			/** Require tests to be within namespaces */
 			require_namespaces?: boolean;
 			/** Position ID constructor */
-			position_id?: (
-				position: import('neotest').Position,
-				parents: import('neotest').Position[],
-			) => string;
 
-			/** https://github.com/nvim-neotest/neotest/issues/68#issuecomment-1242769159 */
-			build_position?: (
-				this: void,
-			) => import('neotest').Position | import('neotest').Position[];
+			/** Return a string that will evaluate to a globally referencable function.
+			 * e.g. `'require("my_adapter")._position_id'` */
+			position_id?: PositionId | string;
+
+			/** Return a string that will evaluate to a globally referencable function.
+			 * e.g. `'require("my_adapter")._build_position'`
+			 *
+			 * https://github.com/nvim-neotest/neotest/issues/68#issuecomment-1242769159 */
+			build_position?: BuildPosition | string;
 		}
 	}
 

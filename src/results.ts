@@ -20,7 +20,7 @@ export const results = ((spec, result, _tree) => {
 
 	const decoded = decodeOutput(data);
 
-	const results = parseOutput(decoded, resultsPath);
+	const results = parseOutput(decoded);
 
 	return results;
 }) satisfies Adapter['results'];

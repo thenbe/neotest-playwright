@@ -18,10 +18,7 @@ export const decodeOutput = (data: string): P.JSONReport => {
 	return parsed;
 };
 
-export const parseOutput = (
-	report: P.JSONReport,
-	output: neotest.Result['output'],
-): neotest.Results => {
+export const parseOutput = (report: P.JSONReport): neotest.Results => {
 	if (report.errors.length > 1) {
 		const msg = 'Global errors found in report';
 		logger.warn(msg, report.errors);
@@ -43,7 +40,7 @@ export const parseOutput = (
 		return {};
 	}
 
-	const results = parseSuite(root, report, output);
+	const results = parseSuite(root, report);
 
 	return results;
 };
@@ -53,25 +50,29 @@ export const parseOutput = (
 export const parseSuite = (
 	suite: P.JSONReportSuite,
 	report: P.JSONReport,
-	output: neotest.Result['output'],
 ): neotest.Results => {
 	let results: neotest.Results = {};
 
-	for (const spec of suite.specs) {
+	const specs = flattenSpecs(suite);
+
+	// Parse specs
+	for (const spec of specs) {
 		const key = constructSpecKey(report, spec, suite);
 
-		const specResults = parseSpec(spec);
-
-		results[key] = specResults;
-	}
-
-	// Recursively parse child suites
-	for (const child of suite.suites ?? []) {
-		const childResults = parseSuite(child, report, output);
-		results = { ...results, ...childResults };
+		results[key] = parseSpec(spec);
 	}
 
 	return results;
+};
+
+export const flattenSpecs = (suite: P.JSONReportSuite) => {
+	let specs = suite.specs.map((spec) => ({ ...spec, suiteTitle: suite.title }));
+
+	for (const nestedSuite of suite.suites ?? []) {
+		specs = specs.concat(flattenSpecs(nestedSuite));
+	}
+
+	return specs;
 };
 
 // ### Spec ###

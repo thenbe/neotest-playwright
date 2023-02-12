@@ -1,3 +1,4 @@
+import type { BuildPosition, Position } from 'neotest';
 import * as lib from 'neotest.lib';
 import type { Adapter } from './types/adapter';
 
@@ -58,5 +59,81 @@ export const discoverPositions = ((path: string) => {
 		)
 		`;
 
-	return lib.treesitter.parse_positions(path, query, { nested_tests: true });
+	return lib.treesitter.parse_positions(path, query, {
+		nested_tests: true,
+		position_id: 'require("neotest-playwright.discover")._position_id',
+		build_position: 'require("neotest-playwright.discover")._build_position',
+	});
 }) satisfies Adapter['discover_positions'];
+
+const getMatchType = <T extends MatchType>(node: NodeMatch<T>) => {
+	if ('test.name' in node) {
+		return 'test';
+	} else if ('namespace.name' in node) {
+		return 'namespace';
+	} else {
+		throw new Error('Unknown match type');
+	}
+};
+
+export const _build_position: BuildPosition = (
+	filePath,
+	source,
+	capturedNodes,
+) => {
+	const match_type = getMatchType(capturedNodes);
+
+	const name = vim.treesitter.get_node_text(
+		capturedNodes[`${match_type}.name`],
+		source,
+	) as string;
+
+	const definition = capturedNodes[`${match_type}.definition`];
+	// FIX: get proper range
+	const range = definition.range();
+
+	if (match_type === 'namespace') {
+		return {
+			type: match_type,
+			range,
+			path: filePath,
+			name,
+		};
+	} else if (match_type === 'test') {
+		const base = {
+			type: match_type,
+			range,
+			path: filePath,
+		} as const;
+
+		const position = buildTestPosition(base, name);
+
+		return position;
+	} else {
+		throw new Error('Unknown match type');
+	}
+};
+
+type BasePosition = Omit<Position, 'name'>;
+
+/** Given a test position, return one or more positions based on what can be
+ * dynamically discovered using the playwright cli. */
+const buildTestPosition = (position: BasePosition, name: string) => {
+	// FIX: remove debug code
+	return [
+		{
+			...position,
+			name: `${name}-wrange`,
+		},
+		{
+			...position,
+			name: `${name}-2`,
+			is_sterile: true,
+		},
+		{
+			...position,
+			name: `${name}-3`,
+			is_sterile: true,
+		},
+	];
+};

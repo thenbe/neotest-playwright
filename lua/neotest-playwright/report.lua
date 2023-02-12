@@ -150,6 +150,33 @@ local function __TS__ArrayMap(self, callbackfn, thisArg)
     return result
 end
 
+local function __TS__ArrayIsArray(value)
+    return type(value) == "table" and (value[1] ~= nil or next(value) == nil)
+end
+
+local function __TS__ArrayConcat(self, ...)
+    local items = {...}
+    local result = {}
+    local len = 0
+    for i = 1, #self do
+        len = len + 1
+        result[len] = self[i]
+    end
+    for i = 1, #items do
+        local item = items[i]
+        if __TS__ArrayIsArray(item) then
+            for j = 1, #item do
+                len = len + 1
+                result[len] = item[j]
+            end
+        else
+            len = len + 1
+            result[len] = item
+        end
+    end
+    return result
+end
+
 local function __TS__ArrayPushArray(self, items)
     local len = #self
     for i = 1, #items do
@@ -175,7 +202,7 @@ ____exports.decodeOutput = function(data)
     end
     return parsed
 end
-____exports.parseOutput = function(report, output)
+____exports.parseOutput = function(report)
     if #report.errors > 1 then
         local msg = "Global errors found in report"
         logger.warn(msg, report.errors)
@@ -194,21 +221,30 @@ ____exports.parseOutput = function(report, output)
         )
         return {}
     end
-    local results = ____exports.parseSuite(root, report, output)
+    local results = ____exports.parseSuite(root, report)
     return results
 end
-____exports.parseSuite = function(suite, report, output)
+____exports.parseSuite = function(suite, report)
     local results = {}
-    for ____, spec in ipairs(suite.specs) do
+    local specs = ____exports.flattenSpecs(suite)
+    for ____, spec in ipairs(specs) do
         local key = constructSpecKey(report, spec, suite)
-        local specResults = ____exports.parseSpec(spec)
-        results[key] = specResults
-    end
-    for ____, child in ipairs(suite.suites or ({})) do
-        local childResults = ____exports.parseSuite(child, report, output)
-        results = __TS__ObjectAssign({}, results, childResults)
+        results[key] = ____exports.parseSpec(spec)
     end
     return results
+end
+____exports.flattenSpecs = function(suite)
+    local specs = __TS__ArrayMap(
+        suite.specs,
+        function(____, spec) return __TS__ObjectAssign({}, spec, {suiteTitle = suite.title}) end
+    )
+    for ____, nestedSuite in ipairs(suite.suites or ({})) do
+        specs = __TS__ArrayConcat(
+            specs,
+            ____exports.flattenSpecs(nestedSuite)
+        )
+    end
+    return specs
 end
 ____exports.parseSpec = function(spec)
     local status = getSpecStatus(spec)
