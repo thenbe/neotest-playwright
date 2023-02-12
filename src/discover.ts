@@ -1,5 +1,6 @@
-import type { BuildPosition, Position } from 'neotest';
+import type { BuildPosition } from 'neotest';
 import * as lib from 'neotest.lib';
+import { buildTestPosition } from './position';
 import type { Adapter } from './types/adapter';
 
 export const root = lib.files.match_root_pattern('package.json');
@@ -103,36 +104,13 @@ export const _build_position: BuildPosition = (
 			type: match_type,
 			range,
 			path: filePath,
+			name,
 		} as const;
 
-		const position = buildTestPosition(base, name);
+		const position = buildTestPosition(base);
 
 		return position;
 	} else {
 		throw new Error('Unknown match type');
 	}
-};
-
-type BasePosition = Omit<Position, 'name'>;
-
-/** Given a test position, return one or more positions based on what can be
- * dynamically discovered using the playwright cli. */
-const buildTestPosition = (position: BasePosition, name: string) => {
-	// FIX: remove debug code
-	return [
-		{
-			...position,
-			name: `${name}-wrange`,
-		},
-		{
-			...position,
-			name: `${name}-2`,
-			is_sterile: true,
-		},
-		{
-			...position,
-			name: `${name}-3`,
-			is_sterile: true,
-		},
-	];
 };
