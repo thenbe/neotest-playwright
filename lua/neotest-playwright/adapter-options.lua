@@ -12,6 +12,7 @@ ____exports.options = {
     get_cwd = nil,
     env = {},
     extra_args = {},
-    tempDataFile = vim.fn.stdpath("data") .. "/neotest-playwright-test-list.json"
+    tempDataFile = vim.fn.stdpath("data") .. "/neotest-playwright-test-list.json",
+    enable_dynamic_test_discovery = false
 }
 return ____exports

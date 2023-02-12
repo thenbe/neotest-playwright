@@ -16,6 +16,9 @@ export interface AdapterOptions {
 	 * any extra_args passed to the neotest run command. */
 	extra_args: string[];
 	tempDataFile: string;
+	/** If true, the adapter will attempt to use the playwright cli to
+	 * enhance the test discovery process. */
+	enable_dynamic_test_discovery: boolean;
 }
 
 export interface Adapter extends neotest.Adapter {

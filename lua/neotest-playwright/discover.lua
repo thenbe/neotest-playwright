@@ -16,6 +16,17 @@ local function __TS__ArraySome(self, callbackfn, thisArg)
     return false
 end
 
+local function __TS__ObjectAssign(target, ...)
+    local sources = {...}
+    for i = 1, #sources do
+        local source = sources[i]
+        for key in pairs(source) do
+            target[key] = source[key]
+        end
+    end
+    return target
+end
+
 local function __TS__StringIncludes(self, searchString, position)
     if not position then
         position = 1
@@ -149,6 +160,8 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local lib = require("neotest.lib")
+local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
+local options = ____adapter_2Doptions.options
 local ____position = require('neotest-playwright.position')
 local buildTestPosition = ____position.buildTestPosition
 ____exports.root = lib.files.match_root_pattern("package.json")
@@ -168,7 +181,11 @@ ____exports.isTestFile = function(file_path)
 end
 ____exports.discoverPositions = function(path)
     local query = "\n\t\t; -- Namespaces --\n\n\t\t; Matches: test.describe('title')\n\n\t\t(call_expression\n\t\t function: (member_expression) @func_name (#eq? @func_name \"test.describe\")\n\n\t\t arguments: (arguments\n\t\t\t (string (string_fragment) @namespace.name)\n\t\t\t ) @namespace.definition\n\t\t )\n\n\t\t; -- Tests --\n\n\t\t; Matches: test('title')\n\n\t\t(call_expression\n\t\t function: (identifier) @func_name (#eq? @func_name \"test\")\n\n\t\t arguments: (arguments\n\t\t\t(string (string_fragment) @test.name\n\t\t\t)\n\t\t\t) @test.definition\n\t\t)\n\n\t\t; Matches: test.only('title') / test.fixme('title')\n\n\t\t(call_expression\n\t\t function: (member_expression) @func_name (#any-of? @func_name \"test.only\" \"test.fixme\" \"test.skip\")\n\n\t\t arguments: (arguments\n\t\t\t(string (string_fragment) @test.name)\n\t\t\t) @test.definition\n\t\t)\n\t\t"
-    return lib.treesitter.parse_positions(path, query, {nested_tests = true, position_id = "require(\"neotest-playwright.discover\")._position_id", build_position = "require(\"neotest-playwright.discover\")._build_position"})
+    return lib.treesitter.parse_positions(
+        path,
+        query,
+        __TS__ObjectAssign({nested_tests = true}, options.enable_dynamic_test_discovery and ({build_position = "require(\"neotest-playwright.discover\")._build_position"}) or ({}))
+    )
 end
 local function getMatchType(node)
     if node["test.name"] ~= nil then
