@@ -1,7 +1,7 @@
 import type * as P from '@playwright/test/reporter';
 import type * as neotest from 'neotest';
 import { cleanAnsi } from 'neotest-playwright.util';
-import * as logger from 'neotest.logging';
+import { emitError } from './helpers';
 
 // ### Output ###
 
@@ -11,7 +11,7 @@ export const decodeOutput = (data: string): P.JSONReport => {
 	});
 
 	if (!ok) {
-		logger.error('Failed to parse test output json');
+		emitError('Failed to parse test output json');
 		throw new Error('Failed to parse test output json');
 	}
 
@@ -20,23 +20,13 @@ export const decodeOutput = (data: string): P.JSONReport => {
 
 export const parseOutput = (report: P.JSONReport): neotest.Results => {
 	if (report.errors.length > 1) {
-		const msg = 'Global errors found in report';
-		logger.warn(msg, report.errors);
-		vim.defer_fn(
-			() => vim.cmd(`echohl WarningMsg | echo "${msg}" | echohl None`),
-			0,
-		);
+		emitError('Global errors found in report');
 	}
 
 	const root = report.suites[0];
 
 	if (!root) {
-		const msg = 'No test suites found in report';
-		logger.error(msg);
-		vim.defer_fn(
-			() => vim.cmd(`echohl WarningMsg | echo "${msg}" | echohl None`),
-			0,
-		);
+		emitError('No test suites found in report');
 		return {};
 	}
 

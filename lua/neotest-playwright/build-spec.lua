@@ -55,20 +55,11 @@ local getExtraArgs
 local ____build_2Dcommand = require('neotest-playwright.build-command')
 local buildCommand = ____build_2Dcommand.buildCommand
 local async = require("neotest.async")
-local logger = require("neotest.logging")
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
 local ____preset_2Doptions = require('neotest-playwright.preset-options')
 local COMMAND_PRESETS = ____preset_2Doptions.COMMAND_PRESETS
 ____exports.buildSpec = function(args)
-    if not args then
-        logger.error("No args")
-        return
-    end
-    if not args.tree then
-        logger.error("No args.tree")
-        return
-    end
     local pos = args.tree:data()
     local testFilter = (pos.type == "test" or pos.type == "namespace") and (pos.path .. ":") .. tostring(pos.range[1] + 1) or pos.path
     local commandOptions = __TS__ObjectAssign(

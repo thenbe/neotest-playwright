@@ -3,6 +3,8 @@ local ____exports = {}
 local logger = require("neotest.logging")
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
+local ____helpers = require('neotest-playwright.helpers')
+local emitError = ____helpers.emitError
 local ____playwright = require('neotest-playwright.playwright')
 local getTests = ____playwright.getTests
 local ____report_2Dio = require('neotest-playwright.report-io')
@@ -13,12 +15,11 @@ ____exports.create_refresh_command = function()
         function()
             logger.debug("NeotestPlaywrightRefresh")
             local output = getTests()
-            logger.debug("NeotestPlaywrightRefresh saving output +++++++++++++++++++", options.tempDataFile)
+            logger.debug("NeotestPlaywrightRefresh saving output", options.tempDataFile)
             if output ~= nil then
                 writeReport(options.tempDataFile, output)
             else
-                logger.error("NeotestPlaywrightRefresh failed to get output")
-                vim.notify("Failed to get output", vim.log.levels.ERROR, {})
+                emitError("Failed to get output")
             end
         end,
         {nargs = 0}

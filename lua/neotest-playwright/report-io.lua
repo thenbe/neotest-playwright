@@ -134,24 +134,22 @@ end
 local ____exports = {}
 local lib = require("neotest.lib")
 local logger = require("neotest.logging")
-____exports.readReport = function(file, result)
+local ____helpers = require('neotest-playwright.helpers')
+local emitError = ____helpers.emitError
+____exports.readReport = function(file)
     local success, data = pcall(lib.files.read, file)
     if not success then
-        if (result and result.code) == 129 then
-            logger.debug("Code 129: User stopped the test run")
-            return {}
-        else
-            logger.error("No test output file found", file)
-            error(
-                __TS__New(Error, "No test output file found"),
-                0
-            )
-        end
+        error(
+            __TS__New(Error, "Failed to read test output file: " .. file),
+            0
+        )
     end
     local ok, parsed = pcall(vim.json.decode, data, {luanil = {object = true}})
     if not ok then
-        logger.error("Failed to parse test output json", file)
-        return nil
+        error(
+            __TS__New(Error, "Failed to parse test output json: " .. file),
+            0
+        )
     end
     return parsed
 end
@@ -161,7 +159,7 @@ ____exports.writeReport = function(file, report)
         file
     )
     if code ~= 0 then
-        logger.error("Failed to write test output json", file)
+        emitError("Failed to write test output json")
         return false
     else
         logger.debug("writeReport", file)

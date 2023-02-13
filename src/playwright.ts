@@ -1,6 +1,7 @@
 import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
 import { buildCommand } from './build-command';
+import { emitError } from './helpers';
 
 export const get_projects = () => {
 	// For better monorepo support, we try to resolve the
@@ -61,7 +62,7 @@ const run = (cmd: string) => {
 	}
 
 	if (!handle) {
-		logger.error(`Failed to execute command: ${cmd}`);
+		emitError(`Failed to execute command: ${cmd}`);
 		return;
 	}
 
@@ -69,12 +70,12 @@ const run = (cmd: string) => {
 	handle.close();
 
 	if (typeof output !== 'string') {
-		logger.error(`Failed to read output from command: ${cmd}`);
+		emitError(`Failed to read output from command: ${cmd}`);
 		return;
 	}
 
 	if (output === '') {
-		logger.error(`No output from command: ${cmd}`);
+		emitError(`No output from command: ${cmd}`);
 		return;
 	}
 

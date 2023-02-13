@@ -6,6 +6,8 @@ local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
 local ____build_2Dcommand = require('neotest-playwright.build-command')
 local buildCommand = ____build_2Dcommand.buildCommand
+local ____helpers = require('neotest-playwright.helpers')
+local emitError = ____helpers.emitError
 ____exports.get_projects = function()
     local path = vim.fn.expand("%:p")
     if path == "" then
@@ -46,17 +48,17 @@ run = function(cmd)
         logger.error(errmsg)
     end
     if not handle then
-        logger.error("Failed to execute command: " .. cmd)
+        emitError("Failed to execute command: " .. cmd)
         return
     end
     local output = handle:read("*a")
     handle:close()
     if type(output) ~= "string" then
-        logger.error("Failed to read output from command: " .. cmd)
+        emitError("Failed to read output from command: " .. cmd)
         return
     end
     if output == "" then
-        logger.error("No output from command: " .. cmd)
+        emitError("No output from command: " .. cmd)
         return
     end
     local parsed = vim.fn.json_decode(output)

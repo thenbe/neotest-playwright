@@ -1,10 +1,10 @@
 import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
+import { emitError } from './helpers';
 import { getTests } from './playwright';
 import { writeReport } from './report-io';
 
 // WARN: remove debug code
-// WARN: remove debug logs
 
 export const create_refresh_command = () => {
 	vim.api.nvim_create_user_command(
@@ -15,16 +15,14 @@ export const create_refresh_command = () => {
 			const output = getTests();
 
 			logger.debug(
-				'NeotestPlaywrightRefresh saving output +++++++++++++++++++',
+				'NeotestPlaywrightRefresh saving output',
 				options.tempDataFile,
 			);
 
 			if (output !== null) {
 				writeReport(options.tempDataFile, output);
 			} else {
-				logger.error('NeotestPlaywrightRefresh failed to get output');
-				// TODO: replace vim.notify
-				vim.notify('Failed to get output', vim.log.levels.ERROR, {});
+				emitError('Failed to get output');
 			}
 		},
 		{

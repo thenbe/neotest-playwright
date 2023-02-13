@@ -1,22 +1,11 @@
 import type { CommandOptions } from 'neotest-playwright/build-command';
 import { buildCommand } from 'neotest-playwright/build-command';
 import * as async from 'neotest.async';
-import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
 import { COMMAND_PRESETS } from './preset-options';
 import type { Adapter } from './types/adapter';
 
 export const buildSpec: Adapter['build_spec'] = (args) => {
-	if (!args) {
-		logger.error('No args');
-		return;
-	}
-
-	if (!args.tree) {
-		logger.error('No args.tree');
-		return;
-	}
-
 	const pos = args.tree.data();
 
 	// playwright supports running tests by line number: file.spec.ts:123

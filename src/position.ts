@@ -21,10 +21,8 @@ export const buildTestPosition = (basePosition: BasePosition) => {
 
 	// TODO: move to own function
 	if (!data || !rootDir) {
-		// @ts-expect-error wip
 		report = readReport(options.tempDataFile);
 		data = flattenSpecs(report!.suites[0]!);
-		// @ts-expect-error wip
 		rootDir = report.config.rootDir;
 		// throw new Error('No data');
 	}

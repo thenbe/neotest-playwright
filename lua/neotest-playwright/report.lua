@@ -190,11 +190,12 @@ local ____exports = {}
 local getSpecStatus, constructSpecKey, collectSpecErrors, toNeotestError
 local ____neotest_2Dplaywright_2Eutil = require("neotest-playwright.util")
 local cleanAnsi = ____neotest_2Dplaywright_2Eutil.cleanAnsi
-local logger = require("neotest.logging")
+local ____helpers = require('neotest-playwright.helpers')
+local emitError = ____helpers.emitError
 ____exports.decodeOutput = function(data)
     local ok, parsed = pcall(vim.json.decode, data, {luanil = {object = true}})
     if not ok then
-        logger.error("Failed to parse test output json")
+        emitError("Failed to parse test output json")
         error(
             __TS__New(Error, "Failed to parse test output json"),
             0
@@ -204,21 +205,11 @@ ____exports.decodeOutput = function(data)
 end
 ____exports.parseOutput = function(report)
     if #report.errors > 1 then
-        local msg = "Global errors found in report"
-        logger.warn(msg, report.errors)
-        vim.defer_fn(
-            function() return vim.cmd(("echohl WarningMsg | echo \"" .. msg) .. "\" | echohl None") end,
-            0
-        )
+        emitError("Global errors found in report")
     end
     local root = report.suites[1]
     if not root then
-        local msg = "No test suites found in report"
-        logger.error(msg)
-        vim.defer_fn(
-            function() return vim.cmd(("echohl WarningMsg | echo \"" .. msg) .. "\" | echohl None") end,
-            0
-        )
+        emitError("No test suites found in report")
         return {}
     end
     local results = ____exports.parseSuite(root, report)
