@@ -1,6 +1,7 @@
 import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
-import { isPreset, Preset } from './preset-options';
+import type { Preset } from './preset-options';
+import { isPreset } from './preset-options';
 
 export const set_preset = (preset: Preset) => {
 	logger.debug('neotest-playwright preset', preset);

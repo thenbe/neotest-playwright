@@ -27,7 +27,7 @@ export const selectMultiple = ({
 	 * then the `initial` option is ignored. */
 	preselected: string[] | null;
 }) => {
-	let selected = determineInitialSelection(initial, choices, preselected);
+	const selected = determineInitialSelection(initial, choices, preselected);
 	let choice: unknown;
 
 	let done = false;

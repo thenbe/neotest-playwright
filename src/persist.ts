@@ -3,9 +3,7 @@ import type { Adapter } from './types/adapter';
 
 type ProjectCache = Pick<Adapter['options'], 'projects'>;
 
-interface Cache {
-	[path: string]: ProjectCache;
-}
+type Cache = Record<string, ProjectCache>;
 
 const current = vim.fn.getcwd();
 

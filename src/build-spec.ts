@@ -1,4 +1,5 @@
-import { buildCommand, CommandOptions } from 'neotest-playwright/build-command';
+import type { CommandOptions } from 'neotest-playwright/build-command';
+import { buildCommand } from 'neotest-playwright/build-command';
 import * as async from 'neotest.async';
 import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
@@ -19,7 +20,7 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 	const pos = args.tree.data();
 
 	// playwright supports running tests by line number: file.spec.ts:123
-	let testFilter =
+	const testFilter =
 		pos.type === 'test' || pos.type === 'namespace'
 			? `${pos.path}:${pos.range[0] + 1}`
 			: pos.path;
