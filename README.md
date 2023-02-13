@@ -47,6 +47,7 @@ use({
                -- end,
 
                -- env = {
+               --    PW_NVIM = "1",
                --    HELLO = "world",
                -- },
 
@@ -65,6 +66,36 @@ use({
    end,
 })
 ```
+
+## Configuration
+
+The only reporter required by `neotest-playwright` is the `json` reporter, which you need to set either in your `playwright.config.ts` or by using `extra_args`. Make sure _not_ to declare the json reporter's `outputFile` property in your config as this will be set by `neotest-playwright`.
+
+One way you can do this is by using environment variables.
+
+```lua
+-- init.lua
+
+require("neotest-playwright").adapter({
+   options = {
+      env = {
+         PW_NVIM = "1",
+      },
+   },
+})
+```
+
+```typescript
+// playwright.config.ts
+
+const config: PlaywrightTestConfig = {
+	reporter: process.env.PW_NVIM
+		? [['json'], ['list'], ['html', { open: 'never' }]] // only json is required. The rest are optional.
+		: [['list'], ['html', { open: 'never' }]], // Your default reporters.
+};
+```
+
+> Until `playwright` provides us a way to pass the `--reporters` flag without overwriting the `reporters` set in the user's config, we have to rely on the user handling this.
 
 ---
 
