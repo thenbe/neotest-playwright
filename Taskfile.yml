@@ -14,3 +14,8 @@ tasks:
       - tstl -p tsconfig.build.json {{.CLI_ARGS}}
       - cp src/util.lua lua/neotest-playwright/util.lua
       - tsx ./scripts/fix-require-paths.ts
+
+  format:
+    dir: '{{.USER_WORKING_DIR}}'
+    cmds:
+      - prettier --{{.ACTION | default "check"}} "**/*.{js,cjs,mjs,ts,cts,mts,md,yaml,yml,json,jsonc}"

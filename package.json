@@ -7,7 +7,9 @@
 		"build": "task build",
 		"dev": "task build --watch -- --allowUnusedLabels --noUnusedLocals false --noUnusedParameters false",
 		"test": "vitest",
-		"check": "tsc --noEmit"
+		"check": "tsc --noEmit",
+		"format": "task format",
+		"format:fix": "ACTION=write task format"
 	},
 	"keywords": [],
 	"author": "",
