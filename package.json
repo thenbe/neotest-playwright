@@ -4,17 +4,17 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"build": "rm -rf lua && tstl -p tsconfig.build.json && cp src/util.lua lua/neotest-playwright/util.lua && pnpm run fix-paths",
-		"dev": "find ./src ./scripts tsconfig* | entr -s 'pnpm run build'",
+		"build": "task build",
+		"dev": "task build --watch -- --allowUnusedLabels --noUnusedLocals false --noUnusedParameters false",
 		"test": "vitest",
-		"check": "tsc --noEmit",
-		"fix-paths": "tsx ./scripts/fix-require-paths.ts"
+		"check": "tsc --noEmit"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
 		"@gkzhb/lua-types-nvim": "0.0.7",
+		"@go-task/cli": "3.20.0",
 		"@playwright/test": "1.30.0",
 		"@tsconfig/node18-strictest-esm": "1.0.1",
 		"@types/node": "18.13.0",

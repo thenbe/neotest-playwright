@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@gkzhb/lua-types-nvim': 0.0.7
+  '@go-task/cli': 3.20.0
   '@playwright/test': 1.30.0
   '@tsconfig/node18-strictest-esm': 1.0.1
   '@types/node': 18.13.0
@@ -18,6 +19,7 @@ specifiers:
 
 devDependencies:
   '@gkzhb/lua-types-nvim': 0.0.7
+  '@go-task/cli': 3.20.0
   '@playwright/test': 1.30.0
   '@tsconfig/node18-strictest-esm': 1.0.1
   '@types/node': 18.13.0
@@ -273,6 +275,18 @@ packages:
 
   /@gkzhb/lua-types-nvim/0.0.7:
     resolution: {integrity: sha512-+XBpAXjBYxicd8xTNK+R+b0SX4+VkJw/qJ36ZMMDXGtIE7DpRlStxrGXVV7CTVxPIreDfzG+q5d0Sz4Jr4U3/Q==}
+    dev: true
+
+  /@go-task/cli/3.20.0:
+    resolution: {integrity: sha512-EfwTUeXj/vqzihrLFdgV810B33uF9gIHpXGgO5cpEkiW0cmaRzvBF2hz8D9Xq7C4yQ1QJp+VgHyQhzRJ04Uqjg==}
+    requiresBuild: true
+    dependencies:
+      '@go-task/go-npm': 0.1.17
+    dev: true
+
+  /@go-task/go-npm/0.1.17:
+    resolution: {integrity: sha512-j+xydQWrAxsqLYjweok1fWzDmBAA1g/gmFbPyG8kRI/d/+rzXGGLlro8zdS6mJ3Is+8BrIy2ZBmQkoONhowh7A==}
+    hasBin: true
     dev: true
 
   /@jridgewell/sourcemap-codec/1.4.14:

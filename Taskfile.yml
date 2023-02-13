@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://json.schemastore.org/taskfile.json
+---
+version: '3'
+
+tasks:
+  build:
+    dir: '{{.USER_WORKING_DIR}}'
+    sources:
+      - src/**/*
+      - scripts/**/*
+      - tsconfig*
+    cmds:
+      - rm -rf lua
+      - tstl -p tsconfig.build.json {{.CLI_ARGS}}
+      - cp src/util.lua lua/neotest-playwright/util.lua
+      - tsx ./scripts/fix-require-paths.ts
