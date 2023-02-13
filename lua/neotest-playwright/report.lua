@@ -258,8 +258,11 @@ collectSpecErrors = function(spec)
 end
 --- Convert Playwright error to neotest error
 toNeotestError = function(____error)
-    local ____cleanAnsi_result_4 = cleanAnsi(____error.message)
     local ____opt_2 = ____error.location
-    return {message = ____cleanAnsi_result_4, line = ____opt_2 and ____opt_2.line or 0}
+    local line = ____opt_2 and ____opt_2.line
+    return {
+        message = cleanAnsi(____error.message),
+        line = line and line - 1 or 0
+    }
 end
 return ____exports

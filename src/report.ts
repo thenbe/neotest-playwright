@@ -141,8 +141,9 @@ const collectSpecErrors = (spec: P.JSONReportSpec): P.JSONReportError[] => {
 
 /** Convert Playwright error to neotest error */
 const toNeotestError = (error: P.JSONReportError): neotest.Error => {
+	const line = error.location?.line;
 	return {
 		message: cleanAnsi(error.message),
-		line: error.location?.line ?? 0,
+		line: line ? line - 1 : 0,
 	};
 };
