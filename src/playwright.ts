@@ -17,7 +17,6 @@ export const get_projects = () => {
 		{
 			bin: options.get_playwright_command(path),
 			config: options.get_playwright_config(path),
-			reporters: ['json'],
 			testFilter: './does-not-exist',
 		},
 		['--list'],

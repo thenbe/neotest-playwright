@@ -19,14 +19,13 @@ export type CommandOptionsPreset = Omit<CommandOptions, 'bin'>;
 /** A function that takes in CommandOptions and returns a string. */
 export const buildCommand = (options: CommandOptions, extraArgs: string[]) => {
 	const o = options;
-	const reporters = o.reporters ?? ['list', 'json'];
-	const reportersArg = buildReporters(reporters);
+	const reporters = o.reporters ? buildReporters(o.reporters) : null;
 
 	const command: string[] = [];
 
 	command.push(o.bin);
 	command.push('test');
-	if (reportersArg !== null) command.push(reportersArg);
+	if (reporters !== null) command.push(reporters);
 	if (o.debug === true) command.push('--debug');
 	if (o.headed === true) command.push('--headed');
 	if (o.retries !== undefined) command.push(`--retries=${o.retries}`);
