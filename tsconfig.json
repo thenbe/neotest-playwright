@@ -13,5 +13,11 @@
 			"neotest-playwright/*": ["*"]
 		}
 	},
-	"exclude": ["tests/sample/**"]
+	"exclude": ["tests/sample/**"],
+	"include": [
+		//
+		"./**/*.ts",
+		"./**/*.js",
+		"./.*.js"
+	]
 }

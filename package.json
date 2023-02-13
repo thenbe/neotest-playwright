@@ -9,7 +9,8 @@
 		"test": "vitest",
 		"check": "tsc --noEmit",
 		"format": "task format",
-		"format:fix": "ACTION=write task format"
+		"format:fix": "ACTION=write task format",
+		"lint": "eslint --max-warnings 0 --report-unused-disable-directives \"**/*.{js,cjs,mjs,ts,cts,mts}\""
 	},
 	"keywords": [],
 	"author": "",
@@ -19,8 +20,13 @@
 		"@go-task/cli": "3.20.0",
 		"@playwright/test": "1.30.0",
 		"@tsconfig/node18-strictest-esm": "1.0.1",
+		"@types/eslint": "8.21.0",
 		"@types/node": "18.13.0",
+		"@typescript-eslint/eslint-plugin": "5.51.0",
+		"@typescript-eslint/parser": "5.51.0",
 		"@vitest/ui": "0.28.4",
+		"eslint": "8.34.0",
+		"eslint-plugin-eslint-comments": "3.2.0",
 		"lua-types": "2.13.1",
 		"magic-string": "0.27.0",
 		"prettier": "2.8.4",
