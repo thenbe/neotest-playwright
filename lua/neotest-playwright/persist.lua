@@ -1,11 +1,15 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
+local lib = require("neotest.lib")
 local logger = require("neotest.logging")
 local current = vim.fn.getcwd()
 local dataPath = vim.fn.stdpath("data")
 local dataFile = dataPath .. "/neotest-playwright.json"
 ____exports.loadCache = function()
     logger.trace("neotest-playwright loadCache(): Loading cache from", dataFile)
+    if not lib.files.exists(dataFile) then
+        return nil
+    end
     local existing = vim.fn.readfile(dataFile)
     if #existing == 0 then
         return nil

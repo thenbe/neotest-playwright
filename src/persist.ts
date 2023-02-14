@@ -1,3 +1,4 @@
+import * as lib from 'neotest.lib';
 import * as logger from 'neotest.logging';
 import type { Adapter } from './types/adapter';
 
@@ -12,6 +13,10 @@ const dataFile = `${dataPath}/neotest-playwright.json`;
 
 export const loadCache = (): Cache | null => {
 	logger.trace('neotest-playwright loadCache(): Loading cache from', dataFile);
+
+	if (!lib.files.exists(dataFile)) {
+		return null;
+	}
 
 	const existing = vim.fn.readfile(dataFile);
 
