@@ -1,5 +1,6 @@
-import type { BuildPosition } from 'neotest';
+import type { BuildPosition, PositionId } from 'neotest';
 import * as lib from 'neotest.lib';
+import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
 import { buildTestPosition } from './position';
 import type { Adapter } from './types/adapter';
@@ -63,7 +64,7 @@ export const discoverPositions = ((path: string) => {
 
 	return lib.treesitter.parse_positions(path, query, {
 		nested_tests: true,
-		// position_id: 'require("neotest-playwright.discover")._position_id',
+		position_id: 'require("neotest-playwright.discover")._position_id',
 		...(options.enable_dynamic_test_discovery
 			? {
 					build_position:
@@ -119,4 +120,8 @@ export const _build_position: BuildPosition = (
 	} else {
 		throw new Error('Unknown match type');
 	}
+};
+
+export const _position_id: PositionId = (position, parent) => {
+	return position.id ?? position.path + position.name;
 };

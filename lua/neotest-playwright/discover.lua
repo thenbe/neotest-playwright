@@ -184,7 +184,7 @@ ____exports.discoverPositions = function(path)
     return lib.treesitter.parse_positions(
         path,
         query,
-        __TS__ObjectAssign({nested_tests = true}, options.enable_dynamic_test_discovery and ({build_position = "require(\"neotest-playwright.discover\")._build_position"}) or ({}))
+        __TS__ObjectAssign({nested_tests = true, position_id = "require(\"neotest-playwright.discover\")._position_id"}, options.enable_dynamic_test_discovery and ({build_position = "require(\"neotest-playwright.discover\")._build_position"}) or ({}))
     )
 end
 local function getMatchType(node)
@@ -216,5 +216,8 @@ ____exports._build_position = function(filePath, source, capturedNodes)
             0
         )
     end
+end
+____exports._position_id = function(position, parent)
+    return position.id or position.path .. position.name
 end
 return ____exports
