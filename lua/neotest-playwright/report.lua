@@ -190,6 +190,8 @@ local ____exports = {}
 local getSpecStatus, constructSpecKey, collectSpecErrors, toNeotestError
 local ____neotest_2Dplaywright_2Eutil = require("neotest-playwright.util")
 local cleanAnsi = ____neotest_2Dplaywright_2Eutil.cleanAnsi
+local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
+local options = ____adapter_2Doptions.options
 local ____helpers = require('neotest-playwright.helpers')
 local emitError = ____helpers.emitError
 ____exports.decodeOutput = function(data)
@@ -219,7 +221,12 @@ ____exports.parseSuite = function(suite, report)
     local results = {}
     local specs = ____exports.flattenSpecs(suite)
     for ____, spec in ipairs(specs) do
-        local key = constructSpecKey(report, spec, suite)
+        local key
+        if options.enable_dynamic_test_discovery then
+            key = spec.id
+        else
+            key = constructSpecKey(report, spec, suite)
+        end
         results[key] = ____exports.parseSpec(spec)
     end
     return results

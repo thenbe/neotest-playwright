@@ -1,6 +1,7 @@
 import type * as P from '@playwright/test/reporter';
 import type * as neotest from 'neotest';
 import { cleanAnsi } from 'neotest-playwright.util';
+import { options } from './adapter-options';
 import { emitError } from './helpers';
 
 // ### Output ###
@@ -41,13 +42,18 @@ export const parseSuite = (
 	suite: P.JSONReportSuite,
 	report: P.JSONReport,
 ): neotest.Results => {
-	let results: neotest.Results = {};
+	const results: neotest.Results = {};
 
 	const specs = flattenSpecs(suite);
 
 	// Parse specs
 	for (const spec of specs) {
-		const key = constructSpecKey(report, spec, suite);
+		let key: string;
+		if (options.enable_dynamic_test_discovery) {
+			key = spec.id;
+		} else {
+			key = constructSpecKey(report, spec, suite);
+		}
 
 		results[key] = parseSpec(spec);
 	}
