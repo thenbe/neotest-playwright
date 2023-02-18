@@ -1,8 +1,8 @@
 local async = require("plenary.async.tests")
 local plugin = require("neotest-playwright").adapter
--- local Tree = require("neotest.types").Tree
+local Tree = require("neotest.types").Tree
 
--- require("neotest-jest-assertions")
+require("neotest-playwright-assertions")
 
 A = function(...)
 	print(vim.inspect(...))
@@ -119,85 +119,86 @@ describe("discover_positions", function()
 	-- end)
 end)
 
--- describe("build_spec", function()
--- 	async.it("builds command for file test", function()
--- 		local positions = plugin.discover_positions("./spec/basic.test.ts"):to_list()
--- 		local tree = Tree.from_list(positions, function(pos)
--- 			return pos.id
--- 		end)
--- 		local spec = plugin.build_spec({ tree = tree })
---
--- 		assert.is.truthy(spec)
--- 		local command = spec.command
--- 		assert.is.truthy(command)
--- 		assert.contains(command, "jest")
--- 		assert.contains(command, "--json")
--- 		assert.is_not.contains(command, "--config=jest.config.js")
--- 		assert.contains(command, "--testNamePattern='.*'")
--- 		assert.contains(command, "./spec/basic.test.ts")
--- 		assert.is.truthy(spec.context.file)
--- 		assert.is.truthy(spec.context.results_path)
--- 	end)
---
--- 	async.it("builds command for namespace", function()
--- 		local positions = plugin.discover_positions("./spec/basic.test.ts"):to_list()
---
--- 		local tree = Tree.from_list(positions, function(pos)
--- 			return pos.id
--- 		end)
---
--- 		local spec = plugin.build_spec({ tree = tree:children()[1] })
---
--- 		assert.is.truthy(spec)
--- 		local command = spec.command
--- 		assert.is.truthy(command)
--- 		assert.contains(command, "jest")
--- 		assert.contains(command, "--json")
--- 		assert.is_not.contains(command, "--config=jest.config.js")
--- 		assert.contains(command, "--testNamePattern='^describe text'")
--- 		assert.contains(command, "./spec/basic.test.ts")
--- 		assert.is.truthy(spec.context.file)
--- 		assert.is.truthy(spec.context.results_path)
--- 	end)
---
--- 	async.it("builds command for nested namespace", function()
--- 		local positions = plugin.discover_positions("./spec/nestedDescribe.test.ts"):to_list()
---
--- 		local tree = Tree.from_list(positions, function(pos)
--- 			return pos.id
--- 		end)
---
--- 		local spec = plugin.build_spec({ tree = tree:children()[1]:children()[1] })
---
--- 		assert.is.truthy(spec)
--- 		local command = spec.command
--- 		assert.is.truthy(command)
--- 		assert.contains(command, "jest")
--- 		assert.contains(command, "--json")
--- 		assert.is_not.contains(command, "--config=jest.config.js")
--- 		assert.contains(command, "--testNamePattern='^outer inner'")
--- 		assert.contains(command, "./spec/nestedDescribe.test.ts")
--- 		assert.is.truthy(spec.context.file)
--- 		assert.is.truthy(spec.context.results_path)
--- 	end)
---
--- 	async.it("builds correct command for test name with ' ", function()
--- 		local positions = plugin.discover_positions("./spec/nestedDescribe.test.ts"):to_list()
---
--- 		local tree = Tree.from_list(positions, function(pos)
--- 			return pos.id
--- 		end)
---
--- 		local spec = plugin.build_spec({ tree = tree:children()[1]:children()[1]:children()[2] })
--- 		assert.is.truthy(spec)
--- 		local command = spec.command
--- 		assert.is.truthy(command)
--- 		assert.contains(command, "jest")
--- 		assert.contains(command, "--json")
--- 		assert.is_not.contains(command, "--config=jest.config.js")
--- 		assert.contains(command, "--testNamePattern='^outer inner this has a \\'$'")
--- 		assert.contains(command, "./spec/nestedDescribe.test.ts")
--- 		assert.is.truthy(spec.context.file)
--- 		assert.is.truthy(spec.context.results_path)
--- 	end)
--- end)
+describe("build_spec", function()
+	async.it("builds command for file test", function()
+		local positions = plugin.discover_positions(test_file):to_list()
+		local tree = Tree.from_list(positions, function(pos)
+			return pos.id
+		end)
+		local spec = plugin.build_spec({ tree = tree })
+
+		assert.is.truthy(spec)
+		local command = spec.command
+		assert.is.truthy(command)
+		assert.contains(command, "./node_modules/.bin/playwright")
+		assert.contains(command, "test")
+		assert.contains(command, "--reporter=list,json")
+		assert.is_not.contains(command, "--config=jest.config.js")
+		assert.contains(command, test_file)
+		assert.is.truthy(spec.context.file)
+		assert.is.truthy(spec.context.results_path)
+	end)
+
+	async.it("builds command for namespace", function()
+		local positions = plugin.discover_positions(test_file):to_list()
+
+		local tree = Tree.from_list(positions, function(pos)
+			return pos.id
+		end)
+
+		local spec = plugin.build_spec({ tree = tree:children()[1] })
+
+		assert.is.truthy(spec)
+		local command = spec.command
+		assert.is.truthy(command)
+		assert.contains(command, "./node_modules/.bin/playwright")
+		assert.contains(command, "test")
+		assert.contains(command, "--reporter=list,json")
+		assert.is_not.contains(command, "--config=jest.config.js")
+		assert.contains(command, test_file .. ":3")
+		assert.is.truthy(spec.context.file)
+		assert.is.truthy(spec.context.results_path)
+	end)
+
+	async.it("builds command for nested namespace", function()
+		local positions = plugin.discover_positions(test_file):to_list()
+
+		local tree = Tree.from_list(positions, function(pos)
+			return pos.id
+		end)
+
+		local spec = plugin.build_spec({ tree = tree:children()[1]:children()[1] })
+		print(vim.inspect(spec.command))
+
+		assert.is.truthy(spec)
+		local command = spec.command
+		assert.is.truthy(command)
+		assert.contains(command, "./node_modules/.bin/playwright")
+		assert.contains(command, "test")
+		assert.contains(command, "--reporter=list,json")
+		assert.is_not.contains(command, "--config=jest.config.js")
+		assert.contains(command, test_file .. ":4")
+		assert.is.truthy(spec.context.file)
+		assert.is.truthy(spec.context.results_path)
+	end)
+
+	-- async.it("builds correct command for test name with ' ", function()
+	-- 	local positions = plugin.discover_positions("./spec/nestedDescribe.test.ts"):to_list()
+	--
+	-- 	local tree = Tree.from_list(positions, function(pos)
+	-- 		return pos.id
+	-- 	end)
+	--
+	-- 	local spec = plugin.build_spec({ tree = tree:children()[1]:children()[1]:children()[2] })
+	-- 	assert.is.truthy(spec)
+	-- 	local command = spec.command
+	-- 	assert.is.truthy(command)
+	-- 	assert.contains(command, "jest")
+	-- 	assert.contains(command, "--json")
+	-- 	assert.is_not.contains(command, "--config=jest.config.js")
+	-- 	assert.contains(command, "--testNamePattern='^outer inner this has a \\'$'")
+	-- 	assert.contains(command, "./spec/nestedDescribe.test.ts")
+	-- 	assert.is.truthy(spec.context.file)
+	-- 	assert.is.truthy(spec.context.results_path)
+	-- end)
+end)
