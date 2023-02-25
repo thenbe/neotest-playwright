@@ -161,6 +161,16 @@ local function __TS__ArrayMap(self, callbackfn, thisArg)
     end
     return result
 end
+
+local function __TS__ObjectRest(target, usedProperties)
+    local result = {}
+    for property in pairs(target) do
+        if not usedProperties[property] then
+            result[property] = target[property]
+        end
+    end
+    return result
+end
 -- End of Lua Library inline imports
 local ____exports = {}
 local specToPosition
@@ -186,7 +196,7 @@ ____exports.buildTestPosition = function(basePosition)
         data,
         function(____, spec)
             local rowMatch = spec.line == line + 1
-            local specAbsolutePath = (tostring(rootDir) .. "/") .. spec.file
+            local specAbsolutePath = (rootDir .. "/") .. spec.file
             local fileMatch = specAbsolutePath == basePosition.path
             return rowMatch and fileMatch
         end
@@ -198,6 +208,7 @@ ____exports.buildTestPosition = function(basePosition)
         )
     end
     local positions = {}
+    --- The parent of the range-less positions
     local main = __TS__ObjectAssign({}, basePosition)
     positions[#positions + 1] = main
     __TS__ArrayMap(
@@ -214,8 +225,11 @@ end
 specToPosition = function(spec, basePosition)
     local ____opt_1 = spec.tests[1]
     local projectId = ____opt_1 and ____opt_1.projectId
-    local name = (tostring(projectId) .. " - ") .. spec.title
-    local position = __TS__ObjectAssign({}, basePosition, {id = spec.id, name = name})
+    local name = (projectId .. " - ") .. spec.title
+    local ____basePosition_3 = basePosition
+    local range = ____basePosition_3.range
+    local rest = __TS__ObjectRest(____basePosition_3, {range = true})
+    local position = __TS__ObjectAssign({}, rest, {id = spec.id, name = name})
     return position
 end
 return ____exports

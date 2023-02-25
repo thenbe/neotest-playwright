@@ -9,10 +9,29 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 	const pos = args.tree.data();
 
 	// playwright supports running tests by line number: file.spec.ts:123
-	const testFilter =
-		pos.type === 'test' || pos.type === 'namespace'
-			? `${pos.path}:${pos.range[0] + 1}`
-			: pos.path;
+
+	let testFilter: string;
+
+	if (pos.type === 'dir' || pos.type === 'file') {
+		testFilter = pos.path;
+	} else if ('range' in pos) {
+		testFilter = `${pos.path}:${pos.range[0] + 1}`;
+	} else {
+		// This is a range-less position. To get the correct test filter, we
+		// need to find the nearest test position with a non-null range.
+		// https://github.com/nvim-neotest/neotest/pull/172
+		const range = args.tree.closest_value_for('range') as Range;
+
+		if (range) {
+			const row = range[0];
+
+			testFilter = `${pos.path}:${row + 1}`;
+		} else {
+			throw new Error(
+				'TODO: Implement fallback test filter for range-less positions',
+			);
+		}
+	}
 
 	const commandOptions: CommandOptions = {
 		...COMMAND_PRESETS[options.preset],

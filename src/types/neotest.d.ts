@@ -10,14 +10,19 @@ interface NodeMatch<T extends MatchType> {
 type Range = LuaMultiReturn<[number, number, number, number]>;
 
 declare module 'neotest' {
-	interface Position {
+	interface RangelessPosition {
 		id?: string;
 		type: 'dir' | 'file' | 'namespace' | 'test';
 		name: string;
 		path: string;
+	}
+
+	interface RangedPosition extends RangelessPosition {
 		/** [start_row, start_col, end_row, end_col] */
 		range: Range;
 	}
+
+	type Position = RangedPosition | RangelessPosition;
 
 	type BuildPosition = (
 		this: void,
@@ -159,6 +164,10 @@ declare module 'neotest' {
 		/** Fetch the first node ascending the tree (including the current one)
 		 * with the given data */
 		closest_node_with(data_attr: string): Tree | null;
+
+		/** Fetch the first non-nil value for the given data attribute ascending the
+tree (including the current node) with the given data attribute. */
+		closest_value_for(data_attr: string): unknown | null;
 
 		/** Parses a tree in the shape of nested lists.
 		 * The head of the list is the root of the tree, and all following elements are its children. */
