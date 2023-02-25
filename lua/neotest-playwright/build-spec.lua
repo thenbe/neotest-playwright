@@ -209,13 +209,14 @@ ____exports.buildSpec = function(args)
             )
         end
     end
+    local projects = pos.project_id and ({pos.project_id}) or options.projects
     local commandOptions = __TS__ObjectAssign(
         {},
         COMMAND_PRESETS[options.preset],
         {
             bin = options.get_playwright_command(pos.path),
             config = options.get_playwright_config(pos.path),
-            projects = options.projects,
+            projects = projects,
             testFilter = testFilter
         }
     )

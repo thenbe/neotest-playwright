@@ -69,6 +69,7 @@ const specToPosition = (
 		...rest,
 		id: spec.id,
 		name,
+		project_id: projectId,
 	};
 
 	return position;

@@ -33,11 +33,14 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 		}
 	}
 
+	// @ts-expect-error TODO: add type
+	const projects = pos.project_id ? [pos.project_id] : options.projects;
+
 	const commandOptions: CommandOptions = {
 		...COMMAND_PRESETS[options.preset],
 		bin: options.get_playwright_command(pos.path),
 		config: options.get_playwright_config(pos.path),
-		projects: options.projects,
+		projects,
 		testFilter: testFilter,
 	};
 

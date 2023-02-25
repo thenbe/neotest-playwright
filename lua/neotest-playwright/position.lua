@@ -229,7 +229,7 @@ specToPosition = function(spec, basePosition)
     local ____basePosition_3 = basePosition
     local range = ____basePosition_3.range
     local rest = __TS__ObjectRest(____basePosition_3, {range = true})
-    local position = __TS__ObjectAssign({}, rest, {id = spec.id, name = name})
+    local position = __TS__ObjectAssign({}, rest, {id = spec.id, name = name, project_id = projectId})
     return position
 end
 return ____exports
