@@ -187,7 +187,10 @@ ____exports.writeIdMap = function(idMap, filePath)
     local handle, errmsg = io.open(filePath, "w")
     if not handle then
         error(
-            __TS__New(Error, (("Could not open file " .. filePath) .. ": ") .. errmsg),
+            __TS__New(
+                Error,
+                (("Could not open file " .. filePath) .. ": ") .. tostring(errmsg)
+            ),
             0
         )
     end
@@ -201,7 +204,10 @@ ____exports.readIdMap = function(filePath)
     local handle, errmsg = io.open(filePath, "r")
     if not handle then
         error(
-            __TS__New(Error, (("Could not open file " .. filePath) .. ": ") .. errmsg),
+            __TS__New(
+                Error,
+                (("Could not open file " .. filePath) .. ": ") .. tostring(errmsg)
+            ),
             0
         )
     end
@@ -226,7 +232,7 @@ ____exports.withTreesitterIds = function(report)
             tsId = (spec.file .. "::") .. spec.title
         end
         local ____opt_0 = spec.tests[1]
-        local titleWithProject = (tostring(____opt_0 and ____opt_0.projectId) .. "::") .. spec.title
+        local titleWithProject = ((____opt_0 and ____opt_0.projectId) .. "::") .. spec.title
         local extra = {playwrightId = spec.id, titleWithProject = titleWithProject}
         if idMap[tsId] then
             local ____idMap_tsId_2 = idMap[tsId]
