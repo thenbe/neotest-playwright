@@ -1,3 +1,4 @@
+import type * as P from '@playwright/test/reporter';
 import type * as neotest from 'neotest';
 import type { Preset } from 'neotest-playwright/preset-options';
 
@@ -21,6 +22,13 @@ export interface AdapterOptions {
 	enable_dynamic_test_discovery: boolean;
 }
 
+export interface AdapterData {
+	report: P.JSONReport | null;
+	data: P.JSONReportSpec[] | null;
+	rootDir: string | null;
+}
+
 export interface Adapter extends neotest.Adapter {
 	options: AdapterOptions;
+	data: AdapterData;
 }

@@ -9,6 +9,8 @@ local isTestFile = ____discover.isTestFile
 local root = ____discover.root
 local ____results = require('neotest-playwright.results')
 local results = ____results.results
+local ____adapter_2Ddata = require('neotest-playwright.adapter-data')
+local data = ____adapter_2Ddata.data
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
 ____exports.config = {
@@ -19,6 +21,7 @@ ____exports.config = {
     discover_positions = discoverPositions,
     build_spec = buildSpec,
     results = results,
-    options = options
+    options = options,
+    data = data
 }
 return ____exports

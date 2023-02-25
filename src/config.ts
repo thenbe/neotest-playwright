@@ -6,6 +6,7 @@ import {
 	root,
 } from 'neotest-playwright/discover';
 import { results } from 'neotest-playwright/results';
+import { data } from './adapter-data';
 import { options } from './adapter-options';
 import type { Adapter } from './types/adapter';
 
@@ -18,4 +19,5 @@ export const config: Readonly<Adapter> = {
 	build_spec: buildSpec,
 	results: results,
 	options: options,
+	data: data,
 };
