@@ -20,7 +20,11 @@ module.exports = {
 		'no-unused-vars': 'off',
 		'@typescript-eslint/no-unused-vars': [
 			'error',
-			{ destructuredArrayIgnorePattern: '^_', ignoreRestSiblings: true },
+			{
+				destructuredArrayIgnorePattern: '^_',
+				ignoreRestSiblings: true,
+				argsIgnorePattern: '^_',
+			},
 		],
 
 		// https://eslint.org/docs/latest/rules/prefer-const#options
