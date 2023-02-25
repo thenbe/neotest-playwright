@@ -8,8 +8,10 @@ import { buildTestPosition } from './position';
 import { flattenSpecs } from './report';
 import type { Adapter, AdapterData } from './types/adapter';
 
-export const root: Adapter['root'] =
-	lib.files.match_root_pattern('package.json');
+export const root: Adapter['root'] = lib.files.match_root_pattern(
+	'playwright.config.ts',
+	'playwright.config.js',
+);
 
 export const filterDir: Adapter['filter_dir'] = (
 	name: string,

@@ -171,7 +171,7 @@ local ____position = require('neotest-playwright.position')
 local buildTestPosition = ____position.buildTestPosition
 local ____report = require('neotest-playwright.report')
 local flattenSpecs = ____report.flattenSpecs
-____exports.root = lib.files.match_root_pattern("package.json")
+____exports.root = lib.files.match_root_pattern("playwright.config.ts", "playwright.config.js")
 ____exports.filterDir = function(name, _rel_path, _root)
     return name ~= "node_modules"
 end
