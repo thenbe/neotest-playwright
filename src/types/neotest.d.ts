@@ -266,6 +266,33 @@ declare module 'neotest.lib' {
 			file_path: string,
 		) => LuaMultiReturn<[() => string, () => void]>;
 	}
+
+	namespace subprocess {
+		/** Wrapper around vim.fn.rpcrequest that will automatically select the channel for the child or parent process,
+		 * depending on if the current instance is the child or parent.
+		 * See `:help rpcrequest` for more information. */
+		const request: (
+			method: string,
+			...args: unknown[]
+		) => LuaMultiReturn<[unknown, string?]>;
+
+		/** Wrapper around vim.fn.rpcnotify that will automatically select the channel for the child or parent process,
+		 * depending on if the current instance is the child or parent.
+		 * See `:help rpcnotify` for more information. */
+		const notify: (method: string, ...args: unknown[]) => void;
+
+		/** Call a lua function in the other process with the given argument list, returning the result. */
+		const call: (
+			func: string,
+			args?: unknown[],
+		) => LuaMultiReturn<[unknown, string?]>;
+
+		/** Check if the subprocess has been initialized and is working */
+		const enabled: () => boolean;
+
+		/** Check if the current neovim instance is the child or parent process */
+		const is_child: () => boolean;
+	}
 }
 
 declare module 'neotest.logging' {
