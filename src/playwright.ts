@@ -1,39 +1,17 @@
+import type * as P from '@playwright/test/reporter';
 import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
 import { buildCommand } from './build-command';
 import { emitError } from './helpers';
 
-export const get_projects = () => {
+// TODO: add performance logging.
+
+export const get_config = () => {
 	// For better monorepo support, we try to resolve the
 	// playwright binary and playwright config from the current
 	// buffer's path. Else, if no buffer is open, we fall back
 	// to the current working directory.
-	let path = vim.fn.expand('%:p');
-
-	if (path === '') {
-		path = vim.fn.getcwd();
-	}
-
-	const cmd = buildCommand(
-		{
-			bin: options.get_playwright_command(path),
-			config: options.get_playwright_config(path),
-			reporters: ['json'],
-			testFilter: './does-not-exist',
-		},
-		['--list'],
-	);
-
-	// TODO: Consider reading from report file once pre-run
-	// resolution is implemented.
-	const output = run(cmd.join(' '));
-
-	return output;
-};
-
-// TODO: DRY with get_projects
-export const getTests = () => {
-	let path = vim.fn.expand('%:p');
+	let path = vim.fn.expand('%:p') as string;
 
 	if (path === '') {
 		path = vim.fn.getcwd();
@@ -49,6 +27,10 @@ export const getTests = () => {
 	);
 
 	const output = run(cmd.join(' '));
+
+	if (!output) {
+		throw new Error('Failed to get Playwright config');
+	}
 
 	return output;
 };
@@ -79,8 +61,7 @@ const run = (cmd: string) => {
 		return;
 	}
 
-	// TODO: difference VS vim.json.decode
-	const parsed = vim.fn.json_decode(output);
+	const decoded = vim.fn.json_decode(output) as P.JSONReport;
 
-	return parsed;
+	return decoded;
 };

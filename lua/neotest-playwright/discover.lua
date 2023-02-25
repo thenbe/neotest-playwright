@@ -166,7 +166,7 @@ local data = ____adapter_2Ddata.data
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
 local ____playwright = require('neotest-playwright.playwright')
-local getTests = ____playwright.getTests
+local get_config = ____playwright.get_config
 local ____position = require('neotest-playwright.position')
 local buildTestPosition = ____position.buildTestPosition
 local ____report = require('neotest-playwright.report')
@@ -245,7 +245,7 @@ ____exports._get_data = function()
     return {report = data.report, specs = data.specs, rootDir = data.rootDir}
 end
 ____exports.refresh_data = function()
-    local report = getTests()
+    local report = get_config()
     data.report = report
     data.specs = flattenSpecs(report.suites)
     data.rootDir = report.config.rootDir

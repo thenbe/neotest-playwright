@@ -2,7 +2,7 @@ import type * as P from '@playwright/test/reporter';
 import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
 import { loadProjectCache, saveProjectCache } from './persist';
-import { get_projects } from './playwright';
+import { get_config } from './playwright';
 import { selectMultiple } from './select-multiple';
 
 // TODO: document interaction with dynamic test discovery
@@ -30,7 +30,7 @@ export const create_project_command = () => {
 		'NeotestPlaywrightProject',
 		// @ts-expect-error until type is updated
 		() => {
-			const output = get_projects();
+			const output = get_config();
 
 			const choices = parseProjects(output);
 

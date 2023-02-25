@@ -3,10 +3,10 @@ import * as lib from 'neotest.lib';
 import * as logger from 'neotest.logging';
 import { data } from './adapter-data';
 import { options } from './adapter-options';
-import { getTests } from './playwright';
+import { get_config } from './playwright';
 import { buildTestPosition } from './position';
 import { flattenSpecs } from './report';
-import type { Adapter, AdapterData } from './types/adapter';
+import type { Adapter } from './types/adapter';
 
 export const root: Adapter['root'] = lib.files.match_root_pattern(
 	'playwright.config.ts',
@@ -161,7 +161,7 @@ export const _get_data = () => {
 };
 
 export const refresh_data = () => {
-	const report = getTests() as NonNullable<AdapterData['report']>;
+	const report = get_config();
 
 	data.report = report; // TODO: do we need to store this?
 	data.specs = flattenSpecs(report.suites);

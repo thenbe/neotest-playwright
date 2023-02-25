@@ -17,7 +17,7 @@ local ____persist = require('neotest-playwright.persist')
 local loadProjectCache = ____persist.loadProjectCache
 local saveProjectCache = ____persist.saveProjectCache
 local ____playwright = require('neotest-playwright.playwright')
-local get_projects = ____playwright.get_projects
+local get_config = ____playwright.get_config
 local ____select_2Dmultiple = require('neotest-playwright.select-multiple')
 local selectMultiple = ____select_2Dmultiple.selectMultiple
 --- Returns a list of project names
@@ -41,7 +41,7 @@ ____exports.create_project_command = function()
     vim.api.nvim_create_user_command(
         "NeotestPlaywrightProject",
         function()
-            local output = get_projects()
+            local output = get_config()
             local choices = parseProjects(output)
             local preselected = nil
             if options.persist_project_selection then
