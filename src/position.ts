@@ -2,6 +2,7 @@ import type * as P from '@playwright/test/reporter';
 import type { Position, RangedPosition, RangelessPosition } from 'neotest';
 import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
+import { emitError } from './helpers';
 import type { AdapterData } from './types/adapter';
 
 type BasePosition = Omit<RangedPosition, 'id'>;
@@ -81,13 +82,18 @@ const specToPosition = (
 	basePosition: BasePosition,
 ): RangelessPosition | RangedPosition => {
 	const projectId = spec.tests[0]?.projectName;
-	const name = `${projectId} - ${spec.title}`;
+
+	if (!projectId) {
+		const msg = `No project id found for spec: ${spec.title}`;
+		emitError(msg);
+		throw new Error(msg);
+	}
 
 	const { range, ...rest } = basePosition;
 	const position = {
 		...rest,
 		id: spec.id,
-		name,
+		name: projectId,
 		project_id: projectId,
 	};
 
