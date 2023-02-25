@@ -17,6 +17,9 @@ module.exports = {
 		project: './tsconfig.json',
 	},
 	rules: {
+		// https://typescripttolua.github.io/docs/the-self-parameter#removing-it
+		'@typescript-eslint/no-invalid-void-type': 'off',
+
 		'no-unused-vars': 'off',
 		'@typescript-eslint/no-unused-vars': [
 			'error',

@@ -3,7 +3,7 @@ import * as logger from 'neotest.logging';
 import { readReport } from './report-io';
 import type { Adapter } from './types/adapter';
 
-export const results = ((spec, result, _tree) => {
+export const results: Adapter['results'] = (spec, result, _tree) => {
 	if (result.code === 129) {
 		// Code 129: User stopped the test run
 		logger.debug('Code 129: User stopped the test run. Aborting result parse');
@@ -17,4 +17,4 @@ export const results = ((spec, result, _tree) => {
 	const results = parseOutput(decoded);
 
 	return results;
-}) satisfies Adapter['results'];
+};

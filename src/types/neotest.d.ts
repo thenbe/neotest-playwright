@@ -2,10 +2,12 @@ declare function print(...args: unknown[]): void;
 
 type MatchType = 'namespace' | 'test';
 
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/restrict-template-expressions */
 interface NodeMatch<T extends MatchType> {
 	[`${T}.name`]: LuaUserdata;
 	[`${T}.definition`]: LuaUserdata;
 }
+/* eslint-enable @typescript-eslint/no-unused-vars, @typescript-eslint/restrict-template-expressions */
 
 type Range = LuaMultiReturn<[number, number, number, number]>;
 

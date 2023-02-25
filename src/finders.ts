@@ -23,7 +23,9 @@ export const getPlaywrightBinary: AdapterOptions['get_playwright_command'] = (
 	}
 };
 
-export const getPlaywrightConfig = (filePath: string) => {
+export const getPlaywrightConfig: AdapterOptions['get_playwright_config'] = (
+	filePath: string,
+) => {
 	const configDir = util.find_ancestor(filePath, 'playwright.config.ts', false);
 	const config = `${configDir}/playwright.config.ts`; // TODO: don't hardcode
 
