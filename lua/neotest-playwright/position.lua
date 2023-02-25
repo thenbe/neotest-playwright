@@ -215,7 +215,7 @@ specToPosition = function(spec, basePosition)
     local ____opt_1 = spec.tests[1]
     local projectId = ____opt_1 and ____opt_1.projectId
     local name = (tostring(projectId) .. " - ") .. spec.title
-    local position = __TS__ObjectAssign({}, basePosition, {id = spec.id, name = name, is_sterile = true})
+    local position = __TS__ObjectAssign({}, basePosition, {id = spec.id, name = name})
     return position
 end
 return ____exports

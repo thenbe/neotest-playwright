@@ -17,8 +17,6 @@ declare module 'neotest' {
 		path: string;
 		/** [start_row, start_col, end_row, end_col] */
 		range: Range;
-		/** Whether the test can have children */
-		is_sterile?: boolean;
 	}
 
 	type BuildPosition = (

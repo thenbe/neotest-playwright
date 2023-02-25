@@ -4,7 +4,7 @@ import { options } from './adapter-options';
 import { flattenSpecs } from './report';
 import { readReport } from './report-io';
 
-type BasePosition = Omit<Position, 'id' | 'is_sterile'>;
+type BasePosition = Omit<Position, 'id'>;
 
 // WARN: remove debug code
 
@@ -67,7 +67,6 @@ const specToPosition = (
 		...basePosition,
 		id: spec.id,
 		name,
-		is_sterile: true,
 	};
 
 	return position;
