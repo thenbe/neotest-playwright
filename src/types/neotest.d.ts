@@ -29,7 +29,9 @@ declare module 'neotest' {
 		file_path: string,
 		source: string,
 		captured_nodes: NodeMatch<MatchType>,
-		custom_data: AdapterData,
+		opts: {
+			custom_data: import('./adapter').AdapterData;
+		},
 	) => Position | Position[];
 
 	type PositionId = (position: Position, parents: Position[]) => string;
@@ -152,28 +154,6 @@ declare module 'neotest' {
 	/* Nested tree structure with nodes containing data and having any number of
 	 * children */
 	class Tree {
-		data(): Position;
-		children(): Tree[];
-		nodes(): Record<string, Tree>;
-		key(): (data: unknown) => string;
-		parent(): Tree | undefined;
-
-		get_key(key: unknown): Tree | null;
-		set_key(key: unknown, value: Tree): void;
-		iter_parents(): IterableIterator<Tree>;
-
-		/** Fetch the first node ascending the tree (including the current one)
-		 * with the given data */
-		closest_node_with(data_attr: string): Tree | null;
-
-		/** Fetch the first non-nil value for the given data attribute ascending the
-tree (including the current node) with the given data attribute. */
-		closest_value_for(data_attr: string): unknown | null;
-
-		/** Parses a tree in the shape of nested lists.
-		 * The head of the list is the root of the tree, and all following elements are its children. */
-		static from_list(data: unknown[], key: (data: unknown) => string): Tree;
-
 		/** Create a new tree node */
 		constructor(
 			/** Node data */
@@ -191,6 +171,28 @@ tree (including the current node) with the given data attribute. */
 			/** Nodes of this tree */
 			nodes?: Record<string, Tree>,
 		);
+
+		/** Parses a tree in the shape of nested lists.
+		 * The head of the list is the root of the tree, and all following elements are its children. */
+		static from_list(data: unknown[], key: (data: unknown) => string): Tree;
+
+		data(): Position;
+		children(): Tree[];
+		nodes(): Record<string, Tree>;
+		key(): (data: unknown) => string;
+		parent(): Tree | undefined;
+
+		get_key(key: unknown): Tree | null;
+		set_key(key: unknown, value: Tree): void;
+		iter_parents(): IterableIterator<Tree>;
+
+		/** Fetch the first node ascending the tree (including the current one)
+		 * with the given data */
+		closest_node_with(data_attr: string): Tree | null;
+
+		/** Fetch the first non-nil value for the given data attribute ascending the
+tree (including the current node) with the given data attribute. */
+		closest_value_for(data_attr: string): unknown | null;
 	}
 }
 

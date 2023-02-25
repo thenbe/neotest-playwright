@@ -123,6 +123,7 @@ export const _build_position: BuildPosition = (
 			path: filePath,
 			name,
 		};
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	} else if (match_type === 'test') {
 		const base = {
 			type: match_type,
@@ -155,9 +156,9 @@ export const _get_data = () => {
 	}
 
 	return {
-		report: data.report!,
-		specs: data.specs!,
-		rootDir: data.rootDir!,
+		report: data.report,
+		specs: data.specs,
+		rootDir: data.rootDir,
 		projects: options.projects, // up-to-date projects
 	};
 };

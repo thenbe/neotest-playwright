@@ -16,7 +16,7 @@ export const decodeOutput = (data: string): P.JSONReport => {
 		throw new Error('Failed to parse test output json');
 	}
 
-	return parsed;
+	return parsed as P.JSONReport;
 };
 
 export const parseOutput = (report: P.JSONReport): neotest.Results => {

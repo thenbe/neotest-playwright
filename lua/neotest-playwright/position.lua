@@ -1,56 +1,5 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 -- Lua Library inline imports
-local function __TS__ArrayFilter(self, callbackfn, thisArg)
-    local result = {}
-    local len = 0
-    for i = 1, #self do
-        if callbackfn(thisArg, self[i], i - 1, self) then
-            len = len + 1
-            result[len] = self[i]
-        end
-    end
-    return result
-end
-
-local function __TS__ObjectAssign(target, ...)
-    local sources = {...}
-    for i = 1, #sources do
-        local source = sources[i]
-        for key in pairs(source) do
-            target[key] = source[key]
-        end
-    end
-    return target
-end
-
-local function __TS__ArrayMap(self, callbackfn, thisArg)
-    local result = {}
-    for i = 1, #self do
-        result[i] = callbackfn(thisArg, self[i], i - 1, self)
-    end
-    return result
-end
-
-local function __TS__ArrayIncludes(self, searchElement, fromIndex)
-    if fromIndex == nil then
-        fromIndex = 0
-    end
-    local len = #self
-    local k = fromIndex
-    if fromIndex < 0 then
-        k = len + fromIndex
-    end
-    if k < 0 then
-        k = 0
-    end
-    for i = k + 1, len do
-        if self[i] == searchElement then
-            return true
-        end
-    end
-    return false
-end
-
 local function __TS__StringIncludes(self, searchString, position)
     if not position then
         position = 1
@@ -182,6 +131,57 @@ do
     URIError = createErrorClass(nil, "URIError")
 end
 
+local function __TS__ArrayFilter(self, callbackfn, thisArg)
+    local result = {}
+    local len = 0
+    for i = 1, #self do
+        if callbackfn(thisArg, self[i], i - 1, self) then
+            len = len + 1
+            result[len] = self[i]
+        end
+    end
+    return result
+end
+
+local function __TS__ObjectAssign(target, ...)
+    local sources = {...}
+    for i = 1, #sources do
+        local source = sources[i]
+        for key in pairs(source) do
+            target[key] = source[key]
+        end
+    end
+    return target
+end
+
+local function __TS__ArrayMap(self, callbackfn, thisArg)
+    local result = {}
+    for i = 1, #self do
+        result[i] = callbackfn(thisArg, self[i], i - 1, self)
+    end
+    return result
+end
+
+local function __TS__ArrayIncludes(self, searchElement, fromIndex)
+    if fromIndex == nil then
+        fromIndex = 0
+    end
+    local len = #self
+    local k = fromIndex
+    if fromIndex < 0 then
+        k = len + fromIndex
+    end
+    if k < 0 then
+        k = 0
+    end
+    for i = k + 1, len do
+        if self[i] == searchElement then
+            return true
+        end
+    end
+    return false
+end
+
 local function __TS__ObjectRest(target, usedProperties)
     local result = {}
     for property in pairs(target) do
@@ -201,10 +201,16 @@ local emitError = ____helpers.emitError
 -- dynamically discovered using the playwright cli.
 ____exports.buildTestPosition = function(basePosition, data)
     local line = basePosition.range[1]
+    if not data.specs then
+        error(
+            __TS__New(Error, "No specs found"),
+            0
+        )
+    end
     local specs = __TS__ArrayFilter(
         data.specs,
         function(____, spec)
-            local specAbsolutePath = (tostring(data.rootDir) .. "/") .. spec.file
+            local specAbsolutePath = (data.rootDir .. "/") .. spec.file
             local fileMatch = specAbsolutePath == basePosition.path
             if not fileMatch then
                 return false

@@ -1,7 +1,6 @@
 import type * as P from '@playwright/test/reporter';
 import type { Position, RangedPosition, RangelessPosition } from 'neotest';
 import * as logger from 'neotest.logging';
-import { options } from './adapter-options';
 import { emitError } from './helpers';
 import type { AdapterData } from './types/adapter';
 
@@ -18,7 +17,11 @@ export const buildTestPosition = (
 	const line = basePosition.range[0];
 	// const column = position.range[1];
 
-	const specs = data.specs!.filter((spec) => {
+	if (!data.specs) {
+		throw new Error('No specs found');
+	}
+
+	const specs = data.specs.filter((spec) => {
 		const specAbsolutePath = data.rootDir + '/' + spec.file;
 
 		const fileMatch = specAbsolutePath === basePosition.path;
@@ -57,7 +60,7 @@ export const buildTestPosition = (
 	specs.map((spec) => positions.push(specToPosition(spec, basePosition)));
 
 	// filter out positions belonging to ignored projects
-	const projects = data.projects!;
+	const projects = data.projects;
 
 	positions = positions.filter((position) => {
 		const projectId = position.project_id;

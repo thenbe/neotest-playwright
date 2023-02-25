@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type * as P from '@playwright/test/reporter';
 import type * as neotest from 'neotest';
 import { expect, test } from 'vitest';

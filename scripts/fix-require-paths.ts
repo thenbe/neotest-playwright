@@ -19,7 +19,7 @@ const transform = (file: string) => {
 
 	// look for all require statements, if they are in the NO_REPLACE array, don't replace them
 	// else, add the prefix to them like so: require('neotest-playwright.submodule')
-	magicString.replace(/require\(["']([^"']+)["']\)/g, (match, p1) => {
+	magicString.replace(/require\(["']([^"']+)["']\)/g, (match, p1: string) => {
 		// skip imports that are already prefixed either by tstl or previous runs
 		// of this script
 		const alreadyPrefixed = p1.startsWith(PREFIX);

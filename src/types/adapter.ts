@@ -22,12 +22,19 @@ export interface AdapterOptions {
 	enable_dynamic_test_discovery: boolean;
 }
 
-export interface AdapterData {
-	projects: string[] | null;
-	report: P.JSONReport | null;
-	specs: P.JSONReportSpec[] | null;
-	rootDir: string | null;
-}
+export type AdapterData =
+	| {
+			projects: string[];
+			report: P.JSONReport;
+			specs: P.JSONReportSpec[];
+			rootDir: string;
+	  }
+	| {
+			projects: null;
+			report: null;
+			specs: null;
+			rootDir: null;
+	  };
 
 export interface Adapter extends neotest.Adapter {
 	options: AdapterOptions;

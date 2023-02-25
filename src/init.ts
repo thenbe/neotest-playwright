@@ -13,12 +13,18 @@ create_refresh_command();
 export const adapter = config;
 
 setmetatable(adapter, {
-	__call(arg) {
+	__call(arg: unknown) {
 		logger.debug('neotest-playwright arg', arg);
+
+		let userOptions = {};
+		// @ts-expect-error wip
+		if (arg && type(arg) === 'table' && 'options' in arg) {
+			userOptions = arg.options ?? {};
+		}
 
 		const updated = {
 			...config.options,
-			...arg.options,
+			...userOptions,
 		};
 
 		// Apply user config

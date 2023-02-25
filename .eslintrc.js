@@ -1,6 +1,11 @@
 /** @type {import("eslint").Linter.Config} */
+
+// eslint-disable-next-line no-undef
 module.exports = {
 	root: true,
+	globals: {
+		'module':'off'
+	},
 	plugins: ['@typescript-eslint'],
 	extends: [
 		'eslint:recommended',
@@ -47,7 +52,8 @@ module.exports = {
 
 		'@typescript-eslint/promise-function-async': 'warn',
 
-		'@typescript-eslint/ban-ts-comment': 'warn',
+		'@typescript-eslint/ban-ts-comment': 'off',
+		'@typescript-eslint/prefer-ts-expect-error': 'off',
 
 		'@typescript-eslint/consistent-type-exports': 'error',
 		'@typescript-eslint/consistent-type-imports': [
@@ -64,6 +70,7 @@ module.exports = {
 
 		'no-mixed-spaces-and-tabs': ['error', 'smart-tabs'],
 
+		'eslint-comments/disable-enable-pair': 'off',
 		'eslint-comments/no-unused-disable': 'error',
 	},
 };

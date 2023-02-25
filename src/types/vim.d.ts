@@ -5,11 +5,11 @@ interface IVim {
 			this: void,
 			value: string,
 			options?: { luanil: { object: true } },
-		) => any;
+		) => unknown;
 	};
 
 	loop: {
-		fs_scandir: (this: void, path: string) => any[];
+		fs_scandir: (this: void, path: string) => unknown[];
 		dirname: (this: void, path: string) => string;
 	};
 
