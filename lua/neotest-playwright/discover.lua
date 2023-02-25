@@ -160,10 +160,17 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local lib = require("neotest.lib")
+local logger = require("neotest.logging")
+local ____adapter_2Ddata = require('neotest-playwright.adapter-data')
+local data = ____adapter_2Ddata.data
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
 local ____position = require('neotest-playwright.position')
 local buildTestPosition = ____position.buildTestPosition
+local ____report = require('neotest-playwright.report')
+local flattenSpecs = ____report.flattenSpecs
+local ____report_2Dio = require('neotest-playwright.report-io')
+local readReport = ____report_2Dio.readReport
 ____exports.root = lib.files.match_root_pattern("package.json")
 ____exports.filterDir = function(name, _rel_path, _root)
     return name ~= "node_modules"
@@ -219,5 +226,17 @@ ____exports._build_position = function(filePath, source, capturedNodes)
 end
 ____exports._position_id = function(position, parent)
     return position.id or position.path .. position.name
+end
+____exports._get_data = function()
+    if data.report and data.data and data.rootDir then
+        logger.debug("data already exists", data)
+        return data
+    else
+        logger.debug("data does not exist. creating...")
+        data.report = readReport(options.tempDataFile)
+        data.data = flattenSpecs(data.report.suites[1])
+        data.rootDir = data.report.config.rootDir
+    end
+    return data
 end
 return ____exports
