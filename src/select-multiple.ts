@@ -30,7 +30,7 @@ export const selectMultiple = ({
 	const selected = determineInitialSelection(initial, choices, preselected);
 	let choice: unknown;
 
-	let done = false;
+	let done = false as boolean;
 
 	while (!done) {
 		vim.ui.select(
@@ -46,8 +46,7 @@ export const selectMultiple = ({
 			},
 		);
 
-		// @ts-ignore
-		const index = choices.indexOf(choice);
+		const index = choices.indexOf(choice as string);
 		done = index === -1;
 
 		if (done) {

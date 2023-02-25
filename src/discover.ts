@@ -1,13 +1,29 @@
+import type { BuildPosition, PositionId } from 'neotest';
 import * as lib from 'neotest.lib';
+import * as logger from 'neotest.logging';
+import { data } from './adapter-data';
+import { options } from './adapter-options';
+import { get_config } from './playwright';
+import { buildTestPosition } from './position';
+import { flattenSpecs } from './report';
 import type { Adapter } from './types/adapter';
 
-export const root = lib.files.match_root_pattern('package.json');
+export const root: Adapter['root'] = lib.files.match_root_pattern(
+	'playwright.config.ts',
+	'playwright.config.js',
+);
 
-export const filterDir = ((name: string, _rel_path: string, _root: string) => {
+export const filterDir: Adapter['filter_dir'] = (
+	name: string,
+	_rel_path: string,
+	_root: string,
+) => {
 	return name !== 'node_modules';
-}) satisfies Adapter['filter_dir'];
+};
 
-export const isTestFile = ((file_path: string | undefined): boolean => {
+export const isTestFile: Adapter['is_test_file'] = (
+	file_path: string | undefined,
+): boolean => {
 	if (!file_path) {
 		return false;
 	}
@@ -18,9 +34,11 @@ export const isTestFile = ((file_path: string | undefined): boolean => {
 	const result = endings.some((ending) => file_path.endsWith(ending));
 
 	return result;
-}) satisfies Adapter['is_test_file'];
+};
 
-export const discoverPositions = ((path: string) => {
+export const discoverPositions: Adapter['discover_positions'] = (
+	path: string,
+) => {
 	const query = `
 		; -- Namespaces --
 
@@ -58,5 +76,101 @@ export const discoverPositions = ((path: string) => {
 		)
 		`;
 
-	return lib.treesitter.parse_positions(path, query, { nested_tests: true });
-}) satisfies Adapter['discover_positions'];
+	return lib.treesitter.parse_positions(path, query, {
+		custom_data: _get_data(),
+		nested_tests: true,
+		position_id: 'require("neotest-playwright.discover")._position_id',
+		...(options.enable_dynamic_test_discovery
+			? {
+					build_position:
+						'require("neotest-playwright.discover")._build_position',
+			  }
+			: {}),
+	});
+};
+
+const getMatchType = <T extends MatchType>(node: NodeMatch<T>) => {
+	if ('test.name' in node) {
+		return 'test';
+	} else if ('namespace.name' in node) {
+		return 'namespace';
+	} else {
+		throw new Error('Unknown match type');
+	}
+};
+
+export const _build_position: BuildPosition = (
+	filePath,
+	source,
+	capturedNodes,
+	opts,
+) => {
+	const match_type = getMatchType(capturedNodes);
+
+	const name = vim.treesitter.get_node_text(
+		capturedNodes[`${match_type}.name`],
+		source,
+	) as string;
+
+	const definition = capturedNodes[`${match_type}.definition`];
+	// @ts-expect-error update type
+	const range = [definition.range()] as unknown as Range;
+
+	if (match_type === 'namespace') {
+		return {
+			type: match_type,
+			range,
+			path: filePath,
+			name,
+		};
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	} else if (match_type === 'test') {
+		const base = {
+			type: match_type,
+			range,
+			path: filePath,
+			name,
+		} as const;
+
+		const position = buildTestPosition(base, opts.custom_data);
+
+		return position;
+	} else {
+		throw new Error('Unknown match type');
+	}
+};
+
+export const _position_id: PositionId = (position, _parent) => {
+	if (position.id) {
+		return position.id;
+	} else {
+		return position.path + '::' + position.name;
+	}
+};
+
+// TODO: remove debug logging
+export const _get_data = () => {
+	logger.debug('======getting data=======');
+	if (data.specs && data.rootDir) {
+		logger.debug('data already exists');
+	} else {
+		logger.debug('======data does not exist. refreshing...=======');
+
+		refresh_data();
+	}
+
+	return {
+		report: data.report,
+		specs: data.specs,
+		rootDir: data.rootDir,
+		projects: options.projects, // up-to-date projects
+	};
+};
+
+export const refresh_data = () => {
+	const report = get_config();
+
+	data.report = report; // TODO: do we need to store this?
+	data.specs = flattenSpecs(report.suites);
+	data.rootDir = report.config.rootDir;
+};

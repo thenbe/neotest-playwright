@@ -1,0 +1,26 @@
+{
+	"neodev": {
+		"library": {
+			"enabled": true,
+			"types": true,
+			"plugins": [
+				"neoconf.nvim",
+				"nvim-lspconfig",
+				"neotest",
+				"nvim-dap-ui",
+				"nvim-dap",
+				"nvim-dap-virtual-text"
+			]
+		}
+	},
+	"neoconf": {
+		"plugins": {
+			"sumneko_lua": {
+				"enabled": true
+			}
+		}
+	},
+	"lspconfig": {
+		"sumneko_lua": {}
+	}
+}

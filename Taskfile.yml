@@ -10,7 +10,7 @@ tasks:
       - scripts/**/*
       - tsconfig*
     cmds:
-      - rm -rf lua
+      - rm -rf lua/neotest-playwright
       - tstl -p tsconfig.build.json {{.CLI_ARGS}}
       - cp src/util.lua lua/neotest-playwright/util.lua
       - tsx ./scripts/fix-require-paths.ts

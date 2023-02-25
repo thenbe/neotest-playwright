@@ -131,6 +131,18 @@ do
     URIError = createErrorClass(nil, "URIError")
 end
 
+local function __TS__ArrayFilter(self, callbackfn, thisArg)
+    local result = {}
+    local len = 0
+    for i = 1, #self do
+        if callbackfn(thisArg, self[i], i - 1, self) then
+            len = len + 1
+            result[len] = self[i]
+        end
+    end
+    return result
+end
+
 local function __TS__ObjectAssign(target, ...)
     local sources = {...}
     for i = 1, #sources do
@@ -150,151 +162,109 @@ local function __TS__ArrayMap(self, callbackfn, thisArg)
     return result
 end
 
-local function __TS__ArrayIsArray(value)
-    return type(value) == "table" and (value[1] ~= nil or next(value) == nil)
+local function __TS__ArrayIncludes(self, searchElement, fromIndex)
+    if fromIndex == nil then
+        fromIndex = 0
+    end
+    local len = #self
+    local k = fromIndex
+    if fromIndex < 0 then
+        k = len + fromIndex
+    end
+    if k < 0 then
+        k = 0
+    end
+    for i = k + 1, len do
+        if self[i] == searchElement then
+            return true
+        end
+    end
+    return false
 end
 
-local function __TS__ArrayConcat(self, ...)
-    local items = {...}
+local function __TS__ObjectRest(target, usedProperties)
     local result = {}
-    local len = 0
-    for i = 1, #self do
-        len = len + 1
-        result[len] = self[i]
-    end
-    for i = 1, #items do
-        local item = items[i]
-        if __TS__ArrayIsArray(item) then
-            for j = 1, #item do
-                len = len + 1
-                result[len] = item[j]
-            end
-        else
-            len = len + 1
-            result[len] = item
+    for property in pairs(target) do
+        if not usedProperties[property] then
+            result[property] = target[property]
         end
     end
     return result
 end
-
-local function __TS__ArrayPushArray(self, items)
-    local len = #self
-    for i = 1, #items do
-        len = len + 1
-        self[len] = items[i]
-    end
-    return len
-end
 -- End of Lua Library inline imports
 local ____exports = {}
-local getSpecStatus, constructSpecKey, collectSpecErrors, toNeotestError
-local ____neotest_2Dplaywright_2Eutil = require("neotest-playwright.util")
-local cleanAnsi = ____neotest_2Dplaywright_2Eutil.cleanAnsi
-local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
-local options = ____adapter_2Doptions.options
+local specToPosition
+local logger = require("neotest.logging")
 local ____helpers = require('neotest-playwright.helpers')
 local emitError = ____helpers.emitError
-____exports.decodeOutput = function(data)
-    local ok, parsed = pcall(vim.json.decode, data, {luanil = {object = true}})
-    if not ok then
-        emitError("Failed to parse test output json")
+--- Given a test position, return one or more positions based on what can be
+-- dynamically discovered using the playwright cli.
+____exports.buildTestPosition = function(basePosition, data)
+    local line = basePosition.range[1]
+    if not data.specs then
         error(
-            __TS__New(Error, "Failed to parse test output json"),
+            __TS__New(Error, "No specs found"),
             0
         )
     end
-    return parsed
-end
-____exports.parseOutput = function(report)
-    if #report.errors > 1 then
-        emitError("Global errors found in report")
-    end
-    local root = report.suites[1]
-    if not root then
-        emitError("No test suites found in report")
-        return {}
-    end
-    local results = ____exports.parseSuite(root, report)
-    return results
-end
-____exports.parseSuite = function(suite, report)
-    local results = {}
-    local specs = ____exports.flattenSpecs({suite})
-    for ____, spec in ipairs(specs) do
-        local key
-        if options.enable_dynamic_test_discovery then
-            key = spec.id
-        else
-            key = constructSpecKey(report, spec)
+    local specs = __TS__ArrayFilter(
+        data.specs,
+        function(____, spec)
+            local specAbsolutePath = (data.rootDir .. "/") .. spec.file
+            local fileMatch = specAbsolutePath == basePosition.path
+            if not fileMatch then
+                return false
+            end
+            local rowMatch = spec.line == line + 1
+            local match = rowMatch and fileMatch
+            return match
         end
-        results[key] = ____exports.parseSpec(spec)
-    end
-    return results
-end
-____exports.flattenSpecs = function(suites)
-    local specs = {}
-    for ____, suite in ipairs(suites) do
-        local suiteSpecs = __TS__ArrayMap(
-            suite.specs,
-            function(____, spec) return __TS__ObjectAssign({}, spec, {suiteTitle = suite.title}) end
-        )
-        specs = __TS__ArrayConcat(
-            specs,
-            suiteSpecs,
-            ____exports.flattenSpecs(suite.suites or ({}))
-        )
-    end
-    return specs
-end
-____exports.parseSpec = function(spec)
-    local status = getSpecStatus(spec)
-    local errors = __TS__ArrayMap(
-        collectSpecErrors(spec),
-        function(____, s) return toNeotestError(s) end
     )
-    local ____opt_2 = spec.tests[1]
-    local ____opt_0 = ____opt_2 and ____opt_2.results[1]
-    local attachments = ____opt_0 and ____opt_0.attachments or ({})
-    local data = {status = status, short = (spec.title .. ": ") .. status, errors = errors, attachments = attachments}
-    return data
-end
-getSpecStatus = function(spec)
-    if not spec.ok then
-        return "failed"
-    else
-        local ____opt_4 = spec.tests[1]
-        if (____opt_4 and ____opt_4.status) == "skipped" then
-            return "skipped"
-        else
-            return "passed"
-        end
+    if #specs == 0 then
+        logger.debug("No match found")
+        return {basePosition}
     end
-end
-constructSpecKey = function(report, spec)
-    local dir = report.config.rootDir
-    local file = spec.file
-    local name = spec.title
-    local key = (((dir .. "/") .. file) .. "::") .. name
-    return key
-end
---- Collect all errors from a spec by traversing spec -> tests[] -> results[].
--- Return a single flat array containing any errors.
-collectSpecErrors = function(spec)
-    local errors = {}
-    for ____, test in ipairs(spec.tests) do
-        for ____, result in ipairs(test.results) do
-            __TS__ArrayPushArray(errors, result.errors)
+    local positions = {}
+    --- The parent of the range-less positions
+    local main = __TS__ObjectAssign({}, basePosition)
+    positions[#positions + 1] = main
+    __TS__ArrayMap(
+        specs,
+        function(____, spec)
+            local ____temp_0 = #positions + 1
+            positions[____temp_0] = specToPosition(spec, basePosition)
+            return ____temp_0
         end
-    end
-    return errors
+    )
+    local projects = data.projects
+    positions = __TS__ArrayFilter(
+        positions,
+        function(____, position)
+            local projectId = position.project_id
+            if not projectId then
+                return true
+            end
+            return __TS__ArrayIncludes(projects, projectId)
+        end
+    )
+    return positions
 end
---- Convert Playwright error to neotest error
-toNeotestError = function(____error)
-    local ____opt_6 = ____error.location
-    local line = ____opt_6 and ____opt_6.line
-    return {
-        message = cleanAnsi(____error.message),
-        line = line and line - 1 or 0
-    }
+--- Convert a playwright spec to a neotest position.
+specToPosition = function(spec, basePosition)
+    local ____opt_1 = spec.tests[1]
+    local projectId = ____opt_1 and ____opt_1.projectName
+    if not projectId then
+        local msg = "No project id found for spec: " .. spec.title
+        emitError(msg)
+        error(
+            __TS__New(Error, msg),
+            0
+        )
+    end
+    local ____basePosition_3 = basePosition
+    local range = ____basePosition_3.range
+    local rest = __TS__ObjectRest(____basePosition_3, {range = true})
+    local position = __TS__ObjectAssign({}, rest, {id = spec.id, name = projectId, project_id = projectId})
+    return position
 end
 return ____exports

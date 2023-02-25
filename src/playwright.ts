@@ -1,13 +1,17 @@
+import type * as P from '@playwright/test/reporter';
 import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
 import { buildCommand } from './build-command';
+import { emitError } from './helpers';
 
-export const get_projects = () => {
+// TODO: add performance logging.
+
+export const get_config = () => {
 	// For better monorepo support, we try to resolve the
 	// playwright binary and playwright config from the current
 	// buffer's path. Else, if no buffer is open, we fall back
 	// to the current working directory.
-	let path = vim.fn.expand('%:p');
+	let path = vim.fn.expand('%:p') as string;
 
 	if (path === '') {
 		path = vim.fn.getcwd();
@@ -18,12 +22,15 @@ export const get_projects = () => {
 			bin: options.get_playwright_command(path),
 			config: options.get_playwright_config(path),
 			reporters: ['json'],
-			testFilter: './does-not-exist',
 		},
 		['--list'],
 	);
 
 	const output = run(cmd.join(' '));
+
+	if (!output) {
+		throw new Error('Failed to get Playwright config');
+	}
 
 	return output;
 };
@@ -37,7 +44,7 @@ const run = (cmd: string) => {
 	}
 
 	if (!handle) {
-		logger.error(`Failed to execute command: ${cmd}`);
+		emitError(`Failed to execute command: ${cmd}`);
 		return;
 	}
 
@@ -45,16 +52,16 @@ const run = (cmd: string) => {
 	handle.close();
 
 	if (typeof output !== 'string') {
-		logger.error(`Failed to read output from command: ${cmd}`);
+		emitError(`Failed to read output from command: ${cmd}`);
 		return;
 	}
 
 	if (output === '') {
-		logger.error(`No output from command: ${cmd}`);
+		emitError(`No output from command: ${cmd}`);
 		return;
 	}
 
-	const parsed = vim.fn.json_decode(output);
+	const decoded = vim.fn.json_decode(output) as P.JSONReport;
 
-	return parsed;
+	return decoded;
 };

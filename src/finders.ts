@@ -6,8 +6,8 @@ import type { AdapterOptions } from './types/adapter';
 export const getPlaywrightBinary: AdapterOptions['get_playwright_command'] = (
 	filePath: string,
 ) => {
-	const node_modules =
-		util.find_ancestor(filePath, 'node_modules', true) + '/node_modules';
+	const dir = util.find_ancestor(filePath, 'node_modules', true) ?? '';
+	const node_modules = `${dir}/node_modules`;
 
 	const bin = `${node_modules}/.bin/playwright`;
 
@@ -23,9 +23,11 @@ export const getPlaywrightBinary: AdapterOptions['get_playwright_command'] = (
 	}
 };
 
-export const getPlaywrightConfig = (filePath: string) => {
-	const configDir = util.find_ancestor(filePath, 'playwright.config.ts', false);
-	const config = `${configDir}/playwright.config.ts`; // TODO: don't hardcode
+export const getPlaywrightConfig: AdapterOptions['get_playwright_config'] = (
+	filePath: string,
+) => {
+	const dir = util.find_ancestor(filePath, 'playwright.config.ts', false) ?? '';
+	const config = `${dir}/playwright.config.ts`; // TODO: don't hardcode
 
 	if (lib.files.exists(config)) {
 		return config;
@@ -34,4 +36,10 @@ export const getPlaywrightConfig = (filePath: string) => {
 	logger.info('Unable to locate playwright config file.');
 
 	return null;
+};
+
+export const get_cwd: AdapterOptions['get_cwd'] = (filePath: string) => {
+	const dir = util.find_ancestor(filePath, 'node_modules', true) ?? '';
+
+	return dir;
 };

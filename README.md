@@ -34,6 +34,8 @@ use({
             options = {
                persist_project_selection = false,
 
+               enable_dynamic_test_discovery = false,
+
                -- get_playwright_command = function(file_path)
                --    return "path/to/playwright-binary"
                -- end,
