@@ -159,8 +159,8 @@ declare module 'neotest' {
 		key(): (data: unknown) => string;
 		parent(): Tree | undefined;
 
-		_get_key(key: unknown): Tree | null;
-		_set_key(key: unknown, value: Tree): void;
+		get_key(key: unknown): Tree | null;
+		set_key(key: unknown, value: Tree): void;
 		iter_parents(): IterableIterator<Tree>;
 
 		/** Fetch the first node ascending the tree (including the current one)
