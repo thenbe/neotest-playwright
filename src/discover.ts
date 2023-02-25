@@ -1,7 +1,6 @@
 import type { BuildPosition, PositionId } from 'neotest';
 import * as lib from 'neotest.lib';
 import * as logger from 'neotest.logging';
-import { report } from 'process';
 import { data } from './adapter-data';
 import { options } from './adapter-options';
 import { buildTestPosition } from './position';
@@ -130,15 +129,15 @@ export const _position_id: PositionId = (position, parent) => {
 	return position.id ?? position.path + position.name;
 };
 
+// TODO: remove debug logging
 export const _get_data = () => {
-	if (data.report && data.data && data.rootDir) {
-		logger.debug('data already exists', data);
-		return data;
+	if (data.report && data.specs && data.rootDir) {
+		logger.debug('data already exists');
 	} else {
-		logger.debug('data does not exist. creating...');
+		logger.debug('======data does not exist. refreshing...=======');
 
 		data.report = readReport(options.tempDataFile);
-		data.data = flattenSpecs(data.report!.suites[0]!);
+		data.specs = flattenSpecs(data.report!.suites[0]!);
 		data.rootDir = data.report.config.rootDir;
 	}
 

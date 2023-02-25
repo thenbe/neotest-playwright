@@ -228,13 +228,12 @@ ____exports._position_id = function(position, parent)
     return position.id or position.path .. position.name
 end
 ____exports._get_data = function()
-    if data.report and data.data and data.rootDir then
-        logger.debug("data already exists", data)
-        return data
+    if data.report and data.specs and data.rootDir then
+        logger.debug("data already exists")
     else
-        logger.debug("data does not exist. creating...")
+        logger.debug("======data does not exist. refreshing...=======")
         data.report = readReport(options.tempDataFile)
-        data.data = flattenSpecs(data.report.suites[1])
+        data.specs = flattenSpecs(data.report.suites[1])
         data.rootDir = data.report.config.rootDir
     end
     return data

@@ -24,7 +24,7 @@ export interface AdapterOptions {
 
 export interface AdapterData {
 	report: P.JSONReport | null;
-	data: P.JSONReportSpec[] | null;
+	specs: P.JSONReportSpec[] | null;
 	rootDir: string | null;
 }
 
