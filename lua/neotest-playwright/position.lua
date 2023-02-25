@@ -51,26 +51,18 @@ ____exports.buildTestPosition = function(basePosition, data)
     local specs = __TS__ArrayFilter(
         data.specs,
         function(____, spec)
-            logger.debug("spec", spec)
-            logger.debug("basePosition", basePosition)
             local specAbsolutePath = (tostring(data.rootDir) .. "/") .. spec.file
-            logger.debug("specAbsolutePath", specAbsolutePath)
             local fileMatch = specAbsolutePath == basePosition.path
-            logger.debug("fileMatch", fileMatch)
             if not fileMatch then
                 return false
             end
             local rowMatch = spec.line == line + 1
-            logger.debug("rowMatch", rowMatch)
             local match = rowMatch and fileMatch
-            logger.debug("match", match)
             return match
         end
     )
     if #specs == 0 then
         logger.debug("No match found")
-        logger.debug("data.specs", data.specs)
-        logger.debug("basePosition", basePosition)
         return {basePosition}
     end
     local positions = {}

@@ -17,33 +17,24 @@ export const buildTestPosition = (
 	// const column = position.range[1];
 
 	const specs = data.specs!.filter((spec) => {
-		logger.debug('spec', spec);
-		logger.debug('basePosition', basePosition);
-
 		const specAbsolutePath = data.rootDir + '/' + spec.file;
-		logger.debug('specAbsolutePath', specAbsolutePath);
 
 		const fileMatch = specAbsolutePath === basePosition.path;
-		logger.debug('fileMatch', fileMatch);
 
 		if (!fileMatch) {
 			return false;
 		}
 
 		const rowMatch = spec.line === line + 1;
-		logger.debug('rowMatch', rowMatch);
 		// const columnMatch = spec.column === column + 1;
 
 		const match = rowMatch && fileMatch;
-		logger.debug('match', match);
 
 		return match;
 	});
 
 	if (specs.length === 0) {
 		logger.debug('No match found');
-		logger.debug('data.specs', data.specs);
-		logger.debug('basePosition', basePosition);
 
 		// TODO: return position with available data
 		// throw new Error('No match found');
@@ -65,6 +56,8 @@ export const buildTestPosition = (
 
 	return positions;
 };
+
+// TODO: add to readme. testDir should be defined in playwright config.
 
 /** Convert a playwright spec to a neotest position. */
 const specToPosition = (
