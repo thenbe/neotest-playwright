@@ -225,7 +225,7 @@ ____exports.parseSuite = function(suite, report)
         if options.enable_dynamic_test_discovery then
             key = spec.id
         else
-            key = constructSpecKey(report, spec, suite)
+            key = constructSpecKey(report, spec)
         end
         results[key] = ____exports.parseSpec(spec)
     end
@@ -267,18 +267,11 @@ getSpecStatus = function(spec)
         end
     end
 end
-constructSpecKey = function(report, spec, suite)
+constructSpecKey = function(report, spec)
     local dir = report.config.rootDir
     local file = spec.file
     local name = spec.title
-    local suiteName = suite.title
-    local isPartOfDescribe = suiteName ~= file
-    local key
-    if isPartOfDescribe then
-        key = (((((dir .. "/") .. file) .. "::") .. suiteName) .. "::") .. name
-    else
-        key = (((dir .. "/") .. file) .. "::") .. name
-    end
+    local key = (((dir .. "/") .. file) .. "::") .. name
     return key
 end
 --- Collect all errors from a spec by traversing spec -> tests[] -> results[].

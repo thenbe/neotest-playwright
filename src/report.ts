@@ -54,7 +54,7 @@ export const parseSuite = (
 		if (options.enable_dynamic_test_discovery) {
 			key = spec.id;
 		} else {
-			key = constructSpecKey(report, spec, suite);
+			key = constructSpecKey(report, spec);
 		}
 
 		results[key] = parseSpec(spec);
@@ -121,21 +121,12 @@ const getSpecStatus = (spec: P.JSONReportSpec): neotest.Result['status'] => {
 const constructSpecKey = (
 	report: P.JSONReport,
 	spec: P.JSONReportSpec,
-	suite: P.JSONReportSuite,
 ): neotest.ResultKey => {
 	const dir = report.config.rootDir;
 	const file = spec.file;
 	const name = spec.title;
-	const suiteName = suite.title;
-	const isPartOfDescribe = suiteName !== file;
 
-	let key: string;
-
-	if (isPartOfDescribe) {
-		key = `${dir}/${file}::${suiteName}::${name}`;
-	} else {
-		key = `${dir}/${file}::${name}`;
-	}
+	const key = `${dir}/${file}::${name}`;
 
 	return key;
 };

@@ -140,26 +140,12 @@ export const _build_position: BuildPosition = (
 	}
 };
 
-export const _position_id: PositionId = (position, parent) => {
+export const _position_id: PositionId = (position, _parent) => {
 	if (position.id) {
 		return position.id;
-	} else if (position.type === 'test') {
-		let namespace = null;
-
-		if (parent[0]?.type === 'namespace') {
-			namespace = parent[0].name;
-		}
-
-		if (namespace === null) {
-			return position.path + '::' + position.name;
-		} else {
-			return position.path + '::' + namespace + '::' + position.name;
-		}
-	} else if (position.type === 'namespace') {
+	} else {
 		return position.path + '::' + position.name;
 	}
-
-	throw new Error('Unknown position type');
 };
 
 // TODO: remove debug logging
