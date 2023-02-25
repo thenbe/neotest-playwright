@@ -252,15 +252,18 @@ ____exports.parseSpec = function(spec)
         collectSpecErrors(spec),
         function(____, s) return toNeotestError(s) end
     )
-    local data = {status = status, short = (spec.title .. ": ") .. status, errors = errors}
+    local ____opt_2 = spec.tests[1]
+    local ____opt_0 = ____opt_2 and ____opt_2.results[1]
+    local attachments = ____opt_0 and ____opt_0.attachments or ({})
+    local data = {status = status, short = (spec.title .. ": ") .. status, errors = errors, attachments = attachments}
     return data
 end
 getSpecStatus = function(spec)
     if not spec.ok then
         return "failed"
     else
-        local ____opt_0 = spec.tests[1]
-        if (____opt_0 and ____opt_0.status) == "skipped" then
+        local ____opt_4 = spec.tests[1]
+        if (____opt_4 and ____opt_4.status) == "skipped" then
             return "skipped"
         else
             return "passed"
@@ -287,8 +290,8 @@ collectSpecErrors = function(spec)
 end
 --- Convert Playwright error to neotest error
 toNeotestError = function(____error)
-    local ____opt_2 = ____error.location
-    local line = ____opt_2 and ____opt_2.line
+    local ____opt_6 = ____error.location
+    local line = ____opt_6 and ____opt_6.line
     return {
         message = cleanAnsi(____error.message),
         line = line and line - 1 or 0

@@ -96,11 +96,13 @@ export const parseSpec = (
 ): Omit<neotest.Result, 'output'> => {
 	const status = getSpecStatus(spec);
 	const errors = collectSpecErrors(spec).map((s) => toNeotestError(s));
+	const attachments = spec.tests[0]?.results[0]?.attachments ?? []; // TODO: handle multiple tests/results (test runs)
 
 	const data = {
 		status,
 		short: `${spec.title}: ${status}`,
 		errors,
+		attachments,
 	};
 
 	return data;
