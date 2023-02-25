@@ -231,8 +231,27 @@ ____exports._build_position = function(filePath, source, capturedNodes, opts)
         )
     end
 end
-____exports._position_id = function(position, _parent)
-    return position.id or (position.path .. "::") .. position.name
+____exports._position_id = function(position, parent)
+    if position.id then
+        return position.id
+    elseif position.type == "test" then
+        local namespace = nil
+        local ____opt_0 = parent[1]
+        if (____opt_0 and ____opt_0.type) == "namespace" then
+            namespace = parent[1].name
+        end
+        if namespace == nil then
+            return (position.path .. "::") .. position.name
+        else
+            return (((position.path .. "::") .. namespace) .. "::") .. position.name
+        end
+    elseif position.type == "namespace" then
+        return (position.path .. "::") .. position.name
+    end
+    error(
+        __TS__New(Error, "Unknown position type"),
+        0
+    )
 end
 ____exports._get_data = function()
     logger.debug("======getting data=======")
