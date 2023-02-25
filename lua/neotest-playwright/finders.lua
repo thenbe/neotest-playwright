@@ -158,4 +158,8 @@ ____exports.getPlaywrightConfig = function(filePath)
     logger.info("Unable to locate playwright config file.")
     return nil
 end
+____exports.get_cwd = function(filePath)
+    local dir = util.find_ancestor(filePath, "node_modules", true) or ""
+    return dir
+end
 return ____exports

@@ -37,3 +37,9 @@ export const getPlaywrightConfig: AdapterOptions['get_playwright_config'] = (
 
 	return null;
 };
+
+export const get_cwd: AdapterOptions['get_cwd'] = (filePath: string) => {
+	const dir = util.find_ancestor(filePath, 'node_modules', true) ?? '';
+
+	return dir;
+};
