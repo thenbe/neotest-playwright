@@ -29,6 +29,7 @@ declare module 'neotest' {
 		file_path: string,
 		source: string,
 		captured_nodes: NodeMatch,
+		custom_data: AdapterData,
 	) => Position | Position[];
 
 	type PositionId = (position: Position, parents: Position[]) => string;
@@ -234,6 +235,8 @@ declare module 'neotest.lib' {
 			 *
 			 * https://github.com/nvim-neotest/neotest/issues/68#issuecomment-1242769159 */
 			build_position?: BuildPosition | string;
+
+			custom_data: AdapterData;
 		}
 	}
 

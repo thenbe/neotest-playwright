@@ -66,6 +66,7 @@ export const discoverPositions = ((path: string) => {
 		`;
 
 	return lib.treesitter.parse_positions(path, query, {
+		custom_data: _get_data(),
 		nested_tests: true,
 		position_id: 'require("neotest-playwright.discover")._position_id',
 		...(options.enable_dynamic_test_discovery
@@ -91,6 +92,7 @@ export const _build_position: BuildPosition = (
 	filePath,
 	source,
 	capturedNodes,
+	opts,
 ) => {
 	const match_type = getMatchType(capturedNodes);
 
@@ -117,7 +119,7 @@ export const _build_position: BuildPosition = (
 			name,
 		} as const;
 
-		const position = buildTestPosition(base, _get_data());
+		const position = buildTestPosition(base, opts.custom_data);
 
 		return position;
 	} else {
@@ -130,7 +132,6 @@ export const _position_id: PositionId = (position, _parent) => {
 };
 
 // TODO: remove debug logging
-// FIX: this stalls sometimes
 export const _get_data = () => {
 	logger.debug('======getting data=======');
 	if (data.specs && data.rootDir) {
@@ -138,12 +139,7 @@ export const _get_data = () => {
 	} else {
 		logger.debug('======data does not exist. refreshing...=======');
 
-		const report = getTests() as NonNullable<AdapterData['report']>;
-		logger.debug('report', report);
-
-		data.report = report; // TODO: do we need to store this?
-		data.specs = flattenSpecs(report.suites);
-		data.rootDir = report.config.rootDir;
+		refresh_data();
 	}
 
 	return {
@@ -151,4 +147,12 @@ export const _get_data = () => {
 		specs: data.specs!,
 		rootDir: data.rootDir!,
 	};
+};
+
+export const refresh_data = () => {
+	const report = getTests() as NonNullable<AdapterData['report']>;
+
+	data.report = report; // TODO: do we need to store this?
+	data.specs = flattenSpecs(report.suites);
+	data.rootDir = report.config.rootDir;
 };

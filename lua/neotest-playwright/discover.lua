@@ -191,7 +191,14 @@ ____exports.discoverPositions = function(path)
     return lib.treesitter.parse_positions(
         path,
         query,
-        __TS__ObjectAssign({nested_tests = true, position_id = "require(\"neotest-playwright.discover\")._position_id"}, options.enable_dynamic_test_discovery and ({build_position = "require(\"neotest-playwright.discover\")._build_position"}) or ({}))
+        __TS__ObjectAssign(
+            {
+                custom_data = ____exports._get_data(),
+                nested_tests = true,
+                position_id = "require(\"neotest-playwright.discover\")._position_id"
+            },
+            options.enable_dynamic_test_discovery and ({build_position = "require(\"neotest-playwright.discover\")._build_position"}) or ({})
+        )
     )
 end
 local function getMatchType(node)
@@ -206,7 +213,7 @@ local function getMatchType(node)
         )
     end
 end
-____exports._build_position = function(filePath, source, capturedNodes)
+____exports._build_position = function(filePath, source, capturedNodes, opts)
     local match_type = getMatchType(capturedNodes)
     local name = vim.treesitter.get_node_text(capturedNodes[match_type .. ".name"], source)
     local definition = capturedNodes[match_type .. ".definition"]
@@ -215,10 +222,7 @@ ____exports._build_position = function(filePath, source, capturedNodes)
         return {type = match_type, range = range, path = filePath, name = name}
     elseif match_type == "test" then
         local base = {type = match_type, range = range, path = filePath, name = name}
-        local position = buildTestPosition(
-            base,
-            ____exports._get_data()
-        )
+        local position = buildTestPosition(base, opts.custom_data)
         return position
     else
         error(
@@ -236,12 +240,14 @@ ____exports._get_data = function()
         logger.debug("data already exists")
     else
         logger.debug("======data does not exist. refreshing...=======")
-        local report = getTests()
-        logger.debug("report", report)
-        data.report = report
-        data.specs = flattenSpecs(report.suites)
-        data.rootDir = report.config.rootDir
+        ____exports.refresh_data()
     end
     return {report = data.report, specs = data.specs, rootDir = data.rootDir}
+end
+____exports.refresh_data = function()
+    local report = getTests()
+    data.report = report
+    data.specs = flattenSpecs(report.suites)
+    data.rootDir = report.config.rootDir
 end
 return ____exports
