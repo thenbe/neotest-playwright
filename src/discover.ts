@@ -8,13 +8,20 @@ import { buildTestPosition } from './position';
 import { flattenSpecs } from './report';
 import type { Adapter, AdapterData } from './types/adapter';
 
-export const root = lib.files.match_root_pattern('package.json');
+export const root: Adapter['root'] =
+	lib.files.match_root_pattern('package.json');
 
-export const filterDir = ((name: string, _rel_path: string, _root: string) => {
+export const filterDir: Adapter['filter_dir'] = (
+	name: string,
+	_rel_path: string,
+	_root: string,
+) => {
 	return name !== 'node_modules';
-}) satisfies Adapter['filter_dir'];
+};
 
-export const isTestFile = ((file_path: string | undefined): boolean => {
+export const isTestFile: Adapter['is_test_file'] = (
+	file_path: string | undefined,
+): boolean => {
 	if (!file_path) {
 		return false;
 	}
@@ -25,9 +32,11 @@ export const isTestFile = ((file_path: string | undefined): boolean => {
 	const result = endings.some((ending) => file_path.endsWith(ending));
 
 	return result;
-}) satisfies Adapter['is_test_file'];
+};
 
-export const discoverPositions = ((path: string) => {
+export const discoverPositions: Adapter['discover_positions'] = (
+	path: string,
+) => {
 	const query = `
 		; -- Namespaces --
 
@@ -76,7 +85,7 @@ export const discoverPositions = ((path: string) => {
 			  }
 			: {}),
 	});
-}) satisfies Adapter['discover_positions'];
+};
 
 const getMatchType = <T extends MatchType>(node: NodeMatch<T>) => {
 	if ('test.name' in node) {
