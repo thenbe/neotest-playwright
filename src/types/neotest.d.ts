@@ -2,12 +2,9 @@ declare function print(...args: unknown[]): void;
 
 type MatchType = 'namespace' | 'test';
 
-/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/restrict-template-expressions */
-interface NodeMatch<T extends MatchType> {
-	[`${T}.name`]: LuaUserdata;
-	[`${T}.definition`]: LuaUserdata;
-}
-/* eslint-enable @typescript-eslint/no-unused-vars, @typescript-eslint/restrict-template-expressions */
+type NodeMatch<T extends MatchType> = {
+	[K in `${T}.name` | `${T}.definition`]: LuaUserdata;
+};
 
 type Range = LuaMultiReturn<[number, number, number, number]>;
 
@@ -31,7 +28,7 @@ declare module 'neotest' {
 		this: void,
 		file_path: string,
 		source: string,
-		captured_nodes: NodeMatch,
+		captured_nodes: NodeMatch<MatchType>,
 		custom_data: AdapterData,
 	) => Position | Position[];
 
