@@ -14,23 +14,20 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 
 	if (pos.type === 'dir' || pos.type === 'file') {
 		testFilter = pos.path;
-	} else if ('range' in pos) {
-		testFilter = `${pos.path}:${pos.range[0] + 1}`;
 	} else {
-		// This is a range-less position. To get the correct test filter, we
-		// need to find the nearest test position with a non-null range.
-		// https://github.com/nvim-neotest/neotest/pull/172
-		const range = args.tree.closest_value_for('range') as Range;
+		let line: number;
 
-		if (range) {
-			const row = range[0];
-
-			testFilter = `${pos.path}:${row + 1}`;
+		if ('range' in pos) {
+			line = pos.range[0] + 1;
 		} else {
-			throw new Error(
-				'TODO: Implement fallback test filter for range-less positions',
-			);
+			// This is a range-less position. To get the correct test filter, we
+			// need to find the nearest test position with a non-null range.
+			// https://github.com/nvim-neotest/neotest/pull/172
+			const range = args.tree.closest_value_for('range') as Range;
+			line = range[0] + 1;
 		}
+
+		testFilter = `${pos.path}:${line}`;
 	}
 
 	// @ts-expect-error TODO: add type
