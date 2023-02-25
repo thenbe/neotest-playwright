@@ -141,7 +141,7 @@ export const _build_position: BuildPosition = (
 };
 
 export const _position_id: PositionId = (position, _parent) => {
-	return position.id ?? position.path + position.name;
+	return position.id ?? position.path + '::' + position.name;
 };
 
 // TODO: remove debug logging

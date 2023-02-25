@@ -232,7 +232,7 @@ ____exports._build_position = function(filePath, source, capturedNodes, opts)
     end
 end
 ____exports._position_id = function(position, _parent)
-    return position.id or position.path .. position.name
+    return position.id or (position.path .. "::") .. position.name
 end
 ____exports._get_data = function()
     logger.debug("======getting data=======")
