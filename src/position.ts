@@ -1,6 +1,7 @@
 import type * as P from '@playwright/test/reporter';
 import type { Position, RangedPosition, RangelessPosition } from 'neotest';
 import * as lib from 'neotest.lib';
+import * as logger from 'neotest.logging';
 import type { AdapterData } from './types/adapter';
 
 type BasePosition = Omit<RangedPosition, 'id'>;
@@ -16,23 +17,44 @@ export const buildTestPosition = (basePosition: BasePosition): Position[] => {
 
 	const data = _data as AdapterData;
 
-	// logger.debug('err---------', err);
+	logger.debug('err---------', err);
 	// logger.debug('raw_result---------', raw_result);
 
 	const line = basePosition.range[0];
 	// const column = position.range[1];
 
 	const specs = data.specs!.filter((spec) => {
-		const rowMatch = spec.line === line + 1;
-		// const columnMatch = spec.column === column + 1;
+		logger.debug('spec', spec);
+		logger.debug('basePosition', basePosition);
+
 		const specAbsolutePath = data.rootDir + '/' + spec.file;
+		logger.debug('specAbsolutePath', specAbsolutePath);
+
 		const fileMatch = specAbsolutePath === basePosition.path;
-		return rowMatch && fileMatch;
+		logger.debug('fileMatch', fileMatch);
+
+		if (!fileMatch) {
+			return false;
+		}
+
+		const rowMatch = spec.line === line + 1;
+		logger.debug('rowMatch', rowMatch);
+		// const columnMatch = spec.column === column + 1;
+
+		const match = rowMatch && fileMatch;
+		logger.debug('match', match);
+
+		return match;
 	});
 
 	if (specs.length === 0) {
+		logger.debug('No match found');
+		logger.debug('data.specs', data.specs);
+		logger.debug('basePosition', basePosition);
+
 		// TODO: return position with available data
-		throw new Error('No match found');
+		// throw new Error('No match found');
+		return [basePosition];
 	}
 
 	let positions: Position[] = [];
@@ -56,7 +78,7 @@ const specToPosition = (
 	spec: P.JSONReportSpec,
 	basePosition: BasePosition,
 ): RangelessPosition | RangedPosition => {
-	const projectId = spec.tests[0]?.projectId;
+	const projectId = spec.tests[0]?.projectName;
 	const name = `${projectId} - ${spec.title}`;
 
 	const { range, ...rest } = basePosition;

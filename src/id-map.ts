@@ -54,9 +54,7 @@ export const readIdMap = (filePath: string): IdMap => {
 export const withTreesitterIds = (report: P.JSONReport) => {
 	const idMap: IdMap = {};
 
-	const root = report.suites[0]!;
-
-	const specs = flattenSpecs(root);
+	const specs = flattenSpecs(report.suites);
 
 	for (const spec of specs) {
 		const isNamespaced = spec.file !== spec.title;
@@ -64,12 +62,13 @@ export const withTreesitterIds = (report: P.JSONReport) => {
 		let tsId: string;
 
 		if (isNamespaced) {
+			// @ts-ignore
 			tsId = `${spec.file}::${spec.suiteTitle}::${spec.title}`;
 		} else {
 			tsId = `${spec.file}::${spec.title}`;
 		}
 
-		const titleWithProject = `${spec.tests[0]?.projectId}::${spec.title}`;
+		const titleWithProject = `${spec.tests[0]?.projectName}::${spec.title}`;
 
 		const extra: SpecData = {
 			playwrightId: spec.id,

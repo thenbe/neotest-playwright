@@ -221,18 +221,17 @@ ____exports.readIdMap = function(filePath)
 end
 ____exports.withTreesitterIds = function(report)
     local idMap = {}
-    local root = report.suites[1]
-    local specs = flattenSpecs(root)
+    local specs = flattenSpecs(report.suites)
     for ____, spec in ipairs(specs) do
         local isNamespaced = spec.file ~= spec.title
         local tsId
         if isNamespaced then
-            tsId = (((spec.file .. "::") .. spec.suiteTitle) .. "::") .. spec.title
+            tsId = (((spec.file .. "::") .. tostring(spec.suiteTitle)) .. "::") .. spec.title
         else
             tsId = (spec.file .. "::") .. spec.title
         end
         local ____opt_0 = spec.tests[1]
-        local titleWithProject = ((____opt_0 and ____opt_0.projectId) .. "::") .. spec.title
+        local titleWithProject = ((____opt_0 and ____opt_0.projectName) .. "::") .. spec.title
         local extra = {playwrightId = spec.id, titleWithProject = titleWithProject}
         if idMap[tsId] then
             local ____idMap_tsId_2 = idMap[tsId]

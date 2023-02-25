@@ -224,19 +224,21 @@ ____exports._build_position = function(filePath, source, capturedNodes)
         )
     end
 end
-____exports._position_id = function(position, parent)
+____exports._position_id = function(position, _parent)
     return position.id or position.path .. position.name
 end
 ____exports._get_data = function()
+    logger.debug("======getting data=======")
     if data.specs and data.rootDir then
         logger.debug("data already exists")
     else
         logger.debug("======data does not exist. refreshing...=======")
         local report = getTests()
+        logger.debug("report", report)
         data.report = report
-        data.specs = flattenSpecs(report.suites[1])
+        data.specs = flattenSpecs(report.suites)
         data.rootDir = report.config.rootDir
     end
-    return data
+    return {report = data.report, specs = data.specs, rootDir = data.rootDir}
 end
 return ____exports

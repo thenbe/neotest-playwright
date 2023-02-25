@@ -44,7 +44,7 @@ export const parseSuite = (
 ): neotest.Results => {
 	const results: neotest.Results = {};
 
-	const specs = flattenSpecs(suite);
+	const specs = flattenSpecs([suite]);
 
 	// Parse specs
 	for (const spec of specs) {
@@ -61,11 +61,27 @@ export const parseSuite = (
 	return results;
 };
 
-export const flattenSpecs = (suite: P.JSONReportSuite) => {
-	let specs = suite.specs.map((spec) => ({ ...spec, suiteTitle: suite.title }));
+// export const flattenSpecs = (suite: P.JSONReportSuite) => {
+// 	let specs = suite.specs.map((spec) => ({ ...spec, suiteTitle: suite.title }));
+//
+// 	for (const nestedSuite of suite.suites ?? []) {
+// 		specs = specs.concat(flattenSpecs(nestedSuite));
+// 	}
+//
+// 	return specs;
+// };
 
-	for (const nestedSuite of suite.suites ?? []) {
-		specs = specs.concat(flattenSpecs(nestedSuite));
+export const flattenSpecs = (
+	suites: P.JSONReportSuite[],
+): P.JSONReportSpec[] => {
+	let specs: P.JSONReportSpec[] = [];
+
+	for (const suite of suites) {
+		const suiteSpecs = suite.specs.map((spec) => ({
+			...spec,
+			suiteTitle: suite.title,
+		}));
+		specs = specs.concat(suiteSpecs, flattenSpecs(suite.suites ?? []));
 	}
 
 	return specs;

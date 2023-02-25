@@ -126,23 +126,30 @@ export const _build_position: BuildPosition = (
 	}
 };
 
-export const _position_id: PositionId = (position, parent) => {
+export const _position_id: PositionId = (position, _parent) => {
 	return position.id ?? position.path + position.name;
 };
 
 // TODO: remove debug logging
+// FIX: this stalls sometimes
 export const _get_data = () => {
+	logger.debug('======getting data=======');
 	if (data.specs && data.rootDir) {
 		logger.debug('data already exists');
 	} else {
 		logger.debug('======data does not exist. refreshing...=======');
 
 		const report = getTests() as NonNullable<AdapterData['report']>;
+		logger.debug('report', report);
 
 		data.report = report; // TODO: do we need to store this?
-		data.specs = flattenSpecs(report.suites[0]!);
+		data.specs = flattenSpecs(report.suites);
 		data.rootDir = report.config.rootDir;
 	}
 
-	return data;
+	return {
+		report: data.report!,
+		specs: data.specs!,
+		rootDir: data.rootDir!,
+	};
 };

@@ -219,7 +219,7 @@ ____exports.parseOutput = function(report)
 end
 ____exports.parseSuite = function(suite, report)
     local results = {}
-    local specs = ____exports.flattenSpecs(suite)
+    local specs = ____exports.flattenSpecs({suite})
     for ____, spec in ipairs(specs) do
         local key
         if options.enable_dynamic_test_discovery then
@@ -231,15 +231,17 @@ ____exports.parseSuite = function(suite, report)
     end
     return results
 end
-____exports.flattenSpecs = function(suite)
-    local specs = __TS__ArrayMap(
-        suite.specs,
-        function(____, spec) return __TS__ObjectAssign({}, spec, {suiteTitle = suite.title}) end
-    )
-    for ____, nestedSuite in ipairs(suite.suites or ({})) do
+____exports.flattenSpecs = function(suites)
+    local specs = {}
+    for ____, suite in ipairs(suites) do
+        local suiteSpecs = __TS__ArrayMap(
+            suite.specs,
+            function(____, spec) return __TS__ObjectAssign({}, spec, {suiteTitle = suite.title}) end
+        )
         specs = __TS__ArrayConcat(
             specs,
-            ____exports.flattenSpecs(nestedSuite)
+            suiteSpecs,
+            ____exports.flattenSpecs(suite.suites or ({}))
         )
     end
     return specs
