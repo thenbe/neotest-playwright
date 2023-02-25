@@ -5,6 +5,8 @@ import { loadProjectCache, saveProjectCache } from './persist';
 import { get_projects } from './playwright';
 import { selectMultiple } from './select-multiple';
 
+// TODO: document interaction with dynamic test discovery
+
 /** Returns a list of project names */
 const parseProjects = (output: P.JSONReport) => {
 	const names = output.config.projects.map((p) => p.name);

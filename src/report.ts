@@ -24,6 +24,8 @@ export const parseOutput = (report: P.JSONReport): neotest.Results => {
 		emitError('Global errors found in report');
 	}
 
+	// TODO: handle array of suites:
+	// omiting testDir in config results in multiple suites at root level
 	const root = report.suites[0];
 
 	if (!root) {
