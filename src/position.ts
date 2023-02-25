@@ -1,6 +1,7 @@
 import type * as P from '@playwright/test/reporter';
 import type { Position, RangedPosition, RangelessPosition } from 'neotest';
 import * as logger from 'neotest.logging';
+import { options } from './adapter-options';
 import type { AdapterData } from './types/adapter';
 
 type BasePosition = Omit<RangedPosition, 'id'>;
@@ -53,6 +54,21 @@ export const buildTestPosition = (
 	positions.push(main);
 
 	specs.map((spec) => positions.push(specToPosition(spec, basePosition)));
+
+	// filter out positions belonging to ignored projects
+	// TODO: get the latest list of selected projects
+	const projects = options.projects;
+
+	positions = positions.filter((position) => {
+		const projectId = position.project_id;
+
+		if (!projectId) {
+			// The main position doesn't have a project id
+			return true;
+		}
+
+		return projects.includes(projectId);
+	});
 
 	return positions;
 };

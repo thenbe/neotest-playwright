@@ -30,7 +30,6 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 		testFilter = `${pos.path}:${line}`;
 	}
 
-	// @ts-expect-error TODO: add type
 	const projects = pos.project_id ? [pos.project_id] : options.projects;
 
 	const commandOptions: CommandOptions = {

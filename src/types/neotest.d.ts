@@ -15,6 +15,7 @@ declare module 'neotest' {
 		type: 'dir' | 'file' | 'namespace' | 'test';
 		name: string;
 		path: string;
+		project_id?: string;
 	}
 
 	interface RangedPosition extends RangelessPosition {

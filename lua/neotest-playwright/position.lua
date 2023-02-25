@@ -31,6 +31,26 @@ local function __TS__ArrayMap(self, callbackfn, thisArg)
     return result
 end
 
+local function __TS__ArrayIncludes(self, searchElement, fromIndex)
+    if fromIndex == nil then
+        fromIndex = 0
+    end
+    local len = #self
+    local k = fromIndex
+    if fromIndex < 0 then
+        k = len + fromIndex
+    end
+    if k < 0 then
+        k = 0
+    end
+    for i = k + 1, len do
+        if self[i] == searchElement then
+            return true
+        end
+    end
+    return false
+end
+
 local function __TS__ObjectRest(target, usedProperties)
     local result = {}
     for property in pairs(target) do
@@ -44,6 +64,8 @@ end
 local ____exports = {}
 local specToPosition
 local logger = require("neotest.logging")
+local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
+local options = ____adapter_2Doptions.options
 --- Given a test position, return one or more positions based on what can be
 -- dynamically discovered using the playwright cli.
 ____exports.buildTestPosition = function(basePosition, data)
@@ -77,13 +99,24 @@ ____exports.buildTestPosition = function(basePosition, data)
             return ____temp_0
         end
     )
+    local projects = options.projects
+    positions = __TS__ArrayFilter(
+        positions,
+        function(____, position)
+            local projectId = position.project_id
+            if not projectId then
+                return true
+            end
+            return __TS__ArrayIncludes(projects, projectId)
+        end
+    )
     return positions
 end
 --- Convert a playwright spec to a neotest position.
 specToPosition = function(spec, basePosition)
     local ____opt_1 = spec.tests[1]
     local projectId = ____opt_1 and ____opt_1.projectName
-    local name = (tostring(projectId) .. " - ") .. spec.title
+    local name = (projectId .. " - ") .. spec.title
     local ____basePosition_3 = basePosition
     local range = ____basePosition_3.range
     local rest = __TS__ObjectRest(____basePosition_3, {range = true})
