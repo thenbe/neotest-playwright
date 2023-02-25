@@ -7,6 +7,7 @@ const NO_REPLACE = [
 	'neotest.async',
 	'neotest.lib',
 	'neotest.logging',
+	'say',
 ];
 
 const PREFIX = 'neotest-playwright';
