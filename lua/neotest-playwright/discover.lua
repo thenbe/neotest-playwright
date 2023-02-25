@@ -215,7 +215,10 @@ ____exports._build_position = function(filePath, source, capturedNodes)
         return {type = match_type, range = range, path = filePath, name = name}
     elseif match_type == "test" then
         local base = {type = match_type, range = range, path = filePath, name = name}
-        local position = buildTestPosition(base)
+        local position = buildTestPosition(
+            base,
+            ____exports._get_data()
+        )
         return position
     else
         error(

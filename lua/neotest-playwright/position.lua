@@ -43,14 +43,10 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local specToPosition
-local lib = require("neotest.lib")
 local logger = require("neotest.logging")
 --- Given a test position, return one or more positions based on what can be
 -- dynamically discovered using the playwright cli.
-____exports.buildTestPosition = function(basePosition)
-    local _data, err = lib.subprocess.call("require(\"neotest-playwright.discover\")._get_data")
-    local data = _data
-    logger.debug("err---------", err)
+____exports.buildTestPosition = function(basePosition, data)
     local line = basePosition.range[1]
     local specs = __TS__ArrayFilter(
         data.specs,

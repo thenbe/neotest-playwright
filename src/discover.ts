@@ -117,7 +117,7 @@ export const _build_position: BuildPosition = (
 			name,
 		} as const;
 
-		const position = buildTestPosition(base);
+		const position = buildTestPosition(base, _get_data());
 
 		return position;
 	} else {
