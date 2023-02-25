@@ -42,7 +42,7 @@ ____exports.buildCommand = function(options, extraArgs)
         command[#command + 1] = "--timeout=" .. tostring(o.timeout)
     end
     if o.config ~= nil then
-        command[#command + 1] = "--config=" .. o.config
+        command[#command + 1] = "--config=" .. tostring(o.config)
     end
     if o.projects ~= nil then
         for ____, project in ipairs(o.projects) do

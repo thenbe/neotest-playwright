@@ -136,7 +136,7 @@ local util = require("neotest-playwright.util")
 local lib = require("neotest.lib")
 local logger = require("neotest.logging")
 ____exports.getPlaywrightBinary = function(filePath)
-    local node_modules = util.find_ancestor(filePath, "node_modules", true) .. "/node_modules"
+    local node_modules = tostring(util.find_ancestor(filePath, "node_modules", true)) .. "/node_modules"
     local bin = node_modules .. "/.bin/playwright"
     if lib.files.exists(bin) then
         return bin
@@ -150,7 +150,7 @@ ____exports.getPlaywrightBinary = function(filePath)
 end
 ____exports.getPlaywrightConfig = function(filePath)
     local configDir = util.find_ancestor(filePath, "playwright.config.ts", false)
-    local config = configDir .. "/playwright.config.ts"
+    local config = tostring(configDir) .. "/playwright.config.ts"
     if lib.files.exists(config) then
         return config
     end

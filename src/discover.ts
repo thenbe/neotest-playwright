@@ -6,7 +6,6 @@ import { options } from './adapter-options';
 import { getTests } from './playwright';
 import { buildTestPosition } from './position';
 import { flattenSpecs } from './report';
-import { readReport } from './report-io';
 import type { Adapter, AdapterData } from './types/adapter';
 
 export const root = lib.files.match_root_pattern('package.json');

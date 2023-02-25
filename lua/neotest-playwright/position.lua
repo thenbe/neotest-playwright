@@ -57,7 +57,7 @@ ____exports.buildTestPosition = function(basePosition)
         function(____, spec)
             logger.debug("spec", spec)
             logger.debug("basePosition", basePosition)
-            local specAbsolutePath = (data.rootDir .. "/") .. spec.file
+            local specAbsolutePath = (tostring(data.rootDir) .. "/") .. spec.file
             logger.debug("specAbsolutePath", specAbsolutePath)
             local fileMatch = specAbsolutePath == basePosition.path
             logger.debug("fileMatch", fileMatch)
@@ -95,7 +95,7 @@ end
 specToPosition = function(spec, basePosition)
     local ____opt_1 = spec.tests[1]
     local projectId = ____opt_1 and ____opt_1.projectName
-    local name = (projectId .. " - ") .. spec.title
+    local name = (tostring(projectId) .. " - ") .. spec.title
     local ____basePosition_3 = basePosition
     local range = ____basePosition_3.range
     local rest = __TS__ObjectRest(____basePosition_3, {range = true})
