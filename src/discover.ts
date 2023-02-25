@@ -3,10 +3,11 @@ import * as lib from 'neotest.lib';
 import * as logger from 'neotest.logging';
 import { data } from './adapter-data';
 import { options } from './adapter-options';
+import { getTests } from './playwright';
 import { buildTestPosition } from './position';
 import { flattenSpecs } from './report';
 import { readReport } from './report-io';
-import type { Adapter } from './types/adapter';
+import type { Adapter, AdapterData } from './types/adapter';
 
 export const root = lib.files.match_root_pattern('package.json');
 
@@ -131,14 +132,16 @@ export const _position_id: PositionId = (position, parent) => {
 
 // TODO: remove debug logging
 export const _get_data = () => {
-	if (data.report && data.specs && data.rootDir) {
+	if (data.specs && data.rootDir) {
 		logger.debug('data already exists');
 	} else {
 		logger.debug('======data does not exist. refreshing...=======');
 
-		data.report = readReport(options.tempDataFile);
-		data.specs = flattenSpecs(data.report!.suites[0]!);
-		data.rootDir = data.report.config.rootDir;
+		const report = getTests() as NonNullable<AdapterData['report']>;
+
+		data.report = report; // TODO: do we need to store this?
+		data.specs = flattenSpecs(report.suites[0]!);
+		data.rootDir = report.config.rootDir;
 	}
 
 	return data;

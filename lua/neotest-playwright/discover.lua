@@ -165,12 +165,12 @@ local ____adapter_2Ddata = require('neotest-playwright.adapter-data')
 local data = ____adapter_2Ddata.data
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
+local ____playwright = require('neotest-playwright.playwright')
+local getTests = ____playwright.getTests
 local ____position = require('neotest-playwright.position')
 local buildTestPosition = ____position.buildTestPosition
 local ____report = require('neotest-playwright.report')
 local flattenSpecs = ____report.flattenSpecs
-local ____report_2Dio = require('neotest-playwright.report-io')
-local readReport = ____report_2Dio.readReport
 ____exports.root = lib.files.match_root_pattern("package.json")
 ____exports.filterDir = function(name, _rel_path, _root)
     return name ~= "node_modules"
@@ -228,13 +228,14 @@ ____exports._position_id = function(position, parent)
     return position.id or position.path .. position.name
 end
 ____exports._get_data = function()
-    if data.report and data.specs and data.rootDir then
+    if data.specs and data.rootDir then
         logger.debug("data already exists")
     else
         logger.debug("======data does not exist. refreshing...=======")
-        data.report = readReport(options.tempDataFile)
-        data.specs = flattenSpecs(data.report.suites[1])
-        data.rootDir = data.report.config.rootDir
+        local report = getTests()
+        data.report = report
+        data.specs = flattenSpecs(report.suites[1])
+        data.rootDir = report.config.rootDir
     end
     return data
 end

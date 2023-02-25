@@ -1,36 +1,31 @@
 import type * as P from '@playwright/test/reporter';
 import type { Position, RangedPosition, RangelessPosition } from 'neotest';
-import { options } from './adapter-options';
-import { flattenSpecs } from './report';
-import { readReport } from './report-io';
+import * as lib from 'neotest.lib';
+import type { AdapterData } from './types/adapter';
 
 type BasePosition = Omit<RangedPosition, 'id'>;
 
 // WARN: remove debug code
 
-// TODO: optimize format for efficient retrieval
-let report: P.JSONReport | null = null;
-let data: P.JSONReportSpec[] | null = null;
-let rootDir: string | null = null;
-
 /** Given a test position, return one or more positions based on what can be
  * dynamically discovered using the playwright cli. */
 export const buildTestPosition = (basePosition: BasePosition): Position[] => {
+	const [_data, err] = lib.subprocess.call(
+		'require("neotest-playwright.discover")._get_data',
+	);
+
+	const data = _data as AdapterData;
+
+	// logger.debug('err---------', err);
+	// logger.debug('raw_result---------', raw_result);
+
 	const line = basePosition.range[0];
 	// const column = position.range[1];
 
-	// TODO: move to own function
-	if (!data || !rootDir) {
-		report = readReport(options.tempDataFile);
-		data = flattenSpecs(report!.suites[0]!);
-		rootDir = report.config.rootDir;
-		// throw new Error('No data');
-	}
-
-	const specs = data.filter((spec) => {
+	const specs = data.specs!.filter((spec) => {
 		const rowMatch = spec.line === line + 1;
 		// const columnMatch = spec.column === column + 1;
-		const specAbsolutePath = rootDir + '/' + spec.file;
+		const specAbsolutePath = data.rootDir + '/' + spec.file;
 		const fileMatch = specAbsolutePath === basePosition.path;
 		return rowMatch && fileMatch;
 	});

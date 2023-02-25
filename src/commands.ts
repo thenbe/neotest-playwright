@@ -6,6 +6,7 @@ import { writeReport } from './report-io';
 
 // WARN: remove debug code
 
+// TODO: remove
 export const create_refresh_command = () => {
 	vim.api.nvim_create_user_command(
 		'NeotestPlaywrightRefresh',

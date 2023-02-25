@@ -174,29 +174,18 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local specToPosition
-local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
-local options = ____adapter_2Doptions.options
-local ____report = require('neotest-playwright.report')
-local flattenSpecs = ____report.flattenSpecs
-local ____report_2Dio = require('neotest-playwright.report-io')
-local readReport = ____report_2Dio.readReport
-local report = nil
-local data = nil
-local rootDir = nil
+local lib = require("neotest.lib")
 --- Given a test position, return one or more positions based on what can be
 -- dynamically discovered using the playwright cli.
 ____exports.buildTestPosition = function(basePosition)
+    local _data, err = lib.subprocess.call("require(\"neotest-playwright.discover\")._get_data")
+    local data = _data
     local line = basePosition.range[1]
-    if not data or not rootDir then
-        report = readReport(options.tempDataFile)
-        data = flattenSpecs(report.suites[1])
-        rootDir = report.config.rootDir
-    end
     local specs = __TS__ArrayFilter(
-        data,
+        data.specs,
         function(____, spec)
             local rowMatch = spec.line == line + 1
-            local specAbsolutePath = (rootDir .. "/") .. spec.file
+            local specAbsolutePath = (data.rootDir .. "/") .. spec.file
             local fileMatch = specAbsolutePath == basePosition.path
             return rowMatch and fileMatch
         end
