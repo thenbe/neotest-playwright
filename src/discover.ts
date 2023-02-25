@@ -157,6 +157,7 @@ export const _get_data = () => {
 		report: data.report!,
 		specs: data.specs!,
 		rootDir: data.rootDir!,
+		projects: options.projects, // up-to-date projects
 	};
 };
 

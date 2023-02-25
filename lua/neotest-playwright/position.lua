@@ -195,8 +195,6 @@ end
 local ____exports = {}
 local specToPosition
 local logger = require("neotest.logging")
-local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
-local options = ____adapter_2Doptions.options
 local ____helpers = require('neotest-playwright.helpers')
 local emitError = ____helpers.emitError
 --- Given a test position, return one or more positions based on what can be
@@ -232,7 +230,7 @@ ____exports.buildTestPosition = function(basePosition, data)
             return ____temp_0
         end
     )
-    local projects = options.projects
+    local projects = data.projects
     positions = __TS__ArrayFilter(
         positions,
         function(____, position)

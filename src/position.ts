@@ -57,8 +57,7 @@ export const buildTestPosition = (
 	specs.map((spec) => positions.push(specToPosition(spec, basePosition)));
 
 	// filter out positions belonging to ignored projects
-	// TODO: get the latest list of selected projects
-	const projects = options.projects;
+	const projects = data.projects!;
 
 	positions = positions.filter((position) => {
 		const projectId = position.project_id;

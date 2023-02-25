@@ -242,7 +242,7 @@ ____exports._get_data = function()
         logger.debug("======data does not exist. refreshing...=======")
         ____exports.refresh_data()
     end
-    return {report = data.report, specs = data.specs, rootDir = data.rootDir}
+    return {report = data.report, specs = data.specs, rootDir = data.rootDir, projects = options.projects}
 end
 ____exports.refresh_data = function()
     local report = get_config()
