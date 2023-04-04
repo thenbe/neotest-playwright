@@ -121,13 +121,13 @@ do
             self.size = self.size - 1
             local next = self.nextKey[value]
             local previous = self.previousKey[value]
-            if next and previous then
+            if next ~= nil and previous ~= nil then
                 self.nextKey[previous] = next
                 self.previousKey[next] = previous
-            elseif next then
+            elseif next ~= nil then
                 self.firstKey = next
                 self.previousKey[next] = nil
-            elseif previous then
+            elseif previous ~= nil then
                 self.lastKey = previous
                 self.nextKey[previous] = nil
             else

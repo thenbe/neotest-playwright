@@ -103,7 +103,7 @@ do
             if isClassicLua or caller and caller.func ~= error then
                 return description
             else
-                return (tostring(description) .. "\n") .. self.stack
+                return (description .. "\n") .. tostring(self.stack)
             end
         end
     end
@@ -114,7 +114,7 @@ do
             {__call = function(____, _self, message) return __TS__New(Type, message) end}
         )
     end
-    local ____initErrorClass_2 = initErrorClass
+    local ____initErrorClass_1 = initErrorClass
     local ____class_0 = __TS__Class()
     ____class_0.name = ""
     function ____class_0.prototype.____constructor(self, message)
@@ -125,31 +125,25 @@ do
         self.name = "Error"
         self.stack = getErrorStack(nil, self.constructor.new)
         local metatable = getmetatable(self)
-        if not metatable.__errorToStringPatched then
+        if metatable and not metatable.__errorToStringPatched then
             metatable.__errorToStringPatched = true
             metatable.__tostring = wrapErrorToString(nil, metatable.__tostring)
         end
     end
     function ____class_0.prototype.__tostring(self)
-        local ____temp_1
-        if self.message ~= "" then
-            ____temp_1 = (self.name .. ": ") .. self.message
-        else
-            ____temp_1 = self.name
-        end
-        return ____temp_1
+        return self.message ~= "" and (self.name .. ": ") .. self.message or self.name
     end
-    Error = ____initErrorClass_2(nil, ____class_0, "Error")
+    Error = ____initErrorClass_1(nil, ____class_0, "Error")
     local function createErrorClass(self, name)
-        local ____initErrorClass_4 = initErrorClass
-        local ____class_3 = __TS__Class()
-        ____class_3.name = ____class_3.name
-        __TS__ClassExtends(____class_3, Error)
-        function ____class_3.prototype.____constructor(self, ...)
-            ____class_3.____super.prototype.____constructor(self, ...)
+        local ____initErrorClass_3 = initErrorClass
+        local ____class_2 = __TS__Class()
+        ____class_2.name = ____class_2.name
+        __TS__ClassExtends(____class_2, Error)
+        function ____class_2.prototype.____constructor(self, ...)
+            ____class_2.____super.prototype.____constructor(self, ...)
             self.name = name
         end
-        return ____initErrorClass_4(nil, ____class_3, name)
+        return ____initErrorClass_3(nil, ____class_2, name)
     end
     RangeError = createErrorClass(nil, "RangeError")
     ReferenceError = createErrorClass(nil, "ReferenceError")

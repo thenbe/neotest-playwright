@@ -1,6 +1,5 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
-	"extends": "@tsconfig/node18-strictest-esm/tsconfig.json",
 	"compilerOptions": {
 		"target": "esnext",
 		"lib": ["esnext"],
@@ -11,7 +10,25 @@
 		"baseUrl": "src",
 		"paths": {
 			"neotest-playwright/*": ["*"]
-		}
+		},
+
+		// From @tsconfig/node18-strictest-esm/tsconfig.json
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"allowUnusedLabels": false,
+		"allowUnreachableCode": false,
+		"exactOptionalPropertyTypes": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		// "importsNotUsedAsValues": "error",
+		"checkJs": true
 	},
 	"exclude": ["tests/sample/**"],
 	"include": [
