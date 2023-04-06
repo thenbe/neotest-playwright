@@ -77,7 +77,6 @@ export const discoverPositions: Adapter['discover_positions'] = (
 		`;
 
 	return lib.treesitter.parse_positions(path, query, {
-		custom_data: _get_data(),
 		nested_tests: true,
 		position_id: 'require("neotest-playwright.discover")._position_id',
 		...(options.enable_dynamic_test_discovery
@@ -103,7 +102,6 @@ export const _build_position: BuildPosition = (
 	filePath,
 	source,
 	capturedNodes,
-	opts,
 ) => {
 	const match_type = getMatchType(capturedNodes);
 
@@ -132,7 +130,8 @@ export const _build_position: BuildPosition = (
 			name,
 		} as const;
 
-		const position = buildTestPosition(base, opts.custom_data);
+		// @ts-ignore FIX: type
+		const position = buildTestPosition(base, _get_data());
 
 		return position;
 	} else {
@@ -153,9 +152,7 @@ export const _get_data = () => {
 	logger.info('======[data] getting data=======');
 
 	if (data.specs && data.rootDir) {
-		// if data is already set, return early
 		logger.info('[data] data already exists');
-		return;
 	} else {
 		logger.info('======[data] data does not exist. refreshing...=======');
 

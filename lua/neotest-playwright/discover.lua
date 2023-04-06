@@ -185,14 +185,7 @@ ____exports.discoverPositions = function(path)
     return lib.treesitter.parse_positions(
         path,
         query,
-        __TS__ObjectAssign(
-            {
-                custom_data = ____exports._get_data(),
-                nested_tests = true,
-                position_id = "require(\"neotest-playwright.discover\")._position_id"
-            },
-            options.enable_dynamic_test_discovery and ({build_position = "require(\"neotest-playwright.discover\")._build_position"}) or ({})
-        )
+        __TS__ObjectAssign({nested_tests = true, position_id = "require(\"neotest-playwright.discover\")._position_id"}, options.enable_dynamic_test_discovery and ({build_position = "require(\"neotest-playwright.discover\")._build_position"}) or ({}))
     )
 end
 local function getMatchType(node)
@@ -207,7 +200,7 @@ local function getMatchType(node)
         )
     end
 end
-____exports._build_position = function(filePath, source, capturedNodes, opts)
+____exports._build_position = function(filePath, source, capturedNodes)
     local match_type = getMatchType(capturedNodes)
     local name = vim.treesitter.get_node_text(capturedNodes[match_type .. ".name"], source)
     local definition = capturedNodes[match_type .. ".definition"]
@@ -216,7 +209,10 @@ ____exports._build_position = function(filePath, source, capturedNodes, opts)
         return {type = match_type, range = range, path = filePath, name = name}
     elseif match_type == "test" then
         local base = {type = match_type, range = range, path = filePath, name = name}
-        local position = buildTestPosition(base, opts.custom_data)
+        local position = buildTestPosition(
+            base,
+            ____exports._get_data()
+        )
         return position
     else
         error(
@@ -236,7 +232,6 @@ ____exports._get_data = function()
     logger.info("======[data] getting data=======")
     if data.specs and data.rootDir then
         logger.info("[data] data already exists")
-        return
     else
         logger.info("======[data] data does not exist. refreshing...=======")
         ____exports.refresh_data()
