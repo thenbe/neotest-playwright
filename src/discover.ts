@@ -150,11 +150,14 @@ export const _position_id: PositionId = (position, _parent) => {
 
 // TODO: remove debug logging
 export const _get_data = () => {
-	logger.debug('======getting data=======');
+	logger.info('======[data] getting data=======');
+
 	if (data.specs && data.rootDir) {
-		logger.debug('data already exists');
+		// if data is already set, return early
+		logger.info('[data] data already exists');
+		return;
 	} else {
-		logger.debug('======data does not exist. refreshing...=======');
+		logger.info('======[data] data does not exist. refreshing...=======');
 
 		refresh_data();
 	}

@@ -233,11 +233,12 @@ ____exports._position_id = function(position, _parent)
     end
 end
 ____exports._get_data = function()
-    logger.debug("======getting data=======")
+    logger.info("======[data] getting data=======")
     if data.specs and data.rootDir then
-        logger.debug("data already exists")
+        logger.info("[data] data already exists")
+        return
     else
-        logger.debug("======data does not exist. refreshing...=======")
+        logger.info("======[data] data does not exist. refreshing...=======")
         ____exports.refresh_data()
     end
     return {report = data.report, specs = data.specs, rootDir = data.rootDir, projects = options.projects}
