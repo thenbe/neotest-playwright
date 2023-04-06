@@ -39,6 +39,21 @@ export const isTestFile: Adapter['is_test_file'] = (
 export const discoverPositions: Adapter['discover_positions'] = (
 	path: string,
 ) => {
+	// https://github.com/nvim-neotest/neotest/issues/210
+
+	logger.info('subprocess.enabled', lib.subprocess.enabled());
+	logger.info('subprocess.is_child', lib.subprocess.is_child());
+
+	// make sure data is populated in a subprocess
+	if (lib.subprocess.enabled()) {
+		logger.info('calling populate_data in subprocess');
+		// This is async and will wait for the function to return
+		lib.subprocess.call("require('neotest-playwright.discover').populate_data");
+	} else {
+		logger.info('calling populate_data');
+		populate_data();
+	}
+
 	const query = `
 		; -- Namespaces --
 
@@ -130,8 +145,7 @@ export const _build_position: BuildPosition = (
 			name,
 		} as const;
 
-		// @ts-ignore FIX: type
-		const position = buildTestPosition(base, _get_data());
+		const position = buildTestPosition(base);
 
 		return position;
 	} else {
@@ -147,18 +161,20 @@ export const _position_id: PositionId = (position, _parent) => {
 	}
 };
 
-// TODO: remove debug logging
-export const _get_data = () => {
+export const populate_data = () => {
 	logger.info('======[data] getting data=======');
 
 	if (data.specs && data.rootDir) {
+		// return early if data already exists
 		logger.info('[data] data already exists');
+		return;
 	} else {
-		logger.info('======[data] data does not exist. refreshing...=======');
-
 		refresh_data();
 	}
+};
 
+// TODO: remove debug logging
+export const _get_data = () => {
 	return {
 		report: data.report,
 		specs: data.specs,

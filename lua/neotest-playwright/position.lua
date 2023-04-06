@@ -191,9 +191,11 @@ local specToPosition
 local logger = require("neotest.logging")
 local ____helpers = require('neotest-playwright.helpers')
 local emitError = ____helpers.emitError
+local ____adapter_2Ddata = require('neotest-playwright.adapter-data')
+local data = ____adapter_2Ddata.data
 --- Given a test position, return one or more positions based on what can be
 -- dynamically discovered using the playwright cli.
-____exports.buildTestPosition = function(basePosition, data)
+____exports.buildTestPosition = function(basePosition)
     local line = basePosition.range[1]
     if not data.specs then
         error(
@@ -204,7 +206,7 @@ ____exports.buildTestPosition = function(basePosition, data)
     local specs = __TS__ArrayFilter(
         data.specs,
         function(____, spec)
-            local specAbsolutePath = (data.rootDir .. "/") .. spec.file
+            local specAbsolutePath = (tostring(data.rootDir) .. "/") .. spec.file
             local fileMatch = specAbsolutePath == basePosition.path
             if not fileMatch then
                 return false

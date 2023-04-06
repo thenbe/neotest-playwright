@@ -181,6 +181,21 @@ ____exports.isTestFile = function(file_path)
     return result
 end
 ____exports.discoverPositions = function(path)
+    logger.info(
+        "subprocess.enabled",
+        lib.subprocess.enabled()
+    )
+    logger.info(
+        "subprocess.is_child",
+        lib.subprocess.is_child()
+    )
+    if lib.subprocess.enabled() then
+        logger.info("calling populate_data in subprocess")
+        lib.subprocess.call("require('neotest-playwright.discover').populate_data")
+    else
+        logger.info("calling populate_data")
+        ____exports.populate_data()
+    end
     local query = "\n\t\t; -- Namespaces --\n\n\t\t; Matches: test.describe('title')\n\n\t\t(call_expression\n\t\t function: (member_expression) @func_name (#eq? @func_name \"test.describe\")\n\n\t\t arguments: (arguments\n\t\t\t (string (string_fragment) @namespace.name)\n\t\t\t ) @namespace.definition\n\t\t )\n\n\t\t; -- Tests --\n\n\t\t; Matches: test('title')\n\n\t\t(call_expression\n\t\t function: (identifier) @func_name (#eq? @func_name \"test\")\n\n\t\t arguments: (arguments\n\t\t\t(string (string_fragment) @test.name\n\t\t\t)\n\t\t\t) @test.definition\n\t\t)\n\n\t\t; Matches: test.only('title') / test.fixme('title')\n\n\t\t(call_expression\n\t\t function: (member_expression) @func_name (#any-of? @func_name \"test.only\" \"test.fixme\" \"test.skip\")\n\n\t\t arguments: (arguments\n\t\t\t(string (string_fragment) @test.name)\n\t\t\t) @test.definition\n\t\t)\n\t\t"
     return lib.treesitter.parse_positions(
         path,
@@ -209,10 +224,7 @@ ____exports._build_position = function(filePath, source, capturedNodes)
         return {type = match_type, range = range, path = filePath, name = name}
     elseif match_type == "test" then
         local base = {type = match_type, range = range, path = filePath, name = name}
-        local position = buildTestPosition(
-            base,
-            ____exports._get_data()
-        )
+        local position = buildTestPosition(base)
         return position
     else
         error(
@@ -228,14 +240,16 @@ ____exports._position_id = function(position, _parent)
         return (position.path .. "::") .. position.name
     end
 end
-____exports._get_data = function()
+____exports.populate_data = function()
     logger.info("======[data] getting data=======")
     if data.specs and data.rootDir then
         logger.info("[data] data already exists")
+        return
     else
-        logger.info("======[data] data does not exist. refreshing...=======")
         ____exports.refresh_data()
     end
+end
+____exports._get_data = function()
     return {report = data.report, specs = data.specs, rootDir = data.rootDir, projects = options.projects}
 end
 ____exports.refresh_data = function()

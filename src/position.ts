@@ -2,7 +2,7 @@ import type * as P from '@playwright/test/reporter';
 import type { Position, RangedPosition, RangelessPosition } from 'neotest';
 import * as logger from 'neotest.logging';
 import { emitError } from './helpers';
-import type { AdapterData } from './types/adapter';
+import { data } from './adapter-data';
 
 type BasePosition = Omit<RangedPosition, 'id'>;
 
@@ -10,10 +10,7 @@ type BasePosition = Omit<RangedPosition, 'id'>;
 
 /** Given a test position, return one or more positions based on what can be
  * dynamically discovered using the playwright cli. */
-export const buildTestPosition = (
-	basePosition: BasePosition,
-	data: AdapterData,
-): Position[] => {
+export const buildTestPosition = (basePosition: BasePosition): Position[] => {
 	const line = basePosition.range[0];
 	// const column = position.range[1];
 
