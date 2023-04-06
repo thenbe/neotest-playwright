@@ -1,8 +1,9 @@
 import type * as P from '@playwright/test/reporter';
 import type { Position, RangedPosition, RangelessPosition } from 'neotest';
 import * as logger from 'neotest.logging';
-import { emitError } from './helpers';
 import { data } from './adapter-data';
+import { options } from './adapter-options';
+import { emitError } from './helpers';
 
 type BasePosition = Omit<RangedPosition, 'id'>;
 
@@ -57,7 +58,9 @@ export const buildTestPosition = (basePosition: BasePosition): Position[] => {
 	specs.map((spec) => positions.push(specToPosition(spec, basePosition)));
 
 	// filter out positions belonging to ignored projects
-	const projects = data.projects;
+	// TODO: check this is up-to-date
+	// TODO: handle case where no projects are specified
+	const projects = options.projects;
 
 	positions = positions.filter((position) => {
 		const projectId = position.project_id;
