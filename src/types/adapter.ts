@@ -20,6 +20,8 @@ export interface AdapterOptions {
 	/** If true, the adapter will attempt to use the playwright cli to
 	 * enhance the test discovery process. */
 	enable_dynamic_test_discovery: boolean;
+	/** Override the default filter_dir function. */
+	filter_dir?: Adapter['filter_dir'];
 }
 
 export type AdapterData =
