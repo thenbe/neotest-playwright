@@ -79,8 +79,8 @@ ____exports.buildSpec = function(args)
         {},
         COMMAND_PRESETS[options.preset],
         {
-            bin = options.get_playwright_command(pos.path),
-            config = options.get_playwright_config(pos.path),
+            bin = options.get_playwright_command(),
+            config = options.get_playwright_config(),
             projects = projects,
             testFilter = testFilter
         }

@@ -36,15 +36,15 @@ use({
 
                enable_dynamic_test_discovery = false,
 
-               -- get_playwright_command = function(file_path)
+               -- get_playwright_command = function()
                --    return "path/to/playwright-binary"
                -- end,
 
-               -- get_playwright_config = function(file_path)
+               -- get_playwright_config = function()
                --    return "path/to/playwright.config.ts"
                -- end,
 
-               -- get_cwd = function(file_path)
+               -- get_cwd = function()
                --    return "path/to/dir"
                -- end,
 

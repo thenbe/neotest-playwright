@@ -7,20 +7,10 @@ import { emitError } from './helpers';
 // TODO: add performance logging.
 
 export const get_config = () => {
-	// For better monorepo support, we try to resolve the
-	// playwright binary and playwright config from the current
-	// buffer's path. Else, if no buffer is open, we fall back
-	// to the current working directory.
-	let path = vim.fn.expand('%:p') as string;
-
-	if (path === '') {
-		path = vim.fn.getcwd();
-	}
-
 	const cmd = buildCommand(
 		{
-			bin: options.get_playwright_command(path),
-			config: options.get_playwright_config(path),
+			bin: options.get_playwright_command(),
+			config: options.get_playwright_config(),
 			reporters: ['json'],
 		},
 		['--list'],

@@ -135,14 +135,10 @@ local buildCommand = ____build_2Dcommand.buildCommand
 local ____helpers = require('neotest-playwright.helpers')
 local emitError = ____helpers.emitError
 ____exports.get_config = function()
-    local path = vim.fn.expand("%:p")
-    if path == "" then
-        path = vim.fn.getcwd()
-    end
     local cmd = buildCommand(
         {
-            bin = options.get_playwright_command(path),
-            config = options.get_playwright_config(path),
+            bin = options.get_playwright_command(),
+            config = options.get_playwright_config(),
             reporters = {"json"}
         },
         {"--list"}

@@ -126,11 +126,10 @@ do
 end
 -- End of Lua Library inline imports
 local ____exports = {}
-local util = require("neotest-playwright.util")
 local lib = require("neotest.lib")
 local logger = require("neotest.logging")
-____exports.getPlaywrightBinary = function(filePath)
-    local dir = util.find_ancestor(filePath, "node_modules", true) or ""
+____exports.getPlaywrightBinary = function()
+    local dir = vim.fn.getcwd()
     local node_modules = dir .. "/node_modules"
     local bin = node_modules .. "/.bin/playwright"
     if lib.files.exists(bin) then
@@ -143,17 +142,21 @@ ____exports.getPlaywrightBinary = function(filePath)
         )
     end
 end
-____exports.getPlaywrightConfig = function(filePath)
-    local dir = util.find_ancestor(filePath, "playwright.config.ts", false) or ""
+____exports.getPlaywrightConfig = function()
+    local dir = vim.fn.getcwd()
     local config = dir .. "/playwright.config.ts"
     if lib.files.exists(config) then
         return config
+    else
+        logger.info("Unable to locate playwright config file.")
+        error(
+            __TS__New(Error, "Unable to locate playwright config file. Expected to find it at: " .. config),
+            0
+        )
     end
-    logger.info("Unable to locate playwright config file.")
-    return nil
 end
-____exports.get_cwd = function(filePath)
-    local dir = util.find_ancestor(filePath, "node_modules", true) or ""
+____exports.get_cwd = function()
+    local dir = vim.fn.getcwd()
     return dir
 end
 return ____exports
