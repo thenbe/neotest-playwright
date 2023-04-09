@@ -4,7 +4,7 @@ import type { AdapterOptions } from './types/adapter';
 
 export const getPlaywrightBinary: AdapterOptions['get_playwright_command'] =
 	() => {
-		const dir = vim.fn.getcwd();
+		const dir = get_cwd();
 
 		const node_modules = `${dir}/node_modules`;
 
@@ -24,7 +24,7 @@ export const getPlaywrightBinary: AdapterOptions['get_playwright_command'] =
 
 export const getPlaywrightConfig: AdapterOptions['get_playwright_config'] =
 	() => {
-		const dir = vim.fn.getcwd();
+		const dir = get_cwd();
 
 		const config = `${dir}/playwright.config.ts`;
 
@@ -40,8 +40,11 @@ export const getPlaywrightConfig: AdapterOptions['get_playwright_config'] =
 		}
 	};
 
-export const get_cwd: AdapterOptions['get_cwd'] = () => {
-	const dir = vim.fn.getcwd();
+export const get_cwd: NonNullable<AdapterOptions['get_cwd']> = () => {
+	// current buffer's path (for non-file buffers, return buffer name. E.g. "Neotest Summary")
+	// const dir = vim.api.nvim_eval('expand("%:p:h")') as unknown as string;
+
+	const dir = vim.loop.cwd() as unknown as string;
 
 	return dir;
 };

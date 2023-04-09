@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "task build --force",
-		"dev": "task build --watch --interval=500ms -- --allowUnusedLabels --noUnusedLocals false --noUnusedParameters false --exactOptionalPropertyTypes false --allowUnreachableCode true --noUncheckedIndexedAccess false --strictNullChecks true --suppressExcessPropertyErrors true",
+		"dev": "task build --watch --interval=500ms -- --allowUnusedLabels --noUnusedLocals false --noUnusedParameters false --exactOptionalPropertyTypes false --allowUnreachableCode true --noUncheckedIndexedAccess false --strictNullChecks true --suppressExcessPropertyErrors false",
 		"test": "vitest",
 		"check": "tsc --noEmit",
 		"format": "task format",

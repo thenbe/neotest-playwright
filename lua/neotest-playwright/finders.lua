@@ -129,7 +129,7 @@ local ____exports = {}
 local lib = require("neotest.lib")
 local logger = require("neotest.logging")
 ____exports.getPlaywrightBinary = function()
-    local dir = vim.fn.getcwd()
+    local dir = ____exports.get_cwd()
     local node_modules = dir .. "/node_modules"
     local bin = node_modules .. "/.bin/playwright"
     if lib.files.exists(bin) then
@@ -143,7 +143,7 @@ ____exports.getPlaywrightBinary = function()
     end
 end
 ____exports.getPlaywrightConfig = function()
-    local dir = vim.fn.getcwd()
+    local dir = ____exports.get_cwd()
     local config = dir .. "/playwright.config.ts"
     if lib.files.exists(config) then
         return config
@@ -156,7 +156,7 @@ ____exports.getPlaywrightConfig = function()
     end
 end
 ____exports.get_cwd = function()
-    local dir = vim.fn.getcwd()
+    local dir = vim.loop.cwd()
     return dir
 end
 return ____exports

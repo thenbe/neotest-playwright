@@ -89,7 +89,7 @@ ____exports.buildSpec = function(args)
     local extraArgs = getExtraArgs(args.extra_args, options.extra_args)
     return {
         command = buildCommand(commandOptions, extraArgs),
-        cwd = type(options.get_cwd) == "function" and options.get_cwd(pos.path) or nil,
+        cwd = type(options.get_cwd) == "function" and options.get_cwd() or nil,
         context = {results_path = resultsPath, file = pos.path},
         env = __TS__ObjectAssign({PLAYWRIGHT_JSON_OUTPUT_NAME = resultsPath}, options.env)
     }

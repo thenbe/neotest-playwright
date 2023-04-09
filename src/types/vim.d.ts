@@ -11,6 +11,7 @@ interface IVim {
 	loop: {
 		fs_scandir: (this: void, path: string) => unknown[];
 		dirname: (this: void, path: string) => string;
+		cwd: (this: void) => string;
 	};
 
 	ui: {
