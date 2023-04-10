@@ -30,13 +30,12 @@ use({
       -- ...,
       adapters = {
          require("neotest-playwright").adapter({
-            -- ...,
             options = {
                persist_project_selection = false,
 
                enable_dynamic_test_discovery = false,
 
-               -- get_playwright_command = function()
+               -- get_playwright_binary = function()
                --    return "path/to/playwright-binary"
                -- end,
 

@@ -138,7 +138,7 @@ local logger = ____logging.logger
 ____exports.get_config = function()
     local cmd = buildCommand(
         {
-            bin = options.get_playwright_command(),
+            bin = options.get_playwright_binary(),
             config = options.get_playwright_config(),
             reporters = {"json"}
         },

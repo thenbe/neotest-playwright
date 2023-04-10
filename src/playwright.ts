@@ -9,7 +9,7 @@ import { logger } from './logging';
 export const get_config = () => {
 	const cmd = buildCommand(
 		{
-			bin: options.get_playwright_command(),
+			bin: options.get_playwright_binary(),
 			config: options.get_playwright_config(),
 			reporters: ['json'],
 		},

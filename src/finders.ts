@@ -2,7 +2,7 @@ import * as lib from 'neotest.lib';
 import { logger } from './logging';
 import type { AdapterOptions } from './types/adapter';
 
-export const getPlaywrightBinary: AdapterOptions['get_playwright_command'] =
+export const getPlaywrightBinary: AdapterOptions['get_playwright_binary'] =
 	() => {
 		const dir = get_cwd();
 

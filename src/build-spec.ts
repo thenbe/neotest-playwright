@@ -34,7 +34,7 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 
 	const commandOptions: CommandOptions = {
 		...COMMAND_PRESETS[options.preset],
-		bin: options.get_playwright_command(),
+		bin: options.get_playwright_binary(),
 		config: options.get_playwright_config(),
 		projects,
 		testFilter: testFilter,

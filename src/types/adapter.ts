@@ -7,7 +7,7 @@ export interface AdapterOptions {
 	projects: string[];
 	persist_project_selection: boolean;
 	/** Given a test file path, return the path to the playwright binary. */
-	get_playwright_command: (this: void) => string;
+	get_playwright_binary: (this: void) => string;
 	/** Given a test file path, return the path to the playwright config file. */
 	get_playwright_config: (this: void) => string | null;
 	/** Environment variables to pass to the playwright command. */
