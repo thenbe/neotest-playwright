@@ -8,7 +8,7 @@ Written in typescript and transpiled to Lua using [tstl](https://github.com/Type
 
 ## Features
 
-- [ ] Discover, run, and parse the output of playwright tests
+- [x] Discover, run, and parse the output of playwright tests
 - [x] Project selection + persistence
 - [x] On-the-fly presets
 
@@ -31,39 +31,49 @@ use({
       adapters = {
          require("neotest-playwright").adapter({
             options = {
-               persist_project_selection = false,
-
-               enable_dynamic_test_discovery = false,
-
-               -- get_playwright_binary = function()
-               --    return "path/to/playwright-binary"
-               -- end,
-
-               -- get_playwright_config = function()
-               --    return "path/to/playwright.config.ts"
-               -- end,
-
-               -- get_cwd = function()
-               --    return "path/to/dir"
-               -- end,
-
-               -- env = {
-               --    HELLO = "world",
-               -- },
-
-               -- Extra args to always pass to playwright.
-               -- These are merged with any extra_arg passed
-               -- to neotest's run command.
-               -- extra_args = {
-               --    "--retries=0",
-               --    "--max-failures=5",
-               -- },
-
+               persist_project_selection = true,
+               enable_dynamic_test_discovery = true,
             }
          }),
       },
    })
    end,
+})
+```
+
+# Configuration
+
+```lua
+require("neotest-playwright").adapter({
+   options = {
+		-- defaults values shown
+
+      persist_project_selection = false,
+
+      enable_dynamic_test_discovery = false,
+
+      preset = "none", -- "none" | "headed" | "debug"
+
+      -- get_playwright_binary = function()
+      --    return vim.loop.cwd() + "/node_modules/.bin/playwright"
+      -- end,
+
+      -- get_playwright_config = function()
+      --    return vim.loop.cwd() + "/playwright.config.ts"
+      -- end,
+
+      -- get_cwd = function()
+      --    return vim.loop.cwd()
+      -- end,
+
+      -- env = { },
+
+      -- Extra args to always pass to playwright.
+      -- These are merged with any extra_arg passed
+      -- to neotest's run command.
+      -- extra_args = { },
+
+   }
 })
 ```
 
