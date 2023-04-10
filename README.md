@@ -129,6 +129,14 @@ This feature works by calling `playwright test --list --reporter=json`. While th
 - Renaming a test
 - Changing the project(s) configuration in your `playwright.config.ts` file
 
+## Consumers
+
+### Attachment
+
+> Requires `enable_dynamic_test_discovery = true`.
+
+Displays the attachments for the test under the cursor. Upon selection, the attachment is launched.
+
 ## Credits
 
 - [neotest-jest](https://github.com/haydenmeade/neotest-jest)
