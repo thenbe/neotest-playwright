@@ -204,6 +204,8 @@ declare module 'neotest.async' {
 		 */
 		const tempname: () => string;
 	}
+
+	const run: (this: void, callback: () => void) => void;
 }
 
 declare module 'neotest.lib' {

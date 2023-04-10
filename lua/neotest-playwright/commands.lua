@@ -1,14 +1,23 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
+local async = require("neotest.async")
+local lib = require("neotest.lib")
 local logger = require("neotest.logging")
 local ____discover = require('neotest-playwright.discover')
 local refresh_data = ____discover.refresh_data
+local function refresh_command()
+    if lib.subprocess.enabled() then
+        logger.info("refreshing data in subprocess")
+        lib.subprocess.call("require('neotest-playwright.discover').refresh_data")
+    else
+        refresh_data()
+    end
+end
 ____exports.create_refresh_command = function()
     vim.api.nvim_create_user_command(
         "NeotestPlaywrightRefresh",
         function()
-            logger.debug("NeotestPlaywrightRefresh")
-            refresh_data()
+            async.run(refresh_command)
         end,
         {nargs = 0}
     )
