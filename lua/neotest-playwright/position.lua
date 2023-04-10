@@ -188,13 +188,14 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local specToPosition
-local logger = require("neotest.logging")
 local ____adapter_2Ddata = require('neotest-playwright.adapter-data')
 local data = ____adapter_2Ddata.data
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
 local ____helpers = require('neotest-playwright.helpers')
 local emitError = ____helpers.emitError
+local ____logging = require('neotest-playwright.logging')
+local logger = ____logging.logger
 --- Given a test position, return one or more positions based on what can be
 -- dynamically discovered using the playwright cli.
 ____exports.buildTestPosition = function(basePosition)
@@ -219,7 +220,7 @@ ____exports.buildTestPosition = function(basePosition)
         end
     )
     if #specs == 0 then
-        logger.debug("No match found")
+        logger("debug", "No match found")
         return {basePosition}
     end
     local projects = options.projects

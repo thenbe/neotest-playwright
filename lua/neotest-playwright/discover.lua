@@ -155,19 +155,20 @@ end
 local ____exports = {}
 local shouldRefreshData
 local lib = require("neotest.lib")
-local logger = require("neotest.logging")
 local ____adapter_2Ddata = require('neotest-playwright.adapter-data')
 local data = ____adapter_2Ddata.data
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
+local ____logging = require('neotest-playwright.logging')
+local logger = ____logging.logger
 local ____playwright = require('neotest-playwright.playwright')
 local get_config = ____playwright.get_config
 local ____position = require('neotest-playwright.position')
 local buildTestPosition = ____position.buildTestPosition
-local ____report = require('neotest-playwright.report')
-local flattenSpecs = ____report.flattenSpecs
 local ____project = require('neotest-playwright.project')
 local loadPreselectedProjects = ____project.loadPreselectedProjects
+local ____report = require('neotest-playwright.report')
+local flattenSpecs = ____report.flattenSpecs
 ____exports.root = lib.files.match_root_pattern("playwright.config.ts", "playwright.config.js")
 ____exports.filterDir = function(name, _rel_path, _root)
     return name ~= "node_modules"
@@ -184,19 +185,9 @@ ____exports.isTestFile = function(file_path)
     return result
 end
 ____exports.discoverPositions = function(path)
-    logger.info(
-        "subprocess.enabled",
-        lib.subprocess.enabled()
-    )
-    logger.info(
-        "subprocess.is_child",
-        lib.subprocess.is_child()
-    )
     if lib.subprocess.enabled() then
-        logger.info("calling populate_data in subprocess")
         lib.subprocess.call("require('neotest-playwright.discover').populate_data")
     else
-        logger.info("calling populate_data")
         ____exports.populate_data()
     end
     local query = "\n\t\t; -- Namespaces --\n\n\t\t; Matches: test.describe('title')\n\n\t\t(call_expression\n\t\t function: (member_expression) @func_name (#eq? @func_name \"test.describe\")\n\n\t\t arguments: (arguments\n\t\t\t (string (string_fragment) @namespace.name)\n\t\t\t ) @namespace.definition\n\t\t )\n\n\t\t; -- Tests --\n\n\t\t; Matches: test('title')\n\n\t\t(call_expression\n\t\t function: (identifier) @func_name (#eq? @func_name \"test\")\n\n\t\t arguments: (arguments\n\t\t\t(string (string_fragment) @test.name\n\t\t\t)\n\t\t\t) @test.definition\n\t\t)\n\n\t\t; Matches: test.only('title') / test.fixme('title')\n\n\t\t(call_expression\n\t\t function: (member_expression) @func_name (#any-of? @func_name \"test.only\" \"test.fixme\" \"test.skip\")\n\n\t\t arguments: (arguments\n\t\t\t(string (string_fragment) @test.name)\n\t\t\t) @test.definition\n\t\t)\n\t\t"
@@ -250,6 +241,7 @@ ____exports.populate_data = function()
 end
 --- Called by the subprocess before parsing a file
 ____exports.refresh_data = function()
+    logger("debug", "Refreshing data")
     local report = get_config()
     data.report = report
     data.specs = flattenSpecs(report.suites)
@@ -258,6 +250,7 @@ ____exports.refresh_data = function()
 end
 shouldRefreshData = function()
     if data.specs and data.rootDir then
+        logger("debug", "Data already exists. Skipping refresh.")
         return false
     else
         return true

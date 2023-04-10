@@ -2,12 +2,13 @@
 local ____exports = {}
 local ____report = require('neotest-playwright.report')
 local parseOutput = ____report.parseOutput
-local logger = require("neotest.logging")
+local ____logging = require('neotest-playwright.logging')
+local logger = ____logging.logger
 local ____report_2Dio = require('neotest-playwright.report-io')
 local readReport = ____report_2Dio.readReport
 ____exports.results = function(spec, result, _tree)
     if result.code == 129 then
-        logger.debug("Code 129: User stopped the test run. Aborting result parse")
+        logger("debug", "Code 129: User stopped the test run. Aborting result parse")
         return {}
     end
     local resultsPath = spec.context.results_path

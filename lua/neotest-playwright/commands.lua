@@ -2,12 +2,10 @@
 local ____exports = {}
 local async = require("neotest.async")
 local lib = require("neotest.lib")
-local logger = require("neotest.logging")
 local ____discover = require('neotest-playwright.discover')
 local refresh_data = ____discover.refresh_data
 local function refresh_command()
     if lib.subprocess.enabled() then
-        logger.info("refreshing data in subprocess")
         lib.subprocess.call("require('neotest-playwright.discover').refresh_data")
     else
         refresh_data()

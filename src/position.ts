@@ -1,9 +1,9 @@
 import type * as P from '@playwright/test/reporter';
 import type { Position, RangedPosition, RangelessPosition } from 'neotest';
-import * as logger from 'neotest.logging';
 import { data } from './adapter-data';
 import { options } from './adapter-options';
 import { emitError } from './helpers';
+import { logger } from './logging';
 
 type BasePosition = Omit<RangedPosition, 'id'>;
 
@@ -37,7 +37,7 @@ export const buildTestPosition = (basePosition: BasePosition): Position[] => {
 	});
 
 	if (specs.length === 0) {
-		logger.debug('No match found');
+		logger('debug', 'No match found');
 
 		// TODO: return position with available data
 		// throw new Error('No match found');

@@ -10,9 +10,10 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local selectProjects, setProjects
-local logger = require("neotest.logging")
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
+local ____logging = require('neotest-playwright.logging')
+local logger = ____logging.logger
 local ____persist = require('neotest-playwright.persist')
 local loadProjectCache = ____persist.loadProjectCache
 local saveProjectCache = ____persist.saveProjectCache
@@ -57,11 +58,11 @@ end
 selectProjects = function(choices, preselected)
     local prompt = "Select projects to include in the next test run:"
     local choice = selectMultiple({prompt = prompt, choices = choices, initial = "all", preselected = preselected})
-    logger.debug("neotest-playwright project", choice)
+    logger("debug", "selectProjects", choice)
     return choice
 end
 setProjects = function(projects)
-    logger.debug("neotest-playwright project", projects)
+    logger("debug", "setProjects", projects)
     if options.persist_project_selection then
         saveProjectCache({projects = projects})
     end

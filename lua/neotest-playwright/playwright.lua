@@ -127,13 +127,14 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local run
-local logger = require("neotest.logging")
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
 local ____build_2Dcommand = require('neotest-playwright.build-command')
 local buildCommand = ____build_2Dcommand.buildCommand
 local ____helpers = require('neotest-playwright.helpers')
 local emitError = ____helpers.emitError
+local ____logging = require('neotest-playwright.logging')
+local logger = ____logging.logger
 ____exports.get_config = function()
     local cmd = buildCommand(
         {
@@ -156,7 +157,7 @@ end
 run = function(cmd)
     local handle, errmsg = io.popen(cmd)
     if type(errmsg) == "string" then
-        logger.error(errmsg)
+        logger("error", errmsg)
     end
     if not handle then
         emitError("Failed to execute command: " .. cmd)

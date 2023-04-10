@@ -1,7 +1,7 @@
-import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
 import { create_refresh_command } from './commands';
 import { config } from './config';
+import { logger } from './logging';
 import { create_preset_command } from './preset';
 import { create_project_command, loadPreselectedProjects } from './project';
 
@@ -14,7 +14,7 @@ export const adapter = config;
 
 setmetatable(adapter, {
 	__call(arg: unknown) {
-		logger.debug('neotest-playwright arg', arg);
+		logger('debug', 'config', arg);
 
 		let userOptions = {};
 		// @ts-expect-error wip
@@ -40,7 +40,7 @@ setmetatable(adapter, {
 			}
 		}
 
-		logger.debug('neotest-playwright options', options);
+		logger('debug', 'options', options);
 
 		return adapter;
 	},

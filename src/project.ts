@@ -1,6 +1,6 @@
 import type * as P from '@playwright/test/reporter';
-import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
+import { logger } from './logging';
 import { loadProjectCache, saveProjectCache } from './persist';
 import { get_config } from './playwright';
 import { selectMultiple } from './select-multiple';
@@ -65,14 +65,14 @@ const selectProjects = (choices: string[], preselected: string[] | null) => {
 		preselected,
 	});
 
-	logger.debug('neotest-playwright project', choice);
+	logger('debug', 'selectProjects', choice);
 
 	// TODO: rm type cast
 	return choice as string[];
 };
 
 const setProjects = (projects: string[]) => {
-	logger.debug('neotest-playwright project', projects);
+	logger('debug', 'setProjects', projects);
 
 	if (options.persist_project_selection) {
 		saveProjectCache({ projects });

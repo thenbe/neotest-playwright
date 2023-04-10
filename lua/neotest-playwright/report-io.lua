@@ -127,9 +127,10 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local lib = require("neotest.lib")
-local logger = require("neotest.logging")
 local ____helpers = require('neotest-playwright.helpers')
 local emitError = ____helpers.emitError
+local ____logging = require('neotest-playwright.logging')
+local logger = ____logging.logger
 ____exports.readReport = function(file)
     local success, data = pcall(lib.files.read, file)
     if not success then
@@ -156,7 +157,7 @@ ____exports.writeReport = function(file, report)
         emitError("Failed to write test output json")
         return false
     else
-        logger.debug("writeReport", file)
+        logger("debug", "writeReport", file)
         return true
     end
 end

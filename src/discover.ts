@@ -1,13 +1,13 @@
 import type { BuildPosition, PositionId } from 'neotest';
 import * as lib from 'neotest.lib';
-import * as logger from 'neotest.logging';
 import { data } from './adapter-data';
 import { options } from './adapter-options';
+import { logger } from './logging';
 import { get_config } from './playwright';
 import { buildTestPosition } from './position';
+import { loadPreselectedProjects } from './project';
 import { flattenSpecs } from './report';
 import type { Adapter } from './types/adapter';
-import { loadPreselectedProjects } from './project';
 
 export const root: Adapter['root'] = lib.files.match_root_pattern(
 	'playwright.config.ts',
@@ -40,19 +40,12 @@ export const isTestFile: Adapter['is_test_file'] = (
 export const discoverPositions: Adapter['discover_positions'] = (
 	path: string,
 ) => {
-	// https://github.com/nvim-neotest/neotest/issues/210
-
-	// WARN: rm debug code
-	logger.info('subprocess.enabled', lib.subprocess.enabled());
-	logger.info('subprocess.is_child', lib.subprocess.is_child());
-
 	// make sure data is populated in a subprocess
+	// https://github.com/nvim-neotest/neotest/issues/210
 	if (lib.subprocess.enabled()) {
-		logger.info('calling populate_data in subprocess');
 		// This is async and will wait for the function to return
 		lib.subprocess.call("require('neotest-playwright.discover').populate_data");
 	} else {
-		logger.info('calling populate_data');
 		populate_data();
 	}
 
@@ -171,6 +164,7 @@ export const populate_data = () => {
 
 /** Called by the subprocess before parsing a file */
 export const refresh_data = () => {
+	logger('debug', 'Refreshing data');
 	const report = get_config();
 
 	data.report = report; // TODO: do we need to store this?
@@ -181,6 +175,7 @@ export const refresh_data = () => {
 
 const shouldRefreshData = () => {
 	if (data.specs && data.rootDir) {
+		logger('debug', 'Data already exists. Skipping refresh.');
 		// data already exists
 		return false;
 	} else {

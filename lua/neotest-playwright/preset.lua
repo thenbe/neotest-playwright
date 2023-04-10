@@ -1,12 +1,12 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
-local logger = require("neotest.logging")
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
+local ____logging = require('neotest-playwright.logging')
+local logger = ____logging.logger
 local ____preset_2Doptions = require('neotest-playwright.preset-options')
 local isPreset = ____preset_2Doptions.isPreset
 ____exports.set_preset = function(preset)
-    logger.debug("neotest-playwright preset", preset)
     options.preset = preset
 end
 ____exports.select_preset = function()
@@ -20,7 +20,7 @@ ____exports.select_preset = function()
             choice = c
         end
     )
-    logger.debug("neotest-playwright preset", choice)
+    logger("debug", "preset", choice)
     if isPreset(choice) then
         return choice
     else

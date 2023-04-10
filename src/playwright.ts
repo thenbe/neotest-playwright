@@ -1,8 +1,8 @@
 import type * as P from '@playwright/test/reporter';
-import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
 import { buildCommand } from './build-command';
 import { emitError } from './helpers';
+import { logger } from './logging';
 
 // TODO: add performance logging.
 
@@ -30,7 +30,7 @@ const run = (cmd: string) => {
 	const [handle, errmsg] = io.popen(cmd);
 
 	if (typeof errmsg === 'string') {
-		logger.error(errmsg);
+		logger('error', errmsg);
 	}
 
 	if (!handle) {

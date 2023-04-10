@@ -1,7 +1,9 @@
 import type * as P from '@playwright/test/reporter';
 import * as lib from 'neotest.lib';
-import * as logger from 'neotest.logging';
 import { emitError } from './helpers';
+import { logger } from './logging';
+
+// TODO: Remove dead code
 
 export const readReport = (file: string) => {
 	const [success, data] = pcall(lib.files.read, file);
@@ -28,7 +30,7 @@ export const writeReport = (file: string, report: P.JSONReport) => {
 		emitError('Failed to write test output json');
 		return false;
 	} else {
-		logger.debug('writeReport', file);
+		logger('debug', 'writeReport', file);
 		return true;
 	}
 };

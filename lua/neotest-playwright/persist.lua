@@ -1,12 +1,13 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 local ____exports = {}
 local lib = require("neotest.lib")
-local logger = require("neotest.logging")
+local ____logging = require('neotest-playwright.logging')
+local logger = ____logging.logger
 local current = vim.fn.getcwd()
 local dataPath = vim.fn.stdpath("data")
 local dataFile = dataPath .. "/neotest-playwright.json"
 ____exports.loadCache = function()
-    logger.trace("neotest-playwright loadCache(): Loading cache from", dataFile)
+    logger("debug", "Loading cache", dataFile)
     if not lib.files.exists(dataFile) then
         return nil
     end
@@ -20,7 +21,7 @@ end
 --- Persists the selected projects to disk. Project selection is scoped
 -- to project directory.
 ____exports.saveCache = function(cache)
-    logger.trace("neotest-playwright saveCache(): Saving data to", dataFile)
+    logger("debug", "Saving cache", dataFile)
     vim.fn.writefile(
         {vim.fn.json_encode(cache)},
         dataFile
@@ -32,11 +33,11 @@ ____exports.loadProjectCache = function()
         return nil
     end
     local projectCache = cache[current] or nil
-    logger.trace("neotest-playwright loadProjectCache():", projectCache)
+    logger("debug", "Loading Project Cache", projectCache)
     return projectCache
 end
 ____exports.saveProjectCache = function(latest)
-    logger.trace("neotest-playwright saveProjectCache():", latest)
+    logger("debug", "Saving Project Cache", latest)
     local cache = ____exports.loadCache() or ({})
     cache[current] = latest
     ____exports.saveCache(cache)

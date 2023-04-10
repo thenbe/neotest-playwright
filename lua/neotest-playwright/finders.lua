@@ -127,7 +127,8 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local lib = require("neotest.lib")
-local logger = require("neotest.logging")
+local ____logging = require('neotest-playwright.logging')
+local logger = ____logging.logger
 ____exports.getPlaywrightBinary = function()
     local dir = ____exports.get_cwd()
     local node_modules = dir .. "/node_modules"
@@ -135,9 +136,9 @@ ____exports.getPlaywrightBinary = function()
     if lib.files.exists(bin) then
         return bin
     else
-        logger.error("playwright binary does not exist at ", bin)
+        logger("error", "playwright binary does not exist at ", bin)
         error(
-            __TS__New(Error, ("Unable to locate playwright binary. Expected to find it at: " .. bin) .. " - If you are in a monorepo, try running this command from a buffer in the subrepo that contains the playwright binary. Otherwise, to use a custom binary path, set the `get_playwright_command` option. See the docs for more info."),
+            __TS__New(Error, "Unable to locate playwright binary. Expected to find it at: " .. bin),
             0
         )
     end
@@ -148,7 +149,7 @@ ____exports.getPlaywrightConfig = function()
     if lib.files.exists(config) then
         return config
     else
-        logger.info("Unable to locate playwright config file.")
+        logger("error", "Unable to locate playwright config file.")
         error(
             __TS__New(Error, "Unable to locate playwright config file. Expected to find it at: " .. config),
             0

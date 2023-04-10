@@ -1,13 +1,9 @@
 import * as async from 'neotest.async';
 import * as lib from 'neotest.lib';
-import * as logger from 'neotest.logging';
 import { refresh_data } from './discover';
-
-// WARN: remove debug code
 
 const refresh_command = () => {
 	if (lib.subprocess.enabled()) {
-		logger.info('refreshing data in subprocess');
 		// This is async and will wait for the function to return
 		lib.subprocess.call("require('neotest-playwright.discover').refresh_data");
 	} else {
