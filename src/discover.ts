@@ -7,6 +7,7 @@ import { get_config } from './playwright';
 import { buildTestPosition } from './position';
 import { flattenSpecs } from './report';
 import type { Adapter } from './types/adapter';
+import { loadPreselectedProjects } from './project';
 
 export const root: Adapter['root'] = lib.files.match_root_pattern(
 	'playwright.config.ts',
@@ -168,13 +169,14 @@ export const populate_data = () => {
 	}
 };
 
+/** Called by the subprocess before parsing a file */
 export const refresh_data = () => {
 	const report = get_config();
 
 	data.report = report; // TODO: do we need to store this?
 	data.specs = flattenSpecs(report.suites);
 	data.rootDir = report.config.rootDir;
-	// options.projects = loadPreselectedProjects() ?? [];
+	options.projects = loadPreselectedProjects() ?? [];
 };
 
 const shouldRefreshData = () => {

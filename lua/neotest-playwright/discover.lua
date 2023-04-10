@@ -166,6 +166,8 @@ local ____position = require('neotest-playwright.position')
 local buildTestPosition = ____position.buildTestPosition
 local ____report = require('neotest-playwright.report')
 local flattenSpecs = ____report.flattenSpecs
+local ____project = require('neotest-playwright.project')
+local loadPreselectedProjects = ____project.loadPreselectedProjects
 ____exports.root = lib.files.match_root_pattern("playwright.config.ts", "playwright.config.js")
 ____exports.filterDir = function(name, _rel_path, _root)
     return name ~= "node_modules"
@@ -246,11 +248,13 @@ ____exports.populate_data = function()
         ____exports.refresh_data()
     end
 end
+--- Called by the subprocess before parsing a file
 ____exports.refresh_data = function()
     local report = get_config()
     data.report = report
     data.specs = flattenSpecs(report.suites)
     data.rootDir = report.config.rootDir
+    options.projects = loadPreselectedProjects() or ({})
 end
 shouldRefreshData = function()
     if data.specs and data.rootDir then
