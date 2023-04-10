@@ -153,6 +153,7 @@ do
 end
 -- End of Lua Library inline imports
 local ____exports = {}
+local shouldRefreshData
 local lib = require("neotest.lib")
 local logger = require("neotest.logging")
 local ____adapter_2Ddata = require('neotest-playwright.adapter-data')
@@ -241,11 +242,7 @@ ____exports._position_id = function(position, _parent)
     end
 end
 ____exports.populate_data = function()
-    logger.info("======[data] getting data=======")
-    if data.specs and data.rootDir then
-        logger.info("[data] data already exists")
-        return
-    else
+    if shouldRefreshData() then
         ____exports.refresh_data()
     end
 end
@@ -257,5 +254,12 @@ ____exports.refresh_data = function()
     data.report = report
     data.specs = flattenSpecs(report.suites)
     data.rootDir = report.config.rootDir
+end
+shouldRefreshData = function()
+    if data.specs and data.rootDir then
+        return false
+    else
+        return true
+    end
 end
 return ____exports

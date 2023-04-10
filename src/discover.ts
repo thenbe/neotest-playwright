@@ -163,13 +163,7 @@ export const _position_id: PositionId = (position, _parent) => {
 };
 
 export const populate_data = () => {
-	logger.info('======[data] getting data=======');
-
-	if (data.specs && data.rootDir) {
-		// return early if data already exists
-		logger.info('[data] data already exists');
-		return;
-	} else {
+	if (shouldRefreshData()) {
 		refresh_data();
 	}
 };
@@ -190,4 +184,14 @@ export const refresh_data = () => {
 	data.report = report; // TODO: do we need to store this?
 	data.specs = flattenSpecs(report.suites);
 	data.rootDir = report.config.rootDir;
+	// options.projects = loadPreselectedProjects() ?? [];
+};
+
+const shouldRefreshData = () => {
+	if (data.specs && data.rootDir) {
+		// data already exists
+		return false;
+	} else {
+		return true;
+	}
 };
