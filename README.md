@@ -115,6 +115,20 @@ Does not apply any flags. Your tests will run as defined in your `playwright.con
 
 ---
 
-# Credits
+## Dynamic Test Discovery
+
+`neotest-playwright` can make use of the `playwright` cli to unlock extra features. Most importantly, the `playwright` cli provides information about which tests belongs to which project. `neotest-playwright` will parse this information to display, run, and report the results of tests on a per-project basis.
+
+To enable this, set `enable_dynamic_test_discovery` to true.
+
+### Caveats:
+
+This feature works by calling `playwright test --list --reporter=json`. While this is a relatively fast operation, it does add some overhead. Therefore, `neotest-playwright` only calls this feature once (when the adapter is first initialized). From then on, `neotest-playwright` continues to rely on treesitter to track your tests and enhance them with the data previously resolved by the `playwright` cli. There are times, however, where we want to refresh this data. To remedy this: `neotest-playwright` exposes a command `:NeotestPlaywrightRefresh`. This comes in handy in the following scenarios:
+
+- Adding a new test
+- Renaming a test
+- Changing the project(s) configuration in your `playwright.config.ts` file
+
+## Credits
 
 - [neotest-jest](https://github.com/haydenmeade/neotest-jest)
