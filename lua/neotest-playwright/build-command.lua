@@ -11,7 +11,8 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local buildReporters
-local logger = require("neotest.logging")
+local ____logging = require('neotest-playwright.logging')
+local logger = ____logging.logger
 --- A function that takes in CommandOptions and returns a string.
 ____exports.buildCommand = function(options, extraArgs)
     local o = options
@@ -55,7 +56,7 @@ ____exports.buildCommand = function(options, extraArgs)
     if o.testFilter ~= nil then
         command[#command + 1] = o.testFilter
     end
-    logger.debug("neotest-playwright command", command)
+    logger("debug", "command", command)
     return command
 end
 --- Returns `--reporter=${reporters[0]},${reporters[1]},...`

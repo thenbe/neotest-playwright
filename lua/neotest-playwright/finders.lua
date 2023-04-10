@@ -76,7 +76,7 @@ do
             if isClassicLua or caller and caller.func ~= error then
                 return description
             else
-                return (tostring(description) .. "\n") .. self.stack
+                return (description .. "\n") .. tostring(self.stack)
             end
         end
     end
@@ -87,7 +87,7 @@ do
             {__call = function(____, _self, message) return __TS__New(Type, message) end}
         )
     end
-    local ____initErrorClass_2 = initErrorClass
+    local ____initErrorClass_1 = initErrorClass
     local ____class_0 = __TS__Class()
     ____class_0.name = ""
     function ____class_0.prototype.____constructor(self, message)
@@ -98,31 +98,25 @@ do
         self.name = "Error"
         self.stack = getErrorStack(nil, self.constructor.new)
         local metatable = getmetatable(self)
-        if not metatable.__errorToStringPatched then
+        if metatable and not metatable.__errorToStringPatched then
             metatable.__errorToStringPatched = true
             metatable.__tostring = wrapErrorToString(nil, metatable.__tostring)
         end
     end
     function ____class_0.prototype.__tostring(self)
-        local ____temp_1
-        if self.message ~= "" then
-            ____temp_1 = (self.name .. ": ") .. self.message
-        else
-            ____temp_1 = self.name
-        end
-        return ____temp_1
+        return self.message ~= "" and (self.name .. ": ") .. self.message or self.name
     end
-    Error = ____initErrorClass_2(nil, ____class_0, "Error")
+    Error = ____initErrorClass_1(nil, ____class_0, "Error")
     local function createErrorClass(self, name)
-        local ____initErrorClass_4 = initErrorClass
-        local ____class_3 = __TS__Class()
-        ____class_3.name = ____class_3.name
-        __TS__ClassExtends(____class_3, Error)
-        function ____class_3.prototype.____constructor(self, ...)
-            ____class_3.____super.prototype.____constructor(self, ...)
+        local ____initErrorClass_3 = initErrorClass
+        local ____class_2 = __TS__Class()
+        ____class_2.name = ____class_2.name
+        __TS__ClassExtends(____class_2, Error)
+        function ____class_2.prototype.____constructor(self, ...)
+            ____class_2.____super.prototype.____constructor(self, ...)
             self.name = name
         end
-        return ____initErrorClass_4(nil, ____class_3, name)
+        return ____initErrorClass_3(nil, ____class_2, name)
     end
     RangeError = createErrorClass(nil, "RangeError")
     ReferenceError = createErrorClass(nil, "ReferenceError")
@@ -132,29 +126,38 @@ do
 end
 -- End of Lua Library inline imports
 local ____exports = {}
-local util = require("neotest-playwright.util")
 local lib = require("neotest.lib")
-local logger = require("neotest.logging")
-____exports.getPlaywrightBinary = function(filePath)
-    local node_modules = tostring(util.find_ancestor(filePath, "node_modules", true)) .. "/node_modules"
+local ____logging = require('neotest-playwright.logging')
+local logger = ____logging.logger
+____exports.getPlaywrightBinary = function()
+    local dir = ____exports.get_cwd()
+    local node_modules = dir .. "/node_modules"
     local bin = node_modules .. "/.bin/playwright"
     if lib.files.exists(bin) then
         return bin
     else
-        logger.error("playwright binary does not exist at ", bin)
+        logger("error", "playwright binary does not exist at ", bin)
         error(
-            __TS__New(Error, ("Unable to locate playwright binary. Expected to find it at: " .. bin) .. " - If you are in a monorepo, try running this command from a buffer in the subrepo that contains the playwright binary. Otherwise, to use a custom binary path, set the `get_playwright_command` option. See the docs for more info."),
+            __TS__New(Error, "Unable to locate playwright binary. Expected to find it at: " .. bin),
             0
         )
     end
 end
-____exports.getPlaywrightConfig = function(filePath)
-    local configDir = util.find_ancestor(filePath, "playwright.config.ts", false)
-    local config = tostring(configDir) .. "/playwright.config.ts"
+____exports.getPlaywrightConfig = function()
+    local dir = ____exports.get_cwd()
+    local config = dir .. "/playwright.config.ts"
     if lib.files.exists(config) then
         return config
+    else
+        logger("error", "Unable to locate playwright config file.")
+        error(
+            __TS__New(Error, "Unable to locate playwright config file. Expected to find it at: " .. config),
+            0
+        )
     end
-    logger.info("Unable to locate playwright config file.")
-    return nil
+end
+____exports.get_cwd = function()
+    local dir = vim.loop.cwd()
+    return dir
 end
 return ____exports

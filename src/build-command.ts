@@ -1,4 +1,4 @@
-import * as logger from 'neotest.logging';
+import { logger } from './logging';
 
 export interface CommandOptions {
 	bin: string;
@@ -44,7 +44,7 @@ export const buildCommand = (options: CommandOptions, extraArgs: string[]) => {
 	command.push(...extraArgs);
 	if (o.testFilter !== undefined) command.push(o.testFilter);
 
-	logger.debug('neotest-playwright command', command);
+	logger('debug', 'command', command);
 
 	return command;
 };

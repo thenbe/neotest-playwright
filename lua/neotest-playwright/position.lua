@@ -1,32 +1,5 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 -- Lua Library inline imports
-local function __TS__StringEndsWith(self, searchString, endPosition)
-    if endPosition == nil or endPosition > #self then
-        endPosition = #self
-    end
-    return string.sub(self, endPosition - #searchString + 1, endPosition) == searchString
-end
-
-local function __TS__ArraySome(self, callbackfn, thisArg)
-    for i = 1, #self do
-        if callbackfn(thisArg, self[i], i - 1, self) then
-            return true
-        end
-    end
-    return false
-end
-
-local function __TS__ObjectAssign(target, ...)
-    local sources = {...}
-    for i = 1, #sources do
-        local source = sources[i]
-        for key in pairs(source) do
-            target[key] = source[key]
-        end
-    end
-    return target
-end
-
 local function __TS__StringIncludes(self, searchString, position)
     if not position then
         position = 1
@@ -151,109 +124,151 @@ do
     TypeError = createErrorClass(nil, "TypeError")
     URIError = createErrorClass(nil, "URIError")
 end
+
+local function __TS__ArrayFilter(self, callbackfn, thisArg)
+    local result = {}
+    local len = 0
+    for i = 1, #self do
+        if callbackfn(thisArg, self[i], i - 1, self) then
+            len = len + 1
+            result[len] = self[i]
+        end
+    end
+    return result
+end
+
+local function __TS__ObjectAssign(target, ...)
+    local sources = {...}
+    for i = 1, #sources do
+        local source = sources[i]
+        for key in pairs(source) do
+            target[key] = source[key]
+        end
+    end
+    return target
+end
+
+local function __TS__ArrayIncludes(self, searchElement, fromIndex)
+    if fromIndex == nil then
+        fromIndex = 0
+    end
+    local len = #self
+    local k = fromIndex
+    if fromIndex < 0 then
+        k = len + fromIndex
+    end
+    if k < 0 then
+        k = 0
+    end
+    for i = k + 1, len do
+        if self[i] == searchElement then
+            return true
+        end
+    end
+    return false
+end
+
+local function __TS__ArrayMap(self, callbackfn, thisArg)
+    local result = {}
+    for i = 1, #self do
+        result[i] = callbackfn(thisArg, self[i], i - 1, self)
+    end
+    return result
+end
+
+local function __TS__ObjectRest(target, usedProperties)
+    local result = {}
+    for property in pairs(target) do
+        if not usedProperties[property] then
+            result[property] = target[property]
+        end
+    end
+    return result
+end
 -- End of Lua Library inline imports
 local ____exports = {}
-local shouldRefreshData
-local lib = require("neotest.lib")
+local specToPosition
 local ____adapter_2Ddata = require('neotest-playwright.adapter-data')
 local data = ____adapter_2Ddata.data
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
+local ____helpers = require('neotest-playwright.helpers')
+local emitError = ____helpers.emitError
 local ____logging = require('neotest-playwright.logging')
 local logger = ____logging.logger
-local ____playwright = require('neotest-playwright.playwright')
-local get_config = ____playwright.get_config
-local ____position = require('neotest-playwright.position')
-local buildTestPosition = ____position.buildTestPosition
-local ____project = require('neotest-playwright.project')
-local loadPreselectedProjects = ____project.loadPreselectedProjects
-local ____report = require('neotest-playwright.report')
-local flattenSpecs = ____report.flattenSpecs
-____exports.root = lib.files.match_root_pattern("playwright.config.ts", "playwright.config.js")
-____exports.filterDir = function(name, _rel_path, _root)
-    return name ~= "node_modules"
-end
-____exports.isTestFile = function(file_path)
-    if not file_path then
-        return false
-    end
-    local endings = {".spec.ts", ".test.ts", ".spec.js", ".test.js"}
-    local result = __TS__ArraySome(
-        endings,
-        function(____, ending) return __TS__StringEndsWith(file_path, ending) end
-    )
-    return result
-end
-____exports.discoverPositions = function(path)
-    if lib.subprocess.enabled() then
-        lib.subprocess.call("require('neotest-playwright.discover').populate_data")
-    else
-        ____exports.populate_data()
-    end
-    local query = "\n\t\t; -- Namespaces --\n\n\t\t; Matches: test.describe('title')\n\n\t\t(call_expression\n\t\t function: (member_expression) @func_name (#eq? @func_name \"test.describe\")\n\n\t\t arguments: (arguments\n\t\t\t (string (string_fragment) @namespace.name)\n\t\t\t ) @namespace.definition\n\t\t )\n\n\t\t; -- Tests --\n\n\t\t; Matches: test('title')\n\n\t\t(call_expression\n\t\t function: (identifier) @func_name (#eq? @func_name \"test\")\n\n\t\t arguments: (arguments\n\t\t\t(string (string_fragment) @test.name\n\t\t\t)\n\t\t\t) @test.definition\n\t\t)\n\n\t\t; Matches: test.only('title') / test.fixme('title')\n\n\t\t(call_expression\n\t\t function: (member_expression) @func_name (#any-of? @func_name \"test.only\" \"test.fixme\" \"test.skip\")\n\n\t\t arguments: (arguments\n\t\t\t(string (string_fragment) @test.name)\n\t\t\t) @test.definition\n\t\t)\n\t\t"
-    return lib.treesitter.parse_positions(
-        path,
-        query,
-        __TS__ObjectAssign({nested_tests = true, position_id = "require(\"neotest-playwright.discover\")._position_id"}, options.enable_dynamic_test_discovery and ({build_position = "require(\"neotest-playwright.discover\")._build_position"}) or ({}))
-    )
-end
-local function getMatchType(node)
-    if node["test.name"] ~= nil then
-        return "test"
-    elseif node["namespace.name"] ~= nil then
-        return "namespace"
-    else
+--- Given a test position, return one or more positions based on what can be
+-- dynamically discovered using the playwright cli.
+____exports.buildTestPosition = function(basePosition)
+    local line = basePosition.range[1]
+    if not data.specs then
         error(
-            __TS__New(Error, "Unknown match type"),
+            __TS__New(Error, "No specs found"),
             0
         )
     end
+    local specs = __TS__ArrayFilter(
+        data.specs,
+        function(____, spec)
+            local specAbsolutePath = (tostring(data.rootDir) .. "/") .. spec.file
+            local fileMatch = specAbsolutePath == basePosition.path
+            if not fileMatch then
+                return false
+            end
+            local rowMatch = spec.line == line + 1
+            local match = rowMatch and fileMatch
+            return match
+        end
+    )
+    if #specs == 0 then
+        logger("debug", "No match found")
+        return {basePosition}
+    end
+    local projects = options.projects
+    local positions = {}
+    --- The parent of the range-less positions
+    local main = __TS__ObjectAssign({}, basePosition)
+    positions[#positions + 1] = main
+    __TS__ArrayMap(
+        specs,
+        function(____, spec)
+            local position = specToPosition(spec, basePosition)
+            if #options.projects == 0 then
+                positions[#positions + 1] = position
+                return
+            else
+                local projectId = position.project_id
+                if not projectId then
+                    local msg = "No project id found for position: " .. position.name
+                    emitError(msg)
+                    error(
+                        __TS__New(Error, msg),
+                        0
+                    )
+                end
+                if __TS__ArrayIncludes(projects, projectId) then
+                    positions[#positions + 1] = position
+                end
+            end
+        end
+    )
+    return positions
 end
-____exports._build_position = function(filePath, source, capturedNodes)
-    local match_type = getMatchType(capturedNodes)
-    local name = vim.treesitter.get_node_text(capturedNodes[match_type .. ".name"], source)
-    local definition = capturedNodes[match_type .. ".definition"]
-    local range = {definition:range()}
-    if match_type == "namespace" then
-        return {type = match_type, range = range, path = filePath, name = name}
-    elseif match_type == "test" then
-        local base = {type = match_type, range = range, path = filePath, name = name}
-        local position = buildTestPosition(base)
-        return position
-    else
+--- Convert a playwright spec to a neotest position.
+specToPosition = function(spec, basePosition)
+    local ____opt_0 = spec.tests[1]
+    local projectId = ____opt_0 and ____opt_0.projectName
+    if not projectId then
+        local msg = "No project id found for spec: " .. spec.title
+        emitError(msg)
         error(
-            __TS__New(Error, "Unknown match type"),
+            __TS__New(Error, msg),
             0
         )
     end
-end
-____exports._position_id = function(position, _parent)
-    if position.id then
-        return position.id
-    else
-        return (position.path .. "::") .. position.name
-    end
-end
-____exports.populate_data = function()
-    if shouldRefreshData() then
-        ____exports.refresh_data()
-    end
-end
---- Called by the subprocess before parsing a file
-____exports.refresh_data = function()
-    logger("debug", "Refreshing data")
-    local report = get_config()
-    data.report = report
-    data.specs = flattenSpecs(report.suites)
-    data.rootDir = report.config.rootDir
-    options.projects = loadPreselectedProjects() or ({})
-end
-shouldRefreshData = function()
-    if data.specs and data.rootDir then
-        logger("debug", "Data already exists. Skipping refresh.")
-        return false
-    else
-        return true
-    end
+    local ____basePosition_2 = basePosition
+    local range = ____basePosition_2.range
+    local rest = __TS__ObjectRest(____basePosition_2, {range = true})
+    local position = __TS__ObjectAssign({}, rest, {id = spec.id, name = projectId, project_id = projectId})
+    return position
 end
 return ____exports

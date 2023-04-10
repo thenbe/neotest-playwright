@@ -1,14 +1,37 @@
 declare function print(...args: unknown[]): void;
 
+type MatchType = 'namespace' | 'test';
+
+type NodeMatch<T extends MatchType> = {
+	[K in `${T}.name` | `${T}.definition`]: LuaUserdata;
+};
+
+type Range = LuaMultiReturn<[number, number, number, number]>;
+
 declare module 'neotest' {
-	interface Position {
-		id: string;
+	interface RangelessPosition {
+		id?: string;
 		type: 'dir' | 'file' | 'namespace' | 'test';
 		name: string;
 		path: string;
-		/** [start_row, start_col, end_row, end_col] */
-		range: [number, number, number, number];
+		project_id?: string;
 	}
+
+	interface RangedPosition extends RangelessPosition {
+		/** [start_row, start_col, end_row, end_col] */
+		range: Range;
+	}
+
+	type Position = RangedPosition | RangelessPosition;
+
+	type BuildPosition = (
+		this: void,
+		file_path: string,
+		source: string,
+		captured_nodes: NodeMatch<MatchType>,
+	) => Position | Position[];
+
+	type PositionId = (position: Position, parents: Position[]) => string;
 
 	interface RunArgs {
 		extra_args?: string[];
@@ -69,6 +92,8 @@ declare module 'neotest' {
 		name: string;
 
 		/**
+		 * See :h lspconfig-root-dir
+		 *
 		 * Find the project root directory given a current directory to work from.
 		 * Should no root be found, the adapter can still be used in a non-project context if a test file matches.
 		 *
@@ -128,24 +153,6 @@ declare module 'neotest' {
 	/* Nested tree structure with nodes containing data and having any number of
 	 * children */
 	class Tree {
-		data(): Position;
-		children(): Tree[];
-		nodes(): Record<string, Tree>;
-		key(): (data: unknown) => string;
-		parent(): Tree | undefined;
-
-		_get_key(key: unknown): Tree | null;
-		_set_key(key: unknown, value: Tree): void;
-		iter_parents(): IterableIterator<Tree>;
-
-		/** Fetch the first node ascending the tree (including the current one)
-		 * with the given data */
-		closest_node_with(data_attr: string): Tree | null;
-
-		/** Parses a tree in the shape of nested lists.
-		 * The head of the list is the root of the tree, and all following elements are its children. */
-		static from_list(data: unknown[], key: (data: unknown) => string): Tree;
-
 		/** Create a new tree node */
 		constructor(
 			/** Node data */
@@ -163,6 +170,28 @@ declare module 'neotest' {
 			/** Nodes of this tree */
 			nodes?: Record<string, Tree>,
 		);
+
+		/** Parses a tree in the shape of nested lists.
+		 * The head of the list is the root of the tree, and all following elements are its children. */
+		static from_list(data: unknown[], key: (data: unknown) => string): Tree;
+
+		data(): Position;
+		children(): Tree[];
+		nodes(): Record<string, Tree>;
+		key(): (data: unknown) => string;
+		parent(): Tree | undefined;
+
+		get_key(key: unknown): Tree | null;
+		set_key(key: unknown, value: Tree): void;
+		iter_parents(): IterableIterator<Tree>;
+
+		/** Fetch the first node ascending the tree (including the current one)
+		 * with the given data */
+		closest_node_with(data_attr: string): Tree | null;
+
+		/** Fetch the first non-nil value for the given data attribute ascending the
+tree (including the current node) with the given data attribute. */
+		closest_value_for(data_attr: string): unknown | null;
 	}
 }
 
@@ -175,6 +204,8 @@ declare module 'neotest.async' {
 		 */
 		const tempname: () => string;
 	}
+
+	const run: (this: void, callback: () => void) => void;
 }
 
 declare module 'neotest.lib' {
@@ -185,6 +216,7 @@ declare module 'neotest.lib' {
 		 * position_id options can be strings that will evaluate to globally
 		 * referencable functions (e.g. `'require("my_adapter")._build_position'`). */
 		const parse_positions: (
+			this: void,
 			path: string,
 			query: string,
 			opts: ParseOptions,
@@ -196,15 +228,16 @@ declare module 'neotest.lib' {
 			/** Require tests to be within namespaces */
 			require_namespaces?: boolean;
 			/** Position ID constructor */
-			position_id?: (
-				position: import('neotest').Position,
-				parents: import('neotest').Position[],
-			) => string;
 
-			/** https://github.com/nvim-neotest/neotest/issues/68#issuecomment-1242769159 */
-			build_position?: (
-				this: void,
-			) => import('neotest').Position | import('neotest').Position[];
+			/** Return a string that will evaluate to a globally referencable function.
+			 * e.g. `'require("my_adapter")._position_id'` */
+			position_id?: PositionId | string;
+
+			/** Return a string that will evaluate to a globally referencable function.
+			 * e.g. `'require("my_adapter")._build_position'`
+			 *
+			 * https://github.com/nvim-neotest/neotest/issues/68#issuecomment-1242769159 */
+			build_position?: BuildPosition | string;
 		}
 	}
 
@@ -236,6 +269,33 @@ declare module 'neotest.lib' {
 		const stream: (
 			file_path: string,
 		) => LuaMultiReturn<[() => string, () => void]>;
+	}
+
+	namespace subprocess {
+		/** Wrapper around vim.fn.rpcrequest that will automatically select the channel for the child or parent process,
+		 * depending on if the current instance is the child or parent.
+		 * See `:help rpcrequest` for more information. */
+		const request: (
+			method: string,
+			...args: unknown[]
+		) => LuaMultiReturn<[unknown, string?]>;
+
+		/** Wrapper around vim.fn.rpcnotify that will automatically select the channel for the child or parent process,
+		 * depending on if the current instance is the child or parent.
+		 * See `:help rpcnotify` for more information. */
+		const notify: (method: string, ...args: unknown[]) => void;
+
+		/** Call a lua function in the other process with the given argument list, returning the result. */
+		const call: (
+			func: string,
+			args?: unknown[],
+		) => LuaMultiReturn<[unknown, string?]>;
+
+		/** Check if the subprocess has been initialized and is working */
+		const enabled: () => boolean;
+
+		/** Check if the current neovim instance is the child or parent process */
+		const is_child: () => boolean;
 	}
 }
 

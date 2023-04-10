@@ -1,9 +1,11 @@
 import type * as P from '@playwright/test/reporter';
-import * as logger from 'neotest.logging';
 import { options } from './adapter-options';
+import { logger } from './logging';
 import { loadProjectCache, saveProjectCache } from './persist';
-import { get_projects } from './playwright';
+import { get_config } from './playwright';
 import { selectMultiple } from './select-multiple';
+
+// TODO: document interaction with dynamic test discovery
 
 /** Returns a list of project names */
 const parseProjects = (output: P.JSONReport) => {
@@ -28,7 +30,7 @@ export const create_project_command = () => {
 		'NeotestPlaywrightProject',
 		// @ts-expect-error until type is updated
 		() => {
-			const output = get_projects();
+			const output = get_config();
 
 			const choices = parseProjects(output);
 
@@ -43,6 +45,9 @@ export const create_project_command = () => {
 			const selection = selectProjects(choices, preselected);
 
 			setProjects(selection);
+
+			// trigger data refresh in subprocess
+			vim.api.nvim_command('NeotestPlaywrightRefresh');
 		},
 		{
 			nargs: 0,
@@ -60,14 +65,14 @@ const selectProjects = (choices: string[], preselected: string[] | null) => {
 		preselected,
 	});
 
-	logger.debug('neotest-playwright project', choice);
+	logger('debug', 'selectProjects', choice);
 
 	// TODO: rm type cast
 	return choice as string[];
 };
 
 const setProjects = (projects: string[]) => {
-	logger.debug('neotest-playwright project', projects);
+	logger('debug', 'setProjects', projects);
 
 	if (options.persist_project_selection) {
 		saveProjectCache({ projects });

@@ -1,37 +1,47 @@
-import * as util from 'neotest-playwright.util';
 import * as lib from 'neotest.lib';
-import * as logger from 'neotest.logging';
+import { logger } from './logging';
 import type { AdapterOptions } from './types/adapter';
 
-export const getPlaywrightBinary: AdapterOptions['get_playwright_command'] = (
-	filePath: string,
-) => {
-	const node_modules =
-		util.find_ancestor(filePath, 'node_modules', true) + '/node_modules';
+export const getPlaywrightBinary: AdapterOptions['get_playwright_binary'] =
+	() => {
+		const dir = get_cwd();
 
-	const bin = `${node_modules}/.bin/playwright`;
+		const node_modules = `${dir}/node_modules`;
 
-	if (lib.files.exists(bin)) {
-		return bin;
-	} else {
-		logger.error('playwright binary does not exist at ', bin);
-		throw new Error(
-			'Unable to locate playwright binary. Expected to find it at: ' +
-				bin +
-				' - If you are in a monorepo, try running this command from a buffer in the subrepo that contains the playwright binary. Otherwise, to use a custom binary path, set the `get_playwright_command` option. See the docs for more info.',
-		);
-	}
-};
+		const bin = `${node_modules}/.bin/playwright`;
 
-export const getPlaywrightConfig = (filePath: string) => {
-	const configDir = util.find_ancestor(filePath, 'playwright.config.ts', false);
-	const config = `${configDir}/playwright.config.ts`; // TODO: don't hardcode
+		if (lib.files.exists(bin)) {
+			return bin;
+		} else {
+			logger('error', 'playwright binary does not exist at ', bin);
+			throw new Error(
+				'Unable to locate playwright binary. Expected to find it at: ' + bin,
+			);
+		}
+	};
 
-	if (lib.files.exists(config)) {
-		return config;
-	}
+export const getPlaywrightConfig: AdapterOptions['get_playwright_config'] =
+	() => {
+		const dir = get_cwd();
 
-	logger.info('Unable to locate playwright config file.');
+		const config = `${dir}/playwright.config.ts`;
 
-	return null;
+		if (lib.files.exists(config)) {
+			return config;
+		} else {
+			logger('error', 'Unable to locate playwright config file.');
+			throw new Error(
+				'Unable to locate playwright config file. Expected to find it at: ' +
+					config,
+			);
+		}
+	};
+
+export const get_cwd: NonNullable<AdapterOptions['get_cwd']> = () => {
+	// current buffer's path (for non-file buffers, return buffer name. E.g. "Neotest Summary")
+	// const dir = vim.api.nvim_eval('expand("%:p:h")') as unknown as string;
+
+	const dir = vim.loop.cwd() as unknown as string;
+
+	return dir;
 };

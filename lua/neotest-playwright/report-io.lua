@@ -124,171 +124,41 @@ do
     TypeError = createErrorClass(nil, "TypeError")
     URIError = createErrorClass(nil, "URIError")
 end
-
-local function __TS__ObjectAssign(target, ...)
-    local sources = {...}
-    for i = 1, #sources do
-        local source = sources[i]
-        for key in pairs(source) do
-            target[key] = source[key]
-        end
-    end
-    return target
-end
-
-local function __TS__ArrayMap(self, callbackfn, thisArg)
-    local result = {}
-    for i = 1, #self do
-        result[i] = callbackfn(thisArg, self[i], i - 1, self)
-    end
-    return result
-end
-
-local function __TS__ArrayIsArray(value)
-    return type(value) == "table" and (value[1] ~= nil or next(value) == nil)
-end
-
-local function __TS__ArrayConcat(self, ...)
-    local items = {...}
-    local result = {}
-    local len = 0
-    for i = 1, #self do
-        len = len + 1
-        result[len] = self[i]
-    end
-    for i = 1, #items do
-        local item = items[i]
-        if __TS__ArrayIsArray(item) then
-            for j = 1, #item do
-                len = len + 1
-                result[len] = item[j]
-            end
-        else
-            len = len + 1
-            result[len] = item
-        end
-    end
-    return result
-end
-
-local function __TS__ArrayPushArray(self, items)
-    local len = #self
-    for i = 1, #items do
-        len = len + 1
-        self[len] = items[i]
-    end
-    return len
-end
 -- End of Lua Library inline imports
 local ____exports = {}
-local getSpecStatus, constructSpecKey, collectSpecErrors, toNeotestError
-local ____neotest_2Dplaywright_2Eutil = require("neotest-playwright.util")
-local cleanAnsi = ____neotest_2Dplaywright_2Eutil.cleanAnsi
-local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
-local options = ____adapter_2Doptions.options
+local lib = require("neotest.lib")
 local ____helpers = require('neotest-playwright.helpers')
 local emitError = ____helpers.emitError
-____exports.decodeOutput = function(data)
+local ____logging = require('neotest-playwright.logging')
+local logger = ____logging.logger
+____exports.readReport = function(file)
+    local success, data = pcall(lib.files.read, file)
+    if not success then
+        error(
+            __TS__New(Error, "Failed to read test output file: " .. file),
+            0
+        )
+    end
     local ok, parsed = pcall(vim.json.decode, data, {luanil = {object = true}})
     if not ok then
-        emitError("Failed to parse test output json")
         error(
-            __TS__New(Error, "Failed to parse test output json"),
+            __TS__New(Error, "Failed to parse test output json: " .. file),
             0
         )
     end
     return parsed
 end
-____exports.parseOutput = function(report)
-    if #report.errors > 1 then
-        emitError("Global errors found in report")
-    end
-    local root = report.suites[1]
-    if not root then
-        emitError("No test suites found in report")
-        return {}
-    end
-    local results = ____exports.parseSuite(root, report)
-    return results
-end
-____exports.parseSuite = function(suite, report)
-    local results = {}
-    local specs = ____exports.flattenSpecs({suite})
-    for ____, spec in ipairs(specs) do
-        local key
-        if options.enable_dynamic_test_discovery then
-            key = spec.id
-        else
-            key = constructSpecKey(report, spec)
-        end
-        results[key] = ____exports.parseSpec(spec)
-    end
-    return results
-end
-____exports.flattenSpecs = function(suites)
-    local specs = {}
-    for ____, suite in ipairs(suites) do
-        local suiteSpecs = __TS__ArrayMap(
-            suite.specs,
-            function(____, spec) return __TS__ObjectAssign({}, spec, {suiteTitle = suite.title}) end
-        )
-        specs = __TS__ArrayConcat(
-            specs,
-            suiteSpecs,
-            ____exports.flattenSpecs(suite.suites or ({}))
-        )
-    end
-    return specs
-end
-____exports.parseSpec = function(spec)
-    local status = getSpecStatus(spec)
-    local errors = __TS__ArrayMap(
-        collectSpecErrors(spec),
-        function(____, s) return toNeotestError(s) end
+____exports.writeReport = function(file, report)
+    local code = vim.fn.writefile(
+        {vim.fn.json_encode(report)},
+        file
     )
-    local ____opt_2 = spec.tests[1]
-    local ____opt_0 = ____opt_2 and ____opt_2.results[1]
-    local attachments = ____opt_0 and ____opt_0.attachments or ({})
-    local data = {status = status, short = (spec.title .. ": ") .. status, errors = errors, attachments = attachments}
-    return data
-end
-getSpecStatus = function(spec)
-    if not spec.ok then
-        return "failed"
+    if code ~= 0 then
+        emitError("Failed to write test output json")
+        return false
     else
-        local ____opt_4 = spec.tests[1]
-        if (____opt_4 and ____opt_4.status) == "skipped" then
-            return "skipped"
-        else
-            return "passed"
-        end
+        logger("debug", "writeReport", file)
+        return true
     end
-end
-constructSpecKey = function(report, spec)
-    local dir = report.config.rootDir
-    local file = spec.file
-    local name = spec.title
-    local key = (((dir .. "/") .. file) .. "::") .. name
-    return key
-end
---- Collect all errors from a spec by traversing spec -> tests[] -> results[].
--- Return a single flat array containing any errors.
-collectSpecErrors = function(spec)
-    local errors = {}
-    for ____, test in ipairs(spec.tests) do
-        for ____, result in ipairs(test.results) do
-            __TS__ArrayPushArray(errors, result.errors)
-        end
-    end
-    return errors
-end
---- Convert Playwright error to neotest error
-toNeotestError = function(____error)
-    local ____opt_6 = ____error.location
-    local line = ____opt_6 and ____opt_6.line
-    return {
-        message = cleanAnsi(____error.message),
-        line = line and line - 1 or 0
-    }
 end
 return ____exports

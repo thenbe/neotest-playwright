@@ -1,7 +1,8 @@
 import type * as P from '@playwright/test/reporter';
 import type * as neotest from 'neotest';
 import { cleanAnsi } from 'neotest-playwright.util';
-import * as logger from 'neotest.logging';
+import { options } from './adapter-options';
+import { emitError } from './helpers';
 
 // ### Output ###
 
@@ -11,39 +12,28 @@ export const decodeOutput = (data: string): P.JSONReport => {
 	});
 
 	if (!ok) {
-		logger.error('Failed to parse test output json');
+		emitError('Failed to parse test output json');
 		throw new Error('Failed to parse test output json');
 	}
 
-	return parsed;
+	return parsed as P.JSONReport;
 };
 
-export const parseOutput = (
-	report: P.JSONReport,
-	output: neotest.Result['output'],
-): neotest.Results => {
+export const parseOutput = (report: P.JSONReport): neotest.Results => {
 	if (report.errors.length > 1) {
-		const msg = 'Global errors found in report';
-		logger.warn(msg, report.errors);
-		vim.defer_fn(
-			() => vim.cmd(`echohl WarningMsg | echo "${msg}" | echohl None`),
-			0,
-		);
+		emitError('Global errors found in report');
 	}
 
+	// TODO: handle array of suites:
+	// omiting testDir in config results in multiple suites at root level
 	const root = report.suites[0];
 
 	if (!root) {
-		const msg = 'No test suites found in report';
-		logger.error(msg);
-		vim.defer_fn(
-			() => vim.cmd(`echohl WarningMsg | echo "${msg}" | echohl None`),
-			0,
-		);
+		emitError('No test suites found in report');
 		return {};
 	}
 
-	const results = parseSuite(root, report, output);
+	const results = parseSuite(root, report);
 
 	return results;
 };
@@ -53,25 +43,50 @@ export const parseOutput = (
 export const parseSuite = (
 	suite: P.JSONReportSuite,
 	report: P.JSONReport,
-	output: neotest.Result['output'],
 ): neotest.Results => {
-	let results: neotest.Results = {};
+	const results: neotest.Results = {};
 
-	for (const spec of suite.specs) {
-		const key = constructSpecKey(report, spec, suite);
+	const specs = flattenSpecs([suite]);
 
-		const specResults = parseSpec(spec);
+	// Parse specs
+	for (const spec of specs) {
+		let key: string;
+		if (options.enable_dynamic_test_discovery) {
+			key = spec.id;
+		} else {
+			key = constructSpecKey(report, spec);
+		}
 
-		results[key] = specResults;
-	}
-
-	// Recursively parse child suites
-	for (const child of suite.suites ?? []) {
-		const childResults = parseSuite(child, report, output);
-		results = { ...results, ...childResults };
+		results[key] = parseSpec(spec);
 	}
 
 	return results;
+};
+
+// export const flattenSpecs = (suite: P.JSONReportSuite) => {
+// 	let specs = suite.specs.map((spec) => ({ ...spec, suiteTitle: suite.title }));
+//
+// 	for (const nestedSuite of suite.suites ?? []) {
+// 		specs = specs.concat(flattenSpecs(nestedSuite));
+// 	}
+//
+// 	return specs;
+// };
+
+export const flattenSpecs = (
+	suites: P.JSONReportSuite[],
+): P.JSONReportSpec[] => {
+	let specs: P.JSONReportSpec[] = [];
+
+	for (const suite of suites) {
+		const suiteSpecs = suite.specs.map((spec) => ({
+			...spec,
+			suiteTitle: suite.title,
+		}));
+		specs = specs.concat(suiteSpecs, flattenSpecs(suite.suites ?? []));
+	}
+
+	return specs;
 };
 
 // ### Spec ###
@@ -81,11 +96,13 @@ export const parseSpec = (
 ): Omit<neotest.Result, 'output'> => {
 	const status = getSpecStatus(spec);
 	const errors = collectSpecErrors(spec).map((s) => toNeotestError(s));
+	const attachments = spec.tests[0]?.results[0]?.attachments ?? []; // TODO: handle multiple tests/results (test runs)
 
 	const data = {
 		status,
 		short: `${spec.title}: ${status}`,
 		errors,
+		attachments,
 	};
 
 	return data;
@@ -106,21 +123,12 @@ const getSpecStatus = (spec: P.JSONReportSpec): neotest.Result['status'] => {
 const constructSpecKey = (
 	report: P.JSONReport,
 	spec: P.JSONReportSpec,
-	suite: P.JSONReportSuite,
 ): neotest.ResultKey => {
 	const dir = report.config.rootDir;
 	const file = spec.file;
 	const name = spec.title;
-	const suiteName = suite.title;
-	const isPartOfDescribe = suiteName !== file;
 
-	let key: string;
-
-	if (isPartOfDescribe) {
-		key = `${dir}/${file}::${suiteName}::${name}`;
-	} else {
-		key = `${dir}/${file}::${name}`;
-	}
+	const key = `${dir}/${file}::${name}`;
 
 	return key;
 };

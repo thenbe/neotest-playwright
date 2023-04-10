@@ -1,5 +1,5 @@
 import * as lib from 'neotest.lib';
-import * as logger from 'neotest.logging';
+import { logger } from './logging';
 import type { Adapter } from './types/adapter';
 
 type ProjectCache = Pick<Adapter['options'], 'projects'>;
@@ -12,7 +12,7 @@ const dataPath = vim.fn.stdpath('data');
 const dataFile = `${dataPath}/neotest-playwright.json`;
 
 export const loadCache = (): Cache | null => {
-	logger.trace('neotest-playwright loadCache(): Loading cache from', dataFile);
+	logger('debug', 'Loading cache', dataFile);
 
 	if (!lib.files.exists(dataFile)) {
 		return null;
@@ -32,7 +32,7 @@ export const loadCache = (): Cache | null => {
 /** Persists the selected projects to disk. Project selection is scoped
  * to project directory. */
 export const saveCache = (cache: Cache) => {
-	logger.trace('neotest-playwright saveCache(): Saving data to', dataFile);
+	logger('debug', 'Saving cache', dataFile);
 
 	vim.fn.writefile([vim.fn.json_encode(cache)], dataFile);
 };
@@ -46,13 +46,13 @@ export const loadProjectCache = (): ProjectCache | null => {
 
 	const projectCache = cache[current] ?? null;
 
-	logger.trace('neotest-playwright loadProjectCache():', projectCache);
+	logger('debug', 'Loading Project Cache', projectCache);
 
 	return projectCache;
 };
 
 export const saveProjectCache = (latest: ProjectCache) => {
-	logger.trace('neotest-playwright saveProjectCache():', latest);
+	logger('debug', 'Saving Project Cache', latest);
 
 	const cache = loadCache() ?? {};
 
