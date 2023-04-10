@@ -8,9 +8,10 @@ Written in typescript and transpiled to Lua using [tstl](https://github.com/Type
 
 ## Features
 
-- [x] Discover, run, and parse the output of playwright tests
-- [x] Project selection + persistence
-- [x] On-the-fly presets
+- 🎭 Discover, run, and parse the output of playwright tests
+- ⌨️ Quick launch test attachments ( 🕵️ trace, 📼 video)
+- 💅 Project selection + persistence
+- ⚙️ On-the-fly presets
 
 ---
 
@@ -128,6 +129,46 @@ This feature works by calling `playwright test --list --reporter=json`. While th
 - Adding a new test
 - Renaming a test
 - Changing the project(s) configuration in your `playwright.config.ts` file
+
+## Consumers
+
+### Attachment
+
+Displays the attachments for the test under the cursor. Upon selection, the attachment is launched.
+
+https://user-images.githubusercontent.com/33713262/231016415-d110f491-290e-46e3-a118-b3d4802723ca.mp4
+
+#### Configuration
+
+> Requires `enable_dynamic_test_discovery = true`.
+
+1. Include the consumer in your `neotest` setup:
+
+```lua
+require("neotest").setup({
+  consumers = {
+    -- add to your consumers list
+    playwright = require("neotest-playwright.consumers").consumers,
+  },
+})
+```
+
+2. Add keybinding:
+
+```lua
+{
+  "thenbe/neotest-playwright",
+  keys = {
+    {
+      "<leader>ta",
+      function()
+        require("neotest").playwright.attachment()
+      end,
+      desc = "Launch test attachment",
+    },
+  },
+}
+```
 
 ## Credits
 

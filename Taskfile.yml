@@ -13,6 +13,7 @@ tasks:
       - rm -rf lua/neotest-playwright
       - tstl -p tsconfig.build.json {{.CLI_ARGS}}
       - cp src/util.lua lua/neotest-playwright/util.lua
+      - cp -r src/consumers lua/neotest-playwright/consumers
       - tsx ./scripts/fix-require-paths.ts
 
   format:
