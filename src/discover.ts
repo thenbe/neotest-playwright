@@ -168,16 +168,6 @@ export const populate_data = () => {
 	}
 };
 
-// TODO: remove debug logging
-export const _get_data = () => {
-	return {
-		report: data.report,
-		specs: data.specs,
-		rootDir: data.rootDir,
-		projects: options.projects, // up-to-date projects
-	};
-};
-
 export const refresh_data = () => {
 	const report = get_config();
 

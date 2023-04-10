@@ -246,9 +246,6 @@ ____exports.populate_data = function()
         ____exports.refresh_data()
     end
 end
-____exports._get_data = function()
-    return {report = data.report, specs = data.specs, rootDir = data.rootDir, projects = options.projects}
-end
 ____exports.refresh_data = function()
     local report = get_config()
     data.report = report
