@@ -135,7 +135,7 @@ This feature works by calling `playwright test --list --reporter=json`. While th
 
 Displays the attachments for the test under the cursor. Upon selection, the attachment is launched.
 
-https://user-images.githubusercontent.com/33713262/231012257-14986226-034b-42ad-897a-72b9222fd25b.mp4
+https://user-images.githubusercontent.com/33713262/231016415-d110f491-290e-46e3-a118-b3d4802723ca.mp4
 
 #### Configuration
 
