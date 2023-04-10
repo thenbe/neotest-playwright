@@ -45,6 +45,9 @@ export const create_project_command = () => {
 			const selection = selectProjects(choices, preselected);
 
 			setProjects(selection);
+
+			// trigger data refresh in subprocess
+			vim.api.nvim_command('NeotestPlaywrightRefresh');
 		},
 		{
 			nargs: 0,

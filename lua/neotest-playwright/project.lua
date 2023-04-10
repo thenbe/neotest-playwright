@@ -49,6 +49,7 @@ ____exports.create_project_command = function()
             end
             local selection = selectProjects(choices, preselected)
             setProjects(selection)
+            vim.api.nvim_command("NeotestPlaywrightRefresh")
         end,
         {nargs = 0}
     )
