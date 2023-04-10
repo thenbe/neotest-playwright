@@ -8,10 +8,10 @@ Written in typescript and transpiled to Lua using [tstl](https://github.com/Type
 
 ## Features
 
-- [x] Discover, run, and parse the output of playwright tests
-- [x] Quick launch any test attachment (trace, video, etc)
-- [x] Project selection + persistence
-- [x] On-the-fly presets
+- 🎭 Discover, run, and parse the output of playwright tests
+- ⌨️ Quick launch test attachments ( 🕵️ trace, 📼 video)
+- 💅 Project selection + persistence
+- ⚙️ On-the-fly presets
 
 ---
 
