@@ -44,7 +44,11 @@ export const buildTestPosition = (basePosition: BasePosition): Position[] => {
 		return [basePosition];
 	}
 
-	let positions: Position[] = [];
+	// filter out positions belonging to ignored projects
+	// TODO: check this is up-to-date
+	const projects = options.projects;
+
+	const positions: Position[] = [];
 
 	/** The parent of the range-less positions */
 	const main = {
@@ -55,22 +59,28 @@ export const buildTestPosition = (basePosition: BasePosition): Position[] => {
 
 	positions.push(main);
 
-	specs.map((spec) => positions.push(specToPosition(spec, basePosition)));
+	specs.map((spec) => {
+		const position = specToPosition(spec, basePosition);
 
-	// filter out positions belonging to ignored projects
-	// TODO: check this is up-to-date
-	// TODO: handle case where no projects are specified
-	const projects = options.projects;
+		// Determine if the position is part of the selected projects.
 
-	positions = positions.filter((position) => {
-		const projectId = position.project_id;
+		if (options.projects.length === 0) {
+			// No projects specified, so all positions are selected
+			positions.push(position);
+			return;
+		} else {
+			const projectId = position.project_id;
 
-		if (!projectId) {
-			// The main position doesn't have a project id
-			return true;
+			if (!projectId) {
+				const msg = `No project id found for position: ${position.name}`;
+				emitError(msg);
+				throw new Error(msg);
+			}
+
+			if (projects.includes(projectId)) {
+				positions.push(position);
+			}
 		}
-
-		return projects.includes(projectId);
 	});
 
 	return positions;

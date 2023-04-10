@@ -148,14 +148,6 @@ local function __TS__ObjectAssign(target, ...)
     return target
 end
 
-local function __TS__ArrayMap(self, callbackfn, thisArg)
-    local result = {}
-    for i = 1, #self do
-        result[i] = callbackfn(thisArg, self[i], i - 1, self)
-    end
-    return result
-end
-
 local function __TS__ArrayIncludes(self, searchElement, fromIndex)
     if fromIndex == nil then
         fromIndex = 0
@@ -174,6 +166,14 @@ local function __TS__ArrayIncludes(self, searchElement, fromIndex)
         end
     end
     return false
+end
+
+local function __TS__ArrayMap(self, callbackfn, thisArg)
+    local result = {}
+    for i = 1, #self do
+        result[i] = callbackfn(thisArg, self[i], i - 1, self)
+    end
+    return result
 end
 
 local function __TS__ObjectRest(target, usedProperties)
@@ -222,6 +222,7 @@ ____exports.buildTestPosition = function(basePosition)
         logger.debug("No match found")
         return {basePosition}
     end
+    local projects = options.projects
     local positions = {}
     --- The parent of the range-less positions
     local main = __TS__ObjectAssign({}, basePosition)
@@ -229,28 +230,32 @@ ____exports.buildTestPosition = function(basePosition)
     __TS__ArrayMap(
         specs,
         function(____, spec)
-            local ____temp_0 = #positions + 1
-            positions[____temp_0] = specToPosition(spec, basePosition)
-            return ____temp_0
-        end
-    )
-    local projects = options.projects
-    positions = __TS__ArrayFilter(
-        positions,
-        function(____, position)
-            local projectId = position.project_id
-            if not projectId then
-                return true
+            local position = specToPosition(spec, basePosition)
+            if #options.projects == 0 then
+                positions[#positions + 1] = position
+                return
+            else
+                local projectId = position.project_id
+                if not projectId then
+                    local msg = "No project id found for position: " .. position.name
+                    emitError(msg)
+                    error(
+                        __TS__New(Error, msg),
+                        0
+                    )
+                end
+                if __TS__ArrayIncludes(projects, projectId) then
+                    positions[#positions + 1] = position
+                end
             end
-            return __TS__ArrayIncludes(projects, projectId)
         end
     )
     return positions
 end
 --- Convert a playwright spec to a neotest position.
 specToPosition = function(spec, basePosition)
-    local ____opt_1 = spec.tests[1]
-    local projectId = ____opt_1 and ____opt_1.projectName
+    local ____opt_0 = spec.tests[1]
+    local projectId = ____opt_0 and ____opt_0.projectName
     if not projectId then
         local msg = "No project id found for spec: " .. spec.title
         emitError(msg)
@@ -259,9 +264,9 @@ specToPosition = function(spec, basePosition)
             0
         )
     end
-    local ____basePosition_3 = basePosition
-    local range = ____basePosition_3.range
-    local rest = __TS__ObjectRest(____basePosition_3, {range = true})
+    local ____basePosition_2 = basePosition
+    local range = ____basePosition_2.range
+    local rest = __TS__ObjectRest(____basePosition_2, {range = true})
     local position = __TS__ObjectAssign({}, rest, {id = spec.id, name = projectId, project_id = projectId})
     return position
 end

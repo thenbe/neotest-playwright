@@ -41,6 +41,7 @@ export const discoverPositions: Adapter['discover_positions'] = (
 ) => {
 	// https://github.com/nvim-neotest/neotest/issues/210
 
+	// WARN: rm debug code
 	logger.info('subprocess.enabled', lib.subprocess.enabled());
 	logger.info('subprocess.is_child', lib.subprocess.is_child());
 
