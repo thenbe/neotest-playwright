@@ -23,12 +23,12 @@ Using packer:
 use({
    "nvim-neotest/neotest",
    requires = {
-      -- ...,
+      -- ...
       "thenbe/neotest-playwright",
    },
    config = function()
    require("neotest").setup({
-      -- ...,
+      -- ...
       adapters = {
          require("neotest-playwright").adapter({
             options = {
@@ -47,7 +47,7 @@ use({
 ```lua
 require("neotest-playwright").adapter({
    options = {
-		-- defaults values shown
+      -- default values shown
 
       persist_project_selection = false,
 
@@ -147,7 +147,7 @@ https://user-images.githubusercontent.com/33713262/231016415-d110f491-290e-46e3-
 ```lua
 require("neotest").setup({
   consumers = {
-    -- add to your consumers list
+    -- add to your list of consumers
     playwright = require("neotest-playwright.consumers").consumers,
   },
 })
