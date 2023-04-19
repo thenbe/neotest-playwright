@@ -118,8 +118,6 @@ const getSpecStatus = (spec: P.JSONReportSpec): neotest.Result['status'] => {
 	}
 };
 
-// FIX: fix identification issue. `neotest.lib.treesitter.parse_positions`
-// has `position_id` parameter we might be able to use.
 const constructSpecKey = (
 	report: P.JSONReport,
 	spec: P.JSONReportSpec,

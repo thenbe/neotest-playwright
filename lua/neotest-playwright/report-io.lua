@@ -127,10 +127,6 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local lib = require("neotest.lib")
-local ____helpers = require('neotest-playwright.helpers')
-local emitError = ____helpers.emitError
-local ____logging = require('neotest-playwright.logging')
-local logger = ____logging.logger
 ____exports.readReport = function(file)
     local success, data = pcall(lib.files.read, file)
     if not success then
@@ -147,18 +143,5 @@ ____exports.readReport = function(file)
         )
     end
     return parsed
-end
-____exports.writeReport = function(file, report)
-    local code = vim.fn.writefile(
-        {vim.fn.json_encode(report)},
-        file
-    )
-    if code ~= 0 then
-        emitError("Failed to write test output json")
-        return false
-    else
-        logger("debug", "writeReport", file)
-        return true
-    end
 end
 return ____exports

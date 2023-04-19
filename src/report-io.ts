@@ -1,9 +1,5 @@
 import type * as P from '@playwright/test/reporter';
 import * as lib from 'neotest.lib';
-import { emitError } from './helpers';
-import { logger } from './logging';
-
-// TODO: Remove dead code
 
 export const readReport = (file: string) => {
 	const [success, data] = pcall(lib.files.read, file);
@@ -21,16 +17,4 @@ export const readReport = (file: string) => {
 	}
 
 	return parsed as P.JSONReport;
-};
-
-export const writeReport = (file: string, report: P.JSONReport) => {
-	const code = vim.fn.writefile([vim.fn.json_encode(report)], file);
-
-	if (code !== 0) {
-		emitError('Failed to write test output json');
-		return false;
-	} else {
-		logger('debug', 'writeReport', file);
-		return true;
-	}
 };

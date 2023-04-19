@@ -4,8 +4,6 @@ import { buildCommand } from './build-command';
 import { emitError } from './helpers';
 import { logger } from './logging';
 
-// TODO: add performance logging.
-
 export const get_config = () => {
 	const cmd = buildCommand(
 		{
