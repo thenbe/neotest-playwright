@@ -4,14 +4,18 @@ A [playwright](https://playwright.dev/) adapter for [neotest](https://github.com
 
 Written in typescript and transpiled to Lua using [tstl](https://github.com/TypeScriptToLua/TypeScriptToLua).
 
-> ⚠️ This adapter is in an experimental state.
-
 ## Features
 
 - 🎭 Discover, run, and parse the output of playwright tests
 - ⌨️ Quick launch test attachments ( 🕵️ trace, 📼 video)
 - 💅 Project selection + persistence
 - ⚙️ On-the-fly presets
+
+---
+
+## Demo
+
+https://user-images.githubusercontent.com/33713262/233094989-4073e15f-e72d-4356-9c26-021ca95aa7fd.mp4
 
 ---
 
