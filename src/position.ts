@@ -45,7 +45,6 @@ export const buildTestPosition = (basePosition: BasePosition): Position[] => {
 	}
 
 	// filter out positions belonging to ignored projects
-	// TODO: check this is up-to-date
 	const projects = options.projects;
 
 	const positions: Position[] = [];
@@ -85,8 +84,6 @@ export const buildTestPosition = (basePosition: BasePosition): Position[] => {
 
 	return positions;
 };
-
-// TODO: add to readme. testDir should be defined in playwright config.
 
 /** Convert a playwright spec to a neotest position. */
 const specToPosition = (

@@ -78,6 +78,11 @@ require("neotest-playwright").adapter({
       -- to neotest's run command.
       -- extra_args = { },
 
+			-- Filter directories when searching for test files,
+			-- useful in large projects (see performance notes).
+			-- filter_dir = function(name, rel_path, root)
+			-- 		return name ~= "node_modules"
+			-- end,
    }
 })
 ```
@@ -173,6 +178,36 @@ require("neotest").setup({
   },
 }
 ```
+
+## Performance
+
+Use `filter_dir` option to limit directories to be searched for tests.
+
+```lua
+---Filter directories when searching for test files
+---@async
+---@param name string Name of directory
+---@param rel_path string Path to directory, relative to root
+---@param root string Root directory of project
+---@return boolean
+filter_dir = function(name, rel_path, root)
+  local full_path = root .. "/" .. rel_path
+
+  if root:match("projects/my-large-monorepo") then
+    if full_path:match("^packages/site/test") then
+      return true
+    else
+      return false
+    end
+  else
+    return name ~= "node_modules"
+  end
+end
+```
+
+## Troubleshooting
+
+[`testDir`](https://playwright.dev/docs/api/class-testconfig#test-config-test-dir) should be defined in `playwright.config.ts`.
 
 ## Credits
 
