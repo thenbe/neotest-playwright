@@ -1,5 +1,38 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 -- Lua Library inline imports
+local function __TS__ObjectEntries(obj)
+    local result = {}
+    local len = 0
+    for key in pairs(obj) do
+        len = len + 1
+        result[len] = {key, obj[key]}
+    end
+    return result
+end
+
+local function __TS__ArrayMap(self, callbackfn, thisArg)
+    local result = {}
+    for i = 1, #self do
+        result[i] = callbackfn(thisArg, self[i], i - 1, self)
+    end
+    return result
+end
+
+local function __TS__ArrayUnshift(self, ...)
+    local items = {...}
+    local numItemsToInsert = #items
+    if numItemsToInsert == 0 then
+        return #self
+    end
+    for i = #self, 1, -1 do
+        self[i + numItemsToInsert] = self[i]
+    end
+    for i = 1, numItemsToInsert do
+        self[i] = items[i]
+    end
+    return #self
+end
+
 local function __TS__StringIncludes(self, searchString, position)
     if not position then
         position = 1
@@ -143,6 +176,22 @@ ____exports.get_config = function()
             reporters = {"json"}
         },
         {"--list"}
+    )
+    __TS__ArrayUnshift(
+        cmd,
+        table.concat(
+            __TS__ArrayMap(
+                __TS__ObjectEntries(options.env),
+                function(____, ____bindingPattern0)
+                    local value
+                    local key
+                    key = ____bindingPattern0[1]
+                    value = ____bindingPattern0[2]
+                    return (key .. "=") .. value
+                end
+            ),
+            " "
+        )
     )
     local output = run(table.concat(cmd, " "))
     if not output then

@@ -14,6 +14,13 @@ export const get_config = () => {
 		['--list'],
 	);
 
+	// apply any custom environment variables when resolving the config
+	cmd.unshift(
+		Object.entries(options.env)
+			.map(([key, value]) => `${key}=${value}`)
+			.join(' '),
+	);
+
 	const output = run(cmd.join(' '));
 
 	if (!output) {
