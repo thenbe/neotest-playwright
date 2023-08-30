@@ -24,17 +24,22 @@ export const getPlaywrightConfig: AdapterOptions['get_playwright_config'] =
 	() => {
 		const dir = get_cwd();
 
-		const config = `${dir}/playwright.config.ts`;
+		const configs = [
+			`${dir}/playwright.config.ts`,
+			`${dir}/playwright.config.js`,
+		];
 
-		if (lib.files.exists(config)) {
-			return config;
-		} else {
-			logger('error', 'Unable to locate playwright config file.');
-			throw new Error(
-				'Unable to locate playwright config file. Expected to find it at: ' +
-					config,
-			);
+		for (const config of configs) {
+			if (lib.files.exists(config)) {
+				return config;
+			}
 		}
+
+		logger('error', 'Unable to locate playwright config file.');
+		throw new Error(
+			'Unable to locate playwright config file. Expected to find it at: ' +
+				configs.join(', '),
+		);
 	};
 
 export const get_cwd: NonNullable<AdapterOptions['get_cwd']> = () => {

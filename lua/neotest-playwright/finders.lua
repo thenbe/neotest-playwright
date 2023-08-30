@@ -145,16 +145,20 @@ ____exports.getPlaywrightBinary = function()
 end
 ____exports.getPlaywrightConfig = function()
     local dir = ____exports.get_cwd()
-    local config = dir .. "/playwright.config.ts"
-    if lib.files.exists(config) then
-        return config
-    else
-        logger("error", "Unable to locate playwright config file.")
-        error(
-            __TS__New(Error, "Unable to locate playwright config file. Expected to find it at: " .. config),
-            0
-        )
+    local configs = {dir .. "/playwright.config.ts", dir .. "/playwright.config.js"}
+    for ____, config in ipairs(configs) do
+        if lib.files.exists(config) then
+            return config
+        end
     end
+    logger("error", "Unable to locate playwright config file.")
+    error(
+        __TS__New(
+            Error,
+            "Unable to locate playwright config file. Expected to find it at: " .. table.concat(configs, ", ")
+        ),
+        0
+    )
 end
 ____exports.get_cwd = function()
     local dir = vim.loop.cwd()
