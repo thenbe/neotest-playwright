@@ -38,7 +38,7 @@ https://user-images.githubusercontent.com/33713262/233094989-4073e15f-e72d-4356-
     - [Caveats](#caveats)
   - [Consumers](#consumers)
     - [Attachment](#attachment)
-      - [Consumers Configuration](#consumers-configuration)
+    - [Consumers Configuration](#consumers-configuration)
   - [Performance](#performance)
   - [Troubleshooting](#troubleshooting)
   - [Credits](#credits)
@@ -170,7 +170,7 @@ Displays the attachments for the test under the cursor. Upon selection, the atta
 
 https://user-images.githubusercontent.com/33713262/231016415-d110f491-290e-46e3-a118-b3d4802723ca.mp4
 
-#### Consumers Configuration
+### Consumers Configuration
 
 > Requires `enable_dynamic_test_discovery = true`.
 
