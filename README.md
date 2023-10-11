@@ -46,44 +46,41 @@ use({
 })
 ```
 
-# Configuration
+## Configuration
 
 ```lua
 require("neotest-playwright").adapter({
-   options = {
-      -- default values shown
+  options = {
+    -- default values shown
 
-      persist_project_selection = false,
+    persist_project_selection = false,
 
-      enable_dynamic_test_discovery = false,
+    enable_dynamic_test_discovery = false,
 
-      preset = "none", -- "none" | "headed" | "debug"
+    preset = "none", -- "none" | "headed" | "debug"
 
-      -- get_playwright_binary = function()
-      --    return vim.loop.cwd() + "/node_modules/.bin/playwright"
-      -- end,
+    -- get_playwright_binary = function()
+    --    return vim.loop.cwd() + "/node_modules/.bin/playwright"
+    -- end,
 
-      -- get_playwright_config = function()
-      --    return vim.loop.cwd() + "/playwright.config.ts"
-      -- end,
+    -- get_playwright_config = function()
+    --    return vim.loop.cwd() + "/playwright.config.ts"
+    -- end,
 
-      -- get_cwd = function()
-      --    return vim.loop.cwd()
-      -- end,
+    -- get_cwd = function()
+    --    return vim.loop.cwd()
+    -- end,
 
-      -- env = { },
+    -- env = { },
 
-      -- Extra args to always pass to playwright.
-      -- These are merged with any extra_arg passed
-      -- to neotest's run command.
-      -- extra_args = { },
+    -- Extra args to always passed to playwright. These are merged with any extra_args passed to neotest's run command.
+    -- extra_args = { },
 
-			-- Filter directories when searching for test files,
-			-- useful in large projects (see performance notes).
-			-- filter_dir = function(name, rel_path, root)
-			-- 		return name ~= "node_modules"
-			-- end,
-   }
+    -- Filter directories when searching for test files. Useful in large projects (see performance notes).
+    -- filter_dir = function(name, rel_path, root)
+    --    return name ~= "node_modules"
+    -- end,
+  },
 })
 ```
 
