@@ -98,7 +98,7 @@ If you wish, you can choose to persist your project selection across neovim sess
 
 ## Presets
 
-Presets are a way to debug your tests on the fly.
+Presets can help you debug your tests on the fly. A preset is just a group of command line flags that come in handy in common scenarios.
 
 > To select a preset, use the `:NeotestPlaywrightPreset` command. Once a preset is selected, it remains active until you either select another preset, clear it by selecting the `none` preset, or restart neovim.
 
