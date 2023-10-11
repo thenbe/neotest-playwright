@@ -25,24 +25,24 @@ Using packer:
 
 ```lua
 use({
-   "nvim-neotest/neotest",
-   requires = {
-      -- ...
-      "thenbe/neotest-playwright",
-   },
-   config = function()
-   require("neotest").setup({
+  "nvim-neotest/neotest",
+  requires = {
+    -- ...
+    "thenbe/neotest-playwright",
+  },
+  config = function()
+    require("neotest").setup({
       -- ...
       adapters = {
-         require("neotest-playwright").adapter({
-            options = {
-               persist_project_selection = true,
-               enable_dynamic_test_discovery = true,
-            }
-         }),
+        require("neotest-playwright").adapter({
+          options = {
+            persist_project_selection = true,
+            enable_dynamic_test_discovery = true,
+          }
+        }),
       },
-   })
-   end,
+    })
+  end,
 })
 ```
 
