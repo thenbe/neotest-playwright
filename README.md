@@ -19,6 +19,31 @@ https://user-images.githubusercontent.com/33713262/233094989-4073e15f-e72d-4356-
 
 ---
 
+## Table of contents
+
+<!--toc:start-->
+
+- [neotest-playwright](#neotest-playwright)
+  - [Features](#features)
+  - [Demo](#demo)
+  - [Table of contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [Projects](#projects)
+  - [Presets](#presets)
+    - [`headed`](#headed)
+    - [`debug`](#debug)
+    - [`none`](#none)
+  - [Dynamic Test Discovery](#dynamic-test-discovery)
+    - [Caveats](#caveats)
+  - [Consumers](#consumers)
+    - [Attachment](#attachment)
+      - [Consumers Configuration](#consumers-configuration)
+  - [Performance](#performance)
+  - [Troubleshooting](#troubleshooting)
+  - [Credits](#credits)
+  <!--toc:end-->
+
 ## Installation
 
 Using packer:
