@@ -50,9 +50,8 @@ use({
 
 ```lua
 require("neotest-playwright").adapter({
+  -- default values shown
   options = {
-    -- default values shown
-
     persist_project_selection = false,
 
     enable_dynamic_test_discovery = false,
@@ -68,7 +67,7 @@ require("neotest-playwright").adapter({
     -- end,
 
     -- Controls the location of the spawned test process.
-    -- This affects neither the location of the binary nor the location of the config file.
+    -- Has no affect on neither the location of the binary nor the location of the config file.
     -- get_cwd = function()
     --   return vim.loop.cwd()
     -- end,
