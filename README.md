@@ -150,31 +150,31 @@ https://user-images.githubusercontent.com/33713262/231016415-d110f491-290e-46e3-
 
 1. Include the consumer in your `neotest` setup:
 
-```lua
-require("neotest").setup({
-  consumers = {
-    -- add to your list of consumers
-    playwright = require("neotest-playwright.consumers").consumers,
-  },
-})
-```
+    ```lua
+    require("neotest").setup({
+      consumers = {
+        -- add to your list of consumers
+        playwright = require("neotest-playwright.consumers").consumers,
+      },
+    })
+    ```
 
-2. Add keybinding:
+1. Add keybinding:
 
-```lua
-{
-  "thenbe/neotest-playwright",
-  keys = {
+    ```lua
     {
-      "<leader>ta",
-      function()
-        require("neotest").playwright.attachment()
-      end,
-      desc = "Launch test attachment",
-    },
-  },
-}
-```
+      "thenbe/neotest-playwright",
+      keys = {
+        {
+          "<leader>ta",
+          function()
+            require("neotest").playwright.attachment()
+          end,
+          desc = "Launch test attachment",
+        },
+      },
+    }
+    ```
 
 ## Performance
 
