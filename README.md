@@ -67,6 +67,8 @@ require("neotest-playwright").adapter({
     --   return vim.loop.cwd() + "/playwright.config.ts"
     -- end,
 
+    -- Controls the location of the spawned test process.
+    -- This affects neither the location of the binary nor the location of the config file.
     -- get_cwd = function()
     --   return vim.loop.cwd()
     -- end,
