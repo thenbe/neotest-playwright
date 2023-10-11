@@ -128,7 +128,7 @@ Does not apply any flags. Your tests will run as defined in your `playwright.con
 
 To enable this, set `enable_dynamic_test_discovery` to true.
 
-### Caveats:
+### Caveats
 
 This feature works by calling `playwright test --list --reporter=json`. While this is a relatively fast operation, it does add some overhead. Therefore, `neotest-playwright` only calls this feature once (when the adapter is first initialized). From then on, `neotest-playwright` continues to rely on treesitter to track your tests and enhance them with the data previously resolved by the `playwright` cli. There are times, however, where we want to refresh this data. To remedy this: `neotest-playwright` exposes a command `:NeotestPlaywrightRefresh`. This comes in handy in the following scenarios:
 
@@ -144,7 +144,7 @@ Displays the attachments for the test under the cursor. Upon selection, the atta
 
 https://user-images.githubusercontent.com/33713262/231016415-d110f491-290e-46e3-a118-b3d4802723ca.mp4
 
-#### Configuration
+#### Consumers Configuration
 
 > Requires `enable_dynamic_test_discovery = true`.
 
