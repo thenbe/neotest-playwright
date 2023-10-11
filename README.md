@@ -60,15 +60,15 @@ require("neotest-playwright").adapter({
     preset = "none", -- "none" | "headed" | "debug"
 
     -- get_playwright_binary = function()
-    --    return vim.loop.cwd() + "/node_modules/.bin/playwright"
+    --   return vim.loop.cwd() + "/node_modules/.bin/playwright"
     -- end,
 
     -- get_playwright_config = function()
-    --    return vim.loop.cwd() + "/playwright.config.ts"
+    --   return vim.loop.cwd() + "/playwright.config.ts"
     -- end,
 
     -- get_cwd = function()
-    --    return vim.loop.cwd()
+    --   return vim.loop.cwd()
     -- end,
 
     -- env = { },
@@ -78,7 +78,7 @@ require("neotest-playwright").adapter({
 
     -- Filter directories when searching for test files. Useful in large projects (see performance notes).
     -- filter_dir = function(name, rel_path, root)
-    --    return name ~= "node_modules"
+    --   return name ~= "node_modules"
     -- end,
   },
 })
