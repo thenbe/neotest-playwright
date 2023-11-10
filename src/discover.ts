@@ -30,7 +30,7 @@ export const isTestFile: Adapter['is_test_file'] = (
 	}
 
 	// TODO: Don't hardcode. Either get from user config or resolve using playwright cli.
-	const endings = ['.spec.ts', '.test.ts', '.spec.js', '.test.js'];
+	const endings = ['.spec.ts', 'spec.tsx', '.test.ts', '.test.tsx', '.spec.js', '.spec.jsx', '.test.js', '.test.jsx'];
 
 	const result = endings.some((ending) => file_path.endsWith(ending));
 
