@@ -9,7 +9,7 @@ local isPreset = ____preset_2Doptions.isPreset
 ____exports.set_preset = function(preset)
     options.preset = preset
 end
-____exports.select_preset = function()
+____exports.select_preset = function(on_submit)
     local choices = {"headed", "debug", "none"}
     local prompt = "Select preset for neotest-playwright:"
     local choice
@@ -18,25 +18,17 @@ ____exports.select_preset = function()
         {prompt = prompt},
         function(c)
             choice = c
+            logger("debug", "preset", choice)
+            if isPreset(choice) then
+                on_submit(choice)
+            end
         end
     )
-    logger("debug", "preset", choice)
-    if isPreset(choice) then
-        return choice
-    else
-        return nil
-    end
 end
 ____exports.create_preset_command = function()
     vim.api.nvim_create_user_command(
         "NeotestPlaywrightPreset",
-        function()
-            local choice = ____exports.select_preset()
-            if choice == nil then
-                return
-            end
-            ____exports.set_preset(choice)
-        end,
+        function() return ____exports.select_preset(function(choice) return ____exports.set_preset(choice) end) end,
         {nargs = 0}
     )
 end
