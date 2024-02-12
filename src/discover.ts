@@ -58,7 +58,7 @@ export const discoverPositions: Adapter['discover_positions'] = (
 		populate_data();
 	}
 
-	const query = `
+	const query = /* query */ `
 		; -- Namespaces --
 
 		; Matches: test.describe('title')
