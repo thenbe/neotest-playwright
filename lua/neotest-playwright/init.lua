@@ -43,7 +43,14 @@ setmetatable(
         end
         local updated = __TS__ObjectAssign({}, config.options, userOptions)
         for key, value in pairs(updated) do
-            config.options[key] = value
+            do
+                if key == "filter_dir" then
+                    config.filter_dir = value
+                    goto __continue4
+                end
+                config.options[key] = value
+            end
+            ::__continue4::
         end
         if options.persist_project_selection then
             local projects = loadPreselectedProjects()
