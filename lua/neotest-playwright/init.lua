@@ -45,7 +45,13 @@ setmetatable(
         for key, value in pairs(updated) do
             do
                 if key == "filter_dir" then
-                    config.filter_dir = value
+                    local filter_dir = value
+                    config.filter_dir = filter_dir
+                    goto __continue4
+                end
+                if key == "is_test_file" then
+                    local is_test_file = value
+                    config.is_test_file = is_test_file
                     goto __continue4
                 end
                 config.options[key] = value
