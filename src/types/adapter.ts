@@ -22,6 +22,8 @@ export interface AdapterOptions {
 	enable_dynamic_test_discovery: boolean;
 	/** Override the default filter_dir function. */
 	filter_dir?: Adapter['filter_dir'];
+	/** Override the default is_test_file function. */
+	is_test_file?: Adapter['is_test_file']
 }
 
 export type AdapterData =

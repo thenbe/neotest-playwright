@@ -106,6 +106,13 @@ require("neotest-playwright").adapter({
     -- filter_dir = function(name, rel_path, root)
     --   return name ~= "node_modules"
     -- end,
+
+    -- Custom criteria for a file path to be a test file. Useful in large projects or projects with peculiar tests folder structure.
+    -- is_test_file = function(file_path)
+    --     -- By default, neotest-playwright only returns true if a file contains one of several file extension patterns.
+    --     -- See default implementation here: https://github.com/thenbe/neotest-playwright/blob/c036fe39469e06ae70b63479b5bb2ce7d654beaf/src/discover.ts#L25-L47
+    --     return string.match(file_path, "my-project's-vitest-tests-folder")
+    -- end,
   },
 })
 ```

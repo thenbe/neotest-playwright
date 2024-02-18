@@ -1,3 +1,4 @@
+import type { Adapter } from 'neotest';
 import { options } from './adapter-options';
 import { create_refresh_command } from './commands';
 import { config } from './config';
@@ -30,11 +31,21 @@ setmetatable(adapter, {
 		// Apply user config
 		for (const [key, value] of pairs(updated)) {
 			if (key === 'filter_dir') {
+				const filter_dir = value as Adapter["filter_dir"]
 				// @ts-expect-error filter_dir optionally defined by users should
 				// override the adapter's own filter_dir
-				config.filter_dir = value;
+				config.filter_dir = filter_dir;
 				continue;
 			}
+
+			if (key === 'is_test_file') {
+				const is_test_file = value as Adapter["is_test_file"]
+				// @ts-expect-error is_test_file optionally defined by users should
+				// override the adapter's own is_test_file
+				config.is_test_file = is_test_file;
+				continue;
+			}
+
 			// @ts-expect-error wip
 			config.options[key] = value;
 		}
