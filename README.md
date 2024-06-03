@@ -116,8 +116,8 @@ require('neotest-playwright').adapter({
 		-- 	local result = file_path:find('%.test%.ts$') ~= nil
 		-- 	-- Example: Match any file that ends in `test.ts`, but only if it has ancestor directory `e2e/tests`
 		-- 	-- local result = file_path:find('e2e/tests/.*%.test%.ts$') ~= nil
-		-- 	-- Example: Match any file that ends in either `test.ts` or `test.js`
-		-- 	-- local result = file_path:find('%.test%.[tj]s$') ~= nil
+		-- 	-- Example: Match any file that ends in either `test.ts`, `test.js`, `test.tsx`, or `test.jsx`
+		-- 	-- local result = file_path:find('%.test%.[tj]sx?$') ~= nil
 		-- 	return result
 		-- end,
 	},
