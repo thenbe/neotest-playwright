@@ -82,11 +82,11 @@ require('neotest-playwright').adapter({
 		preset = 'none', -- "none" | "headed" | "debug"
 
 		get_playwright_binary = function()
-			return vim.loop.cwd() + '/node_modules/.bin/playwright'
+			return vim.loop.cwd() .. '/node_modules/.bin/playwright'
 		end,
 
 		get_playwright_config = function()
-			return vim.loop.cwd() + '/playwright.config.ts'
+			return vim.loop.cwd() .. '/playwright.config.ts'
 		end,
 
 		-- Controls the location of the spawned test process.
