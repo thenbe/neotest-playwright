@@ -1,4 +1,4 @@
-local async = require("neotest.async")
+local async = require('neotest.async')
 local vim = vim
 local validate = vim.validate
 local uv = vim.loop
@@ -7,12 +7,12 @@ local M = {}
 
 -- Some path utilities
 M.path = (function()
-	local is_windows = uv.os_uname().version:match("Windows")
+	local is_windows = uv.os_uname().version:match('Windows')
 
 	local function sanitize(path)
 		if is_windows then
 			path = path:sub(1, 1):upper() .. path:sub(2)
-			path = path:gsub("\\", "/")
+			path = path:gsub('\\', '/')
 		end
 		return path
 	end
@@ -23,48 +23,48 @@ M.path = (function()
 	end
 
 	local function is_dir(filename)
-		return exists(filename) == "directory"
+		return exists(filename) == 'directory'
 	end
 
 	local function is_file(filename)
-		return exists(filename) == "file"
+		return exists(filename) == 'file'
 	end
 
 	local function is_fs_root(path)
 		if is_windows then
-			return path:match("^%a:$")
+			return path:match('^%a:$')
 		else
-			return path == "/"
+			return path == '/'
 		end
 	end
 
 	local function is_absolute(filename)
 		if is_windows then
-			return filename:match("^%a:") or filename:match("^\\\\")
+			return filename:match('^%a:') or filename:match('^\\\\')
 		else
-			return filename:match("^/")
+			return filename:match('^/')
 		end
 	end
 
 	local function dirname(path)
-		local strip_dir_pat = "/([^/]+)$"
-		local strip_sep_pat = "/$"
+		local strip_dir_pat = '/([^/]+)$'
+		local strip_sep_pat = '/$'
 		if not path or #path == 0 then
 			return
 		end
-		local result = path:gsub(strip_sep_pat, ""):gsub(strip_dir_pat, "")
+		local result = path:gsub(strip_sep_pat, ''):gsub(strip_dir_pat, '')
 		if #result == 0 then
 			if is_windows then
 				return path:sub(1, 2):upper()
 			else
-				return "/"
+				return '/'
 			end
 		end
 		return result
 	end
 
 	local function path_join(...)
-		return table.concat(vim.tbl_flatten({ ... }), "/")
+		return table.concat(vim.tbl_flatten({ ... }), '/')
 	end
 
 	-- Traverse the path calling cb along the way.
@@ -118,7 +118,7 @@ M.path = (function()
 		return dir == root
 	end
 
-	local path_separator = is_windows and ";" or ":"
+	local path_separator = is_windows and ';' or ':'
 
 	return {
 		is_dir = is_dir,
@@ -136,7 +136,7 @@ M.path = (function()
 end)()
 
 function M.search_ancestors(startpath, func)
-	validate({ func = { func, "f" } })
+	validate({ func = { func, 'f' } })
 	if func(startpath) then
 		return startpath
 	end
@@ -172,14 +172,14 @@ end
 
 function M.find_node_modules_ancestor(startpath)
 	return M.search_ancestors(startpath, function(path)
-		if M.path.is_dir(M.path.join(path, "node_modules")) then
+		if M.path.is_dir(M.path.join(path, 'node_modules')) then
 			return path
 		end
 	end)
 end
 function M.find_package_json_ancestor(startpath)
 	return M.search_ancestors(startpath, function(path)
-		if M.path.is_file(M.path.join(path, "package.json")) then
+		if M.path.is_file(M.path.join(path, 'package.json')) then
 			return path
 		end
 	end)
@@ -201,11 +201,11 @@ function M.find_ancestor(startpath, name, is_dir)
 end
 
 function M.cleanAnsi(s)
-	return s:gsub("\x1b%[%d+;%d+;%d+;%d+;%d+m", "")
-		:gsub("\x1b%[%d+;%d+;%d+;%d+m", "")
-		:gsub("\x1b%[%d+;%d+;%d+m", "")
-		:gsub("\x1b%[%d+;%d+m", "")
-		:gsub("\x1b%[%d+m", "")
+	return s:gsub('\x1b%[%d+;%d+;%d+;%d+;%d+m', '')
+		:gsub('\x1b%[%d+;%d+;%d+;%d+m', '')
+		:gsub('\x1b%[%d+;%d+;%d+m', '')
+		:gsub('\x1b%[%d+;%d+m', '')
+		:gsub('\x1b%[%d+m', '')
 end
 
 return M

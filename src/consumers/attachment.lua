@@ -1,10 +1,10 @@
-local async = require("neotest.async")
+local async = require('neotest.async')
 
 local M = {}
 
 --- @param client neotest.Client
 M.attachment = function(client)
-	local position = require("neotest-playwright.consumers.util").get_pos(client)
+	local position = require('neotest-playwright.consumers.util').get_pos(client)
 	if not position then
 		return
 	end
@@ -21,7 +21,7 @@ M.attachment = function(client)
 	-- 	return
 	-- end
 
-	local file = async.fn.expand("%:p")
+	local file = async.fn.expand('%:p')
 
 	-- local adapter_name, adapter = client:get_adapter(file)
 	local adapter_name, adapter = client:get_adapter(file)
@@ -47,24 +47,24 @@ M.attachment = function(client)
 
 	local options = {}
 	for i, attachment in ipairs(attachments) do
-		local option = string.format("%d. %s %s", i, attachment.project_id, attachment.name)
+		local option = string.format('%d. %s %s', i, attachment.project_id, attachment.name)
 		table.insert(options, option)
 	end
 
 	if #options == 0 then
-		print("No attachments found")
+		print('No attachments found')
 		return
 	end
 
 	local selection_index = vim.fn.inputlist(options)
 	local selection = attachments[selection_index]
 
-	if selection.contentType == "application/zip" then
+	if selection.contentType == 'application/zip' then
 		local bin = adapter.options.get_playwright_binary(file)
-		local cmd = bin .. " show-trace " .. selection.path .. " &"
+		local cmd = bin .. ' show-trace ' .. selection.path .. ' &'
 		os.execute(cmd)
-	elseif selection.contentType == "video/webm" then
-		local cmd = "xdg-open " .. selection.path .. " &"
+	elseif selection.contentType == 'video/webm' then
+		local cmd = 'xdg-open ' .. selection.path .. ' &'
 		os.execute(cmd)
 	end
 end
