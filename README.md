@@ -50,79 +50,77 @@ Using packer:
 
 ```lua
 use({
-  "nvim-neotest/neotest",
-  requires = {
-    -- ...
-    "thenbe/neotest-playwright",
-  },
-  config = function()
-    require("neotest").setup({
-      -- ...
-      adapters = {
-        require("neotest-playwright").adapter({
-          options = {
-            persist_project_selection = true,
-            enable_dynamic_test_discovery = true,
-          }
-        }),
-      },
-    })
-  end,
+	'nvim-neotest/neotest',
+	requires = {
+		'thenbe/neotest-playwright',
+	},
+	config = function()
+		require('neotest').setup({
+			adapters = {
+				require('neotest-playwright').adapter({
+					options = {
+						persist_project_selection = true,
+						enable_dynamic_test_discovery = true,
+					},
+				}),
+			},
+		})
+	end,
 })
 ```
 
 ## Configuration
 
 ```lua
-require("neotest-playwright").adapter({
-  -- default values shown
-  options = {
-    persist_project_selection = false,
+require('neotest-playwright').adapter({
+	-- default values shown
+	options = {
+		persist_project_selection = false,
 
-    enable_dynamic_test_discovery = false,
+		enable_dynamic_test_discovery = false,
 
-    preset = "none", -- "none" | "headed" | "debug"
+		preset = 'none', -- "none" | "headed" | "debug"
 
-    -- get_playwright_binary = function()
-    --   return vim.loop.cwd() + "/node_modules/.bin/playwright"
-    -- end,
+		get_playwright_binary = function()
+			return vim.loop.cwd() + '/node_modules/.bin/playwright'
+		end,
 
-    -- get_playwright_config = function()
-    --   return vim.loop.cwd() + "/playwright.config.ts"
-    -- end,
+		get_playwright_config = function()
+			return vim.loop.cwd() + '/playwright.config.ts'
+		end,
 
-    -- Controls the location of the spawned test process.
-    -- Has no affect on neither the location of the binary nor the location of the config file.
-    -- get_cwd = function()
-    --   return vim.loop.cwd()
-    -- end,
+		-- Controls the location of the spawned test process.
+		-- Has no affect on neither the location of the binary nor the location of the config file.
+		get_cwd = function()
+			return vim.loop.cwd()
+		end,
 
-    -- env = { },
+		env = {},
 
-    -- Extra args to always passed to playwright. These are merged with any extra_args passed to neotest's run command.
-    -- extra_args = { },
+		-- Extra args to always passed to playwright. These are merged with any extra_args passed to neotest's run command.
+		extra_args = {},
 
-    -- Filter directories when searching for test files. Useful in large projects (see performance notes).
-    -- filter_dir = function(name, rel_path, root)
-    --   return name ~= "node_modules"
-    -- end,
+		-- Filter directories when searching for test files. Useful in large projects (see performance notes).
+		filter_dir = function(name, rel_path, root)
+			return name ~= 'node_modules'
+		end,
 
-    -- Custom criteria for a file path to be a test file. Useful in large
-    -- projects or projects with peculiar tests folder structure. When setting this
-    -- option, make sure to be as strict as possible. For example, the pattern
-    -- should not return true for jpg files that may end up in your test directory.
-    -- is_test_file = function(file_path)
-    --     -- By default, neotest-playwright only returns true if a file contains one of several file extension patterns.
-    --     -- See default implementation here: https://github.com/thenbe/neotest-playwright/blob/c036fe39469e06ae70b63479b5bb2ce7d654beaf/src/discover.ts#L25-L47
-    --     -- Example: Match any file that ends in `test.ts`
-    --     local result = file_path:find('%.test%.ts$') ~= nil
-    --     -- Example: Match any file that ends in `test.ts`, but only if it has ancestor directory `e2e/tests`
-    --     -- local result = file_path:find('e2e/tests/.*%.test%.ts$') ~= nil
-    --     -- Example: Match any file that ends in either `test.ts` or `test.js`
-    --     -- local result = file_path:find('%.test%.[tj]s$') ~= nil
-    --     return result
-    -- end,
-  },
+		-- Custom criteria for a file path to be a test file. Useful in large
+		-- projects or projects with peculiar tests folder structure. When setting this
+		-- option, make sure to be as strict as possible. For example, the pattern
+		-- should not return true for jpg files that may end up in your test directory.
+		-- is_test_file = function(file_path)
+		-- 	-- By default, neotest-playwright only returns true if a file contains one of several file extension patterns.
+		-- 	-- See default implementation here: https://github.com/thenbe/neotest-playwright/blob/c036fe39469e06ae70b63479b5bb2ce7d654beaf/src/discover.ts#L25-L47
+		-- 	-- Example: Match any file that ends in `test.ts`
+		-- 	local result = file_path:find('%.test%.ts$') ~= nil
+		-- 	-- Example: Match any file that ends in `test.ts`, but only if it has ancestor directory `e2e/tests`
+		-- 	-- local result = file_path:find('e2e/tests/.*%.test%.ts$') ~= nil
+		-- 	-- Example: Match any file that ends in either `test.ts` or `test.js`
+		-- 	-- local result = file_path:find('%.test%.[tj]s$') ~= nil
+		-- 	return result
+		-- end,
+	},
 })
 ```
 
@@ -192,31 +190,31 @@ https://user-images.githubusercontent.com/33713262/231016415-d110f491-290e-46e3-
 
 1. Include the consumer in your `neotest` setup:
 
-    ```lua
-    require("neotest").setup({
-      consumers = {
-        -- add to your list of consumers
-        playwright = require("neotest-playwright.consumers").consumers,
-      },
-    })
-    ```
+```lua
+require('neotest').setup({
+	consumers = {
+		-- add to your list of consumers
+		playwright = require('neotest-playwright.consumers').consumers,
+	},
+})
+```
 
-1. Add keybinding:
+2. Add keybinding:
 
-    ```lua
-    {
-      "thenbe/neotest-playwright",
-      keys = {
-        {
-          "<leader>ta",
-          function()
-            require("neotest").playwright.attachment()
-          end,
-          desc = "Launch test attachment",
-        },
-      },
-    }
-    ```
+```lua
+{
+	'thenbe/neotest-playwright',
+	keys = {
+		{
+			'<leader>ta',
+			function()
+				require('neotest').playwright.attachment()
+			end,
+			desc = 'Launch test attachment',
+		},
+	},
+}
+```
 
 ## Performance
 
@@ -230,17 +228,17 @@ Use `filter_dir` option to limit directories to be searched for tests.
 ---@param root string Root directory of project
 ---@return boolean
 filter_dir = function(name, rel_path, root)
-  local full_path = root .. "/" .. rel_path
+	local full_path = root .. '/' .. rel_path
 
-  if root:match("projects/my-large-monorepo") then
-    if full_path:match("^packages/site/test") then
-      return true
-    else
-      return false
-    end
-  else
-    return name ~= "node_modules"
-  end
+	if root:match('projects/my-large-monorepo') then
+		if full_path:match('^packages/site/test') then
+			return true
+		else
+			return false
+		end
+	else
+		return name ~= 'node_modules'
+	end
 end
 ```
 
