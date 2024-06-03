@@ -46,12 +46,12 @@ https://user-images.githubusercontent.com/33713262/233094989-4073e15f-e72d-4356-
 
 ## Installation
 
-Using packer:
+Using lazyvim:
 
 ```lua
-use({
+{
 	'nvim-neotest/neotest',
-	requires = {
+	dependencies = {
 		'thenbe/neotest-playwright',
 	},
 	config = function()
@@ -66,7 +66,7 @@ use({
 			},
 		})
 	end,
-})
+}
 ```
 
 ## Configuration
