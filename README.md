@@ -107,11 +107,20 @@ require("neotest-playwright").adapter({
     --   return name ~= "node_modules"
     -- end,
 
-    -- Custom criteria for a file path to be a test file. Useful in large projects or projects with peculiar tests folder structure.
+    -- Custom criteria for a file path to be a test file. Useful in large
+    -- projects or projects with peculiar tests folder structure. When setting this
+    -- option, make sure to be as strict as possible. For example, the pattern
+    -- should not return true for jpg files that may end up in your test directory.
     -- is_test_file = function(file_path)
     --     -- By default, neotest-playwright only returns true if a file contains one of several file extension patterns.
     --     -- See default implementation here: https://github.com/thenbe/neotest-playwright/blob/c036fe39469e06ae70b63479b5bb2ce7d654beaf/src/discover.ts#L25-L47
-    --     return string.match(file_path, "my-project's-vitest-tests-folder")
+    --     -- Example: Match any file that ends in `test.ts`
+    --     local result = file_path:find('%.test%.ts$') ~= nil
+    --     -- Example: Match any file that ends in `test.ts`, but only if it has ancestor directory `e2e/tests`
+    --     -- local result = file_path:find('e2e/tests/.*%.test%.ts$') ~= nil
+    --     -- Example: Match any file that ends in either `test.ts` or `test.js`
+    --     -- local result = file_path:find('%.test%.[tj]s$') ~= nil
+    --     return result
     -- end,
   },
 })
