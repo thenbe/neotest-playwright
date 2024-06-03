@@ -71,9 +71,10 @@ use({
 
 ## Configuration
 
+All configuration options are optional. Default values are shown below.
+
 ```lua
 require('neotest-playwright').adapter({
-	-- default values shown
 	options = {
 		persist_project_selection = false,
 
@@ -89,37 +90,40 @@ require('neotest-playwright').adapter({
 			return vim.loop.cwd() .. '/playwright.config.ts'
 		end,
 
-		-- Controls the location of the spawned test process.
-		-- Has no affect on neither the location of the binary nor the location of the config file.
+		-- Controls the location of the spawned test process. Has no affect on
+		-- neither the location of the binary nor the location of the playwright
+		-- config file.
 		get_cwd = function()
 			return vim.loop.cwd()
 		end,
 
 		env = {},
 
-		-- Extra args to always passed to playwright. These are merged with any extra_args passed to neotest's run command.
+		-- Extra args to always passed to playwright. These are merged with any
+		-- extra_args passed to neotest's run command.
 		extra_args = {},
 
-		-- Filter directories when searching for test files. Useful in large projects (see performance notes).
+		-- Filter directories when searching for test files. Useful in large
+		-- projects (see performance notes).
 		filter_dir = function(name, rel_path, root)
 			return name ~= 'node_modules'
 		end,
 
 		-- Custom criteria for a file path to be a test file. Useful in large
-		-- projects or projects with peculiar tests folder structure. When setting this
-		-- option, make sure to be as strict as possible. For example, the pattern
-		-- should not return true for jpg files that may end up in your test directory.
-		-- is_test_file = function(file_path)
-		-- 	-- By default, neotest-playwright only returns true if a file contains one of several file extension patterns.
-		-- 	-- See default implementation here: https://github.com/thenbe/neotest-playwright/blob/c036fe39469e06ae70b63479b5bb2ce7d654beaf/src/discover.ts#L25-L47
-		-- 	-- Example: Match any file that ends in `test.ts`
-		-- 	local result = file_path:find('%.test%.ts$') ~= nil
-		-- 	-- Example: Match any file that ends in `test.ts`, but only if it has ancestor directory `e2e/tests`
-		-- 	-- local result = file_path:find('e2e/tests/.*%.test%.ts$') ~= nil
-		-- 	-- Example: Match any file that ends in either `test.ts`, `test.js`, `test.tsx`, or `test.jsx`
-		-- 	-- local result = file_path:find('%.test%.[tj]sx?$') ~= nil
-		-- 	return result
-		-- end,
+		-- projects or projects with peculiar tests folder structure. IMPORTANT:
+		-- When setting this option, make sure to be as strict as possible. For
+		-- example, the pattern should not return true for jpg files that may end up
+		-- in your test directory.
+		is_test_file = function(file_path)
+			-- By default, only returns true if a file contains one of several file
+			-- extension patterns. See default implementation here: https://github.com/thenbe/neotest-playwright/blob/53c7c9ad8724a6ee7d708c1224f9ea25fa071b61/src/discover.ts#L25-L47
+			local result = file_path:find('%.test%.[tj]sx?$') ~= nil or file_path:find('%.spec%.[tj]sx?$') ~= nil
+			-- Alternative example: Match only files that end in `test.ts`
+			local result = file_path:find('%.test%.ts$') ~= nil
+			-- Alternative example: Match only files that end in `test.ts`, but only if it has ancestor directory `e2e/tests`
+			local result = file_path:find('e2e/tests/.*%.test%.ts$') ~= nil
+			return result
+		end,
 	},
 })
 ```
