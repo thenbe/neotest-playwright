@@ -2,3 +2,4 @@ node_modules
 .task
 Session.vim
 .direnv
+.pre-commit-config.yaml
