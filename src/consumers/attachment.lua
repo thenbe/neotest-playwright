@@ -62,12 +62,13 @@ M.attachment = function(client)
 		return
 	end
 
+	local xdg_content_types = { 'video/webm', 'image/png' }
 
 	if selection.contentType == 'application/zip' then
 		local bin = adapter.options.get_playwright_binary(file)
 		local cmd = bin .. ' show-trace ' .. selection.path .. ' &'
 		os.execute(cmd)
-	elseif selection.contentType == 'video/webm' then
+	elseif vim.tbl_contains(xdg_content_types, selection.contentType) then
 		local cmd = 'xdg-open ' .. selection.path .. ' &'
 		os.execute(cmd)
 	end
