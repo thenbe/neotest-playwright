@@ -16,6 +16,7 @@
 			"neotest.async",
 			"neotest.lib",
 			"neotest.logging",
+			"neotest-playwright.pickers", // copied manually
 			"neotest-playwright.util" // copied manually
 		]
 	}

@@ -1,4 +1,5 @@
 import type * as P from '@playwright/test/reporter';
+import { show_picker } from 'neotest-playwright.pickers';
 import { options } from './adapter-options';
 import { logger } from './logging';
 import { loadProjectCache, saveProjectCache } from './persist';
@@ -34,20 +35,27 @@ export const create_project_command = () => {
 
 			const choices = parseProjects(output);
 
-			let preselected = null;
+			let preselected: string[] = [];
 
 			// if options.persist_project_selection is false, avoid loading from cache
 			// even if it exists
 			if (options.persist_project_selection) {
-				preselected = loadPreselectedProjects();
+				preselected = loadPreselectedProjects() ?? [];
 			}
 
-			const selection = selectProjects(choices, preselected);
+			selectProjects(
+				choices,
+				preselected,
+				(selection) => {
+					setProjects(selection);
 
-			setProjects(selection);
+					logger('info', 'selectProjects', selection);
 
-			// trigger data refresh in subprocess
-			vim.api.nvim_command('NeotestPlaywrightRefresh');
+					// trigger data refresh in subprocess
+					vim.api.nvim_command('NeotestPlaywrightRefresh');
+				},
+				options.experimental.use_telescope,
+			);
 		},
 		{
 			nargs: 0,
@@ -55,20 +63,30 @@ export const create_project_command = () => {
 	);
 };
 
-const selectProjects = (choices: string[], preselected: string[] | null) => {
+const selectProjects = (
+	choices: string[],
+	preselected: string[],
+	on_select: (selection: string[]) => void,
+	use_telescope = false,
+) => {
 	const prompt = 'Select projects to include in the next test run:';
 
-	const choice = selectMultiple({
-		prompt,
-		choices,
-		initial: 'all',
-		preselected,
-	});
-
-	logger('debug', 'selectProjects', choice);
-
-	// TODO: rm type cast
-	return choice as string[];
+	if (use_telescope) {
+		show_picker(null, {
+			prompt: prompt,
+			choices: choices,
+			preselected: preselected,
+			on_select: (selection) => on_select(selection),
+		});
+	} else {
+		const choice = selectMultiple({
+			prompt,
+			choices,
+			initial: 'all',
+			preselected,
+		});
+		on_select(choice as string[]);
+	}
 };
 
 const setProjects = (projects: string[]) => {

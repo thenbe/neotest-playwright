@@ -13,4 +13,7 @@ export const options: Adapter['options'] = {
 	extra_args: [],
 	tempDataFile: vim.fn.stdpath('data') + '/neotest-playwright-test-list.json',
 	enable_dynamic_test_discovery: false,
+	experimental: {
+		use_telescope: false,
+	},
 };

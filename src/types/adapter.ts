@@ -23,7 +23,12 @@ export interface AdapterOptions {
 	/** Override the default filter_dir function. */
 	filter_dir?: Adapter['filter_dir'];
 	/** Override the default is_test_file function. */
-	is_test_file?: Adapter['is_test_file']
+	is_test_file?: Adapter['is_test_file'];
+	experimental: {
+		/** If true, a telescope picker will be used for project selection. Otherwise,
+		 * `vim.ui.select` is used.  */
+		use_telescope: boolean;
+	};
 }
 
 export type AdapterData =

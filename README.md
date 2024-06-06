@@ -53,6 +53,7 @@ Using lazyvim:
 	'nvim-neotest/neotest',
 	dependencies = {
 		'thenbe/neotest-playwright',
+      dependencies = 'nvim-telescope/telescope.nvim',
 	},
 	config = function()
 		require('neotest').setup({
@@ -124,6 +125,14 @@ require('neotest-playwright').adapter({
 			local result = file_path:find('e2e/tests/.*%.test%.ts$') ~= nil
 			return result
 		end,
+
+		experimental = {
+			-- If true, a telescope picker will be used for `:NeotestPlaywrightProject`.
+			-- Otherwise, `vim.ui.select` is used.
+			-- In normal mode, `<Tab>` toggles the project under the cursor.
+			-- `<CR>` (enter key) applies the selection.
+			use_telescope = true,
+		},
 	},
 })
 ```
