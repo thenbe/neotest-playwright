@@ -58,6 +58,10 @@ M.attachment = function(client)
 
 	local selection_index = vim.fn.inputlist(options)
 	local selection = attachments[selection_index]
+	if not selection then
+		return
+	end
+
 
 	if selection.contentType == 'application/zip' then
 		local bin = adapter.options.get_playwright_binary(file)
