@@ -25,6 +25,9 @@ M.attachment = function(client)
 
 	-- local adapter_name, adapter = client:get_adapter(file)
 	local adapter_name, adapter = client:get_adapter(file)
+	if not adapter_name or not adapter then
+		return
+	end
 
 	local results = client:get_results(adapter_name)
 	-- client.listeners.discover_positions
@@ -46,8 +49,11 @@ M.attachment = function(client)
 	end
 
 	local options = {}
-	for i, attachment in ipairs(attachments) do
-		local option = string.format('%d. %s %s', i, attachment.project_id, attachment.name)
+	local function option_choice(attachment)
+    return string.format('%s %s', attachment.project_id, attachment.name)
+	end
+	for _, attachment in ipairs(attachments) do
+		local option = option_choice(attachment)
 		table.insert(options, option)
 	end
 
@@ -56,22 +62,33 @@ M.attachment = function(client)
 		return
 	end
 
-	local selection_index = vim.fn.inputlist(options)
-	local selection = attachments[selection_index]
-	if not selection then
-		return
-	end
+  vim.ui.select(options, { prompt = 'Select an attachment:' }, function(choice)
+    if not choice then
+        return
+    end
 
-	local xdg_content_types = { 'video/webm', 'image/png' }
+		local selection
+		for _, attachment in ipairs(attachments) do
+			if choice == option_choice(attachment) then
+				selection = attachment
+				break
+			end
+		end
+		if not selection then
+			return
+		end
 
-	if selection.contentType == 'application/zip' then
-		local bin = adapter.options.get_playwright_binary(file)
-		local cmd = bin .. ' show-trace ' .. selection.path .. ' &'
-		os.execute(cmd)
-	elseif vim.tbl_contains(xdg_content_types, selection.contentType) then
-		local cmd = 'xdg-open ' .. selection.path .. ' &'
-		os.execute(cmd)
-	end
+    local xdg_content_types = { 'video/webm', 'image/png' }
+
+    if selection.contentType == 'application/zip' then
+        local bin = adapter.options.get_playwright_binary(file)
+        local cmd = bin .. ' show-trace ' .. selection.path .. ' &'
+        os.execute(cmd)
+    elseif vim.tbl_contains(xdg_content_types, selection.contentType) then
+        local cmd = 'xdg-open ' .. selection.path .. ' &'
+        os.execute(cmd)
+    end
+  end)
 end
 
 return M
