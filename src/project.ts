@@ -43,19 +43,14 @@ export const create_project_command = () => {
 				preselected = loadPreselectedProjects() ?? [];
 			}
 
-			selectProjects(
-				choices,
-				preselected,
-				(selection) => {
-					setProjects(selection);
+			selectProjects(choices, preselected, (selection) => {
+				setProjects(selection);
 
-					logger('info', 'selectProjects', selection);
+				logger('info', 'selectProjects', selection);
 
-					// trigger data refresh in subprocess
-					vim.api.nvim_command('NeotestPlaywrightRefresh');
-				},
-				options.experimental.use_telescope,
-			);
+				// trigger data refresh in subprocess
+				vim.api.nvim_command('NeotestPlaywrightRefresh');
+			});
 		},
 		{
 			nargs: 0,
@@ -67,20 +62,18 @@ const selectProjects = (
 	choices: string[],
 	preselected: string[],
 	on_select: (selection: string[]) => void,
-	use_telescope = false,
+	use_telescope = options.experimental.telescope.enabled,
+	telescope_opts = options.experimental.telescope.opts,
 ) => {
 	const prompt = 'Select projects to include in the next test run:';
 
 	if (use_telescope) {
-		show_picker(
-			{},
-			{
-				prompt: prompt,
-				choices: choices,
-				preselected: preselected,
-				on_select: (selection) => on_select(selection),
-			},
-		);
+		show_picker(telescope_opts, {
+			prompt: prompt,
+			choices: choices,
+			preselected: preselected,
+			on_select: (selection) => on_select(selection),
+		});
 	} else {
 		const choice = selectMultiple({
 			prompt,

@@ -25,9 +25,12 @@ export interface AdapterOptions {
 	/** Override the default is_test_file function. */
 	is_test_file?: Adapter['is_test_file'];
 	experimental: {
-		/** If true, a telescope picker will be used for project selection. Otherwise,
-		 * `vim.ui.select` is used.  */
-		use_telescope: boolean;
+		telescope: {
+			/** If true, a telescope picker will be used for project selection. Otherwise,
+			 * `vim.ui.select` is used.  */
+			enabled: boolean;
+			opts: Record<string, unknown>;
+		};
 	};
 }
 

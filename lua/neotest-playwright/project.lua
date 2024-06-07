@@ -57,21 +57,23 @@ ____exports.create_project_command = function()
                     setProjects(selection)
                     logger("info", "selectProjects", selection)
                     vim.api.nvim_command("NeotestPlaywrightRefresh")
-                end,
-                options.experimental.use_telescope
+                end
             )
         end,
         {nargs = 0}
     )
 end
-selectProjects = function(choices, preselected, on_select, use_telescope)
+selectProjects = function(choices, preselected, on_select, use_telescope, telescope_opts)
     if use_telescope == nil then
-        use_telescope = false
+        use_telescope = options.experimental.telescope.enabled
+    end
+    if telescope_opts == nil then
+        telescope_opts = options.experimental.telescope.opts
     end
     local prompt = "Select projects to include in the next test run:"
     if use_telescope then
         show_picker(
-            {},
+            telescope_opts,
             {
                 prompt = prompt,
                 choices = choices,
