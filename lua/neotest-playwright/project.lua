@@ -71,7 +71,7 @@ selectProjects = function(choices, preselected, on_select, use_telescope)
     local prompt = "Select projects to include in the next test run:"
     if use_telescope then
         show_picker(
-            nil,
+            {},
             {
                 prompt = prompt,
                 choices = choices,

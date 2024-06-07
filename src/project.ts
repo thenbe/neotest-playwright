@@ -72,12 +72,15 @@ const selectProjects = (
 	const prompt = 'Select projects to include in the next test run:';
 
 	if (use_telescope) {
-		show_picker(null, {
-			prompt: prompt,
-			choices: choices,
-			preselected: preselected,
-			on_select: (selection) => on_select(selection),
-		});
+		show_picker(
+			{},
+			{
+				prompt: prompt,
+				choices: choices,
+				preselected: preselected,
+				on_select: (selection) => on_select(selection),
+			},
+		);
 	} else {
 		const choice = selectMultiple({
 			prompt,
