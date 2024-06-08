@@ -66,7 +66,7 @@ const selectProjects = (
 	telescope_opts = options.experimental.telescope.opts,
 ) => {
 	const prompt =
-		'Select projects to include in the next test run (toggle: <Tab>, apply: <CR>)';
+		'(toggle: <Tab>, apply: <CR>) Select projects to include in the next test run. Applying selection will also clear out any phantom projects.';
 
 	if (use_telescope) {
 		show_picker(telescope_opts, {

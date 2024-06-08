@@ -262,6 +262,11 @@ end
 
 [`testDir`](https://playwright.dev/docs/api/class-testconfig#test-config-test-dir) should be defined in `playwright.config.ts`.
 
+### Error: Project(s) "foo" not found. Available named projects: "bar", "baz"
+
+- Run `:NeotestPlaywrightProject`. Once you apply your selection, any old phantom project names will be cleared from the state file.
+- You may also delete the state file manually. Find the state file's path by running `:lua =vim.fn.stdpath('data') .. '/neotest-playwright.json'`.
+
 ## Credits
 
 - [neotest-jest](https://github.com/haydenmeade/neotest-jest)

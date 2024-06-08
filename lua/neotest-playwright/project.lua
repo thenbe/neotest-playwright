@@ -70,7 +70,7 @@ selectProjects = function(choices, preselected, on_select, use_telescope, telesc
     if telescope_opts == nil then
         telescope_opts = options.experimental.telescope.opts
     end
-    local prompt = "Select projects to include in the next test run (toggle: <Tab>, apply: <CR>)"
+    local prompt = "(toggle: <Tab>, apply: <CR>) Select projects to include in the next test run. Applying selection will also clear out any phantom projects."
     if use_telescope then
         show_picker(
             telescope_opts,
