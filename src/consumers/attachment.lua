@@ -62,18 +62,12 @@ M.attachment = function(client)
 		return
 	end
 
-  vim.ui.select(options, { prompt = 'Select an attachment:' }, function(choice)
-    if not choice then
-        return
-    end
-
-		local selection
-		for _, attachment in ipairs(attachments) do
-			if choice == option_choice(attachment) then
-				selection = attachment
-				break
-			end
+	vim.ui.select(options, { prompt = 'Select an attachment:' }, function(choice, i)
+		if not choice then
+			return
 		end
+
+		local selection = attachments[i]
 		if not selection then
 			return
 		end
