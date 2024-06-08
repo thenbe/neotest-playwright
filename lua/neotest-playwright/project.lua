@@ -10,6 +10,8 @@ end
 -- End of Lua Library inline imports
 local ____exports = {}
 local selectProjects, setProjects
+local ____neotest_2Dplaywright_2Epickers = require("neotest-playwright.pickers")
+local show_picker = ____neotest_2Dplaywright_2Epickers.show_picker
 local ____adapter_2Doptions = require('neotest-playwright.adapter-options')
 local options = ____adapter_2Doptions.options
 local ____logging = require('neotest-playwright.logging')
@@ -44,22 +46,45 @@ ____exports.create_project_command = function()
         function()
             local output = get_config()
             local choices = parseProjects(output)
-            local preselected = nil
+            local preselected = {}
             if options.persist_project_selection then
-                preselected = ____exports.loadPreselectedProjects()
+                preselected = ____exports.loadPreselectedProjects() or ({})
             end
-            local selection = selectProjects(choices, preselected)
-            setProjects(selection)
-            vim.api.nvim_command("NeotestPlaywrightRefresh")
+            selectProjects(
+                choices,
+                preselected,
+                function(selection)
+                    setProjects(selection)
+                    logger("info", "selectProjects", selection)
+                    vim.api.nvim_command("NeotestPlaywrightRefresh")
+                end
+            )
         end,
         {nargs = 0}
     )
 end
-selectProjects = function(choices, preselected)
-    local prompt = "Select projects to include in the next test run:"
-    local choice = selectMultiple({prompt = prompt, choices = choices, initial = "all", preselected = preselected})
-    logger("debug", "selectProjects", choice)
-    return choice
+selectProjects = function(choices, preselected, on_select, use_telescope, telescope_opts)
+    if use_telescope == nil then
+        use_telescope = options.experimental.telescope.enabled
+    end
+    if telescope_opts == nil then
+        telescope_opts = options.experimental.telescope.opts
+    end
+    local prompt = "Select projects to include in the next test run (toggle: <Tab>, apply: <CR>)"
+    if use_telescope then
+        show_picker(
+            telescope_opts,
+            {
+                prompt = prompt,
+                choices = choices,
+                preselected = preselected,
+                on_select = function(selection) return on_select(selection) end
+            }
+        )
+    else
+        local choice = selectMultiple({prompt = prompt, choices = choices, initial = "all", preselected = preselected})
+        on_select(choice)
+    end
 end
 setProjects = function(projects)
     logger("debug", "setProjects", projects)

@@ -8,6 +8,12 @@ const NO_REPLACE = [
 	'neotest.lib',
 	'neotest.logging',
 	'say',
+	'telescope.actions',
+	'telescope.actions.state',
+	'telescope.actions.utils',
+	'telescope.config',
+	'telescope.finders',
+	'telescope.pickers',
 ];
 
 const PREFIX = 'neotest-playwright';
