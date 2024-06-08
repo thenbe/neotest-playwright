@@ -41,8 +41,10 @@ M.attachment = function(client)
 		local result_attachments = result.attachments or {}
 		for _, attachment in ipairs(result_attachments) do
 			-- add project_id to attachment, then add to attachments
-			local project_id = child:data().project_id
-			attachment.project_id = project_id
+			local data = child:data()
+			attachment.id = data.id
+			attachment.project_id = data.project_id
+			attachment.short = result.short
 
 			table.insert(attachments, attachment)
 		end
@@ -50,7 +52,11 @@ M.attachment = function(client)
 
 	local options = {}
 	local function option_choice(attachment)
-    return string.format('%s %s', attachment.project_id, attachment.name)
+		if attachment.name == 'video' then
+			return string.format('%s %s (%s)', attachment.project_id, attachment.name, attachment.short)
+		else
+			return string.format('%s %s', attachment.project_id, attachment.name)
+		end
 	end
 	for _, attachment in ipairs(attachments) do
 		local option = option_choice(attachment)
