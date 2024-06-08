@@ -41,8 +41,10 @@ M.attachment = function(client)
 		local result_attachments = result.attachments or {}
 		for _, attachment in ipairs(result_attachments) do
 			-- add project_id to attachment, then add to attachments
-			local project_id = child:data().project_id
-			attachment.project_id = project_id
+			local data = child:data()
+			attachment.id = data.id
+			attachment.project_id = data.project_id
+			attachment.short = result.short
 
 			table.insert(attachments, attachment)
 		end
@@ -50,7 +52,11 @@ M.attachment = function(client)
 
 	local options = {}
 	local function option_choice(attachment)
-    return string.format('%s %s', attachment.project_id, attachment.name)
+		if attachment.name == 'video' then
+			return string.format('%s %s (%s)', attachment.project_id, attachment.name, attachment.short)
+		else
+			return string.format('%s %s', attachment.project_id, attachment.name)
+		end
 	end
 	for _, attachment in ipairs(attachments) do
 		local option = option_choice(attachment)
@@ -62,33 +68,29 @@ M.attachment = function(client)
 		return
 	end
 
-  vim.ui.select(options, { prompt = 'Select an attachment:' }, function(choice)
-    if not choice then
-        return
-    end
-
-		local selection
-		for _, attachment in ipairs(attachments) do
-			if choice == option_choice(attachment) then
-				selection = attachment
-				break
-			end
+	vim.ui.select(options, { prompt = 'Select an attachment:' }, function(choice, i)
+		if not choice then
+			return
 		end
+
+		local selection = attachments[i]
 		if not selection then
 			return
 		end
 
-    local xdg_content_types = { 'video/webm', 'image/png' }
+		local xdg_content_types = { 'video/webm', 'image/png' }
 
-    if selection.contentType == 'application/zip' then
-        local bin = adapter.options.get_playwright_binary(file)
-        local cmd = bin .. ' show-trace ' .. selection.path .. ' &'
-        os.execute(cmd)
-    elseif vim.tbl_contains(xdg_content_types, selection.contentType) then
-        local cmd = 'xdg-open ' .. selection.path .. ' &'
-        os.execute(cmd)
-    end
-  end)
+		if selection.contentType == 'application/zip' then
+			local bin = adapter.options.get_playwright_binary(file)
+			local cmd = bin .. ' show-trace ' .. selection.path .. ' &'
+			os.execute(cmd)
+		elseif selection.contentType == 'text/plain' then
+			vim.cmd.edit(selection.path)
+		elseif vim.tbl_contains(xdg_content_types, selection.contentType) then
+			local cmd = 'xdg-open ' .. selection.path .. ' &'
+			os.execute(cmd)
+		end
+	end)
 end
 
 return M
