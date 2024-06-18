@@ -24,18 +24,23 @@ export const parseOutput = (report: P.JSONReport): neotest.Results => {
 		emitError('Global errors found in report');
 	}
 
-	// TODO: handle array of suites:
-	// omiting testDir in config results in multiple suites at root level
-	const root = report.suites[0];
+	const all_results = new Map<string, neotest.Result>();
 
-	if (!root) {
-		emitError('No test suites found in report');
-		return {};
+	// Multiple suites at root level may occur if (a) testDir is omitted from
+	// config or (b) project "dependencies" have been set in config.
+
+	for (const suite of report.suites) {
+		const results = parseSuite(suite, report);
+		for (const [key, result] of Object.entries(results)) {
+			all_results.set(key, result);
+		}
 	}
 
-	const results = parseSuite(root, report);
+	if (all_results.size === 0) {
+		emitError('No test suites found in report');
+	}
 
-	return results;
+	return Object.fromEntries(all_results);
 };
 
 // ### Suite ###
