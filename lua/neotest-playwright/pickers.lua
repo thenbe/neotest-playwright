@@ -1,7 +1,7 @@
 local has_telescope, telescope = pcall(require, 'telescope')
 
 if not has_telescope then
-	error('nvim-telescope/telescope.nvim is not installed')
+	return {}
 end
 
 local finders = require('telescope.finders')
