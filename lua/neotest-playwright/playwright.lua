@@ -157,6 +157,41 @@ do
     TypeError = createErrorClass(nil, "TypeError")
     URIError = createErrorClass(nil, "URIError")
 end
+
+local __TS__Symbol, Symbol
+do
+    local symbolMetatable = {__tostring = function(self)
+        return ("Symbol(" .. (self.description or "")) .. ")"
+    end}
+    function __TS__Symbol(description)
+        return setmetatable({description = description}, symbolMetatable)
+    end
+    Symbol = {
+        iterator = __TS__Symbol("Symbol.iterator"),
+        hasInstance = __TS__Symbol("Symbol.hasInstance"),
+        species = __TS__Symbol("Symbol.species"),
+        toStringTag = __TS__Symbol("Symbol.toStringTag")
+    }
+end
+
+local function __TS__InstanceOf(obj, classTbl)
+    if type(classTbl) ~= "table" then
+        error("Right-hand side of 'instanceof' is not an object", 0)
+    end
+    if classTbl[Symbol.hasInstance] ~= nil then
+        return not not classTbl[Symbol.hasInstance](classTbl, obj)
+    end
+    if type(obj) == "table" then
+        local luaClass = obj.constructor
+        while luaClass ~= nil do
+            if luaClass == classTbl then
+                return true
+            end
+            luaClass = luaClass.____super
+        end
+    end
+    return false
+end
 -- End of Lua Library inline imports
 local ____exports = {}
 local run
@@ -222,7 +257,29 @@ run = function(cmd)
         emitError("No output from command: " .. cmd)
         return
     end
-    local decoded = vim.fn.json_decode(output)
-    return decoded
+    local jsonMatch = {string.match(output, "%b{}")}
+    if not jsonMatch then
+        emitError("Failed to parse JSON output: " .. output)
+        return
+    end
+    local jsonString = jsonMatch[1]
+    do
+        local function ____catch(err)
+            if __TS__InstanceOf(err, Error) then
+                emitError("Failed to decode JSON: " .. err.message)
+            end
+            return true
+        end
+        local ____try, ____hasReturned, ____returnValue = pcall(function()
+            local decoded = vim.fn.json_decode(jsonString)
+            return true, decoded
+        end)
+        if not ____try then
+            ____hasReturned, ____returnValue = ____catch(____hasReturned)
+        end
+        if ____hasReturned then
+            return ____returnValue
+        end
+    end
 end
 return ____exports

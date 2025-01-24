@@ -56,7 +56,22 @@ const run = (cmd: string) => {
 		return;
 	}
 
-	const decoded = vim.fn.json_decode(output) as P.JSONReport;
+	const jsonMatch = string.match(output, "%b{}");
 
-	return decoded;
+	if (!jsonMatch) {
+		emitError(`Failed to parse JSON output: ${output}`);
+		return;
+	}
+
+	const jsonString = jsonMatch[0];
+
+	try {
+		const decoded = vim.fn.json_decode(jsonString) as P.JSONReport;
+		return decoded;
+	} catch (err) {
+		if (err instanceof Error) {
+			emitError(`Failed to decode JSON: ${err.message}`);
+		}
+		return;
+	}
 };

@@ -3,3 +3,4 @@ node_modules
 Session.vim
 .direnv
 .pre-commit-config.yaml
+package-lock.json
