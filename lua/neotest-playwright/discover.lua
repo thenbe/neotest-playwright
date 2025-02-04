@@ -151,6 +151,86 @@ do
     TypeError = createErrorClass(nil, "TypeError")
     URIError = createErrorClass(nil, "URIError")
 end
+
+local __TS__StringSplit
+do
+    local sub = string.sub
+    local find = string.find
+    function __TS__StringSplit(source, separator, limit)
+        if limit == nil then
+            limit = 4294967295
+        end
+        if limit == 0 then
+            return {}
+        end
+        local result = {}
+        local resultIndex = 1
+        if separator == nil or separator == "" then
+            for i = 1, #source do
+                result[resultIndex] = sub(source, i, i)
+                resultIndex = resultIndex + 1
+            end
+        else
+            local currentPos = 1
+            while resultIndex <= limit do
+                local startPos, endPos = find(source, separator, currentPos, true)
+                if not startPos then
+                    break
+                end
+                result[resultIndex] = sub(source, currentPos, startPos - 1)
+                resultIndex = resultIndex + 1
+                currentPos = endPos + 1
+            end
+            if resultIndex <= limit then
+                result[resultIndex] = sub(source, currentPos)
+            end
+        end
+        return result
+    end
+end
+
+local __TS__StringReplaceAll
+do
+    local sub = string.sub
+    local find = string.find
+    function __TS__StringReplaceAll(source, searchValue, replaceValue)
+        if type(replaceValue) == "string" then
+            local concat = table.concat(
+                __TS__StringSplit(source, searchValue),
+                replaceValue
+            )
+            if #searchValue == 0 then
+                return (replaceValue .. concat) .. replaceValue
+            end
+            return concat
+        end
+        local parts = {}
+        local partsIndex = 1
+        if #searchValue == 0 then
+            parts[1] = replaceValue(nil, "", 0, source)
+            partsIndex = 2
+            for i = 1, #source do
+                parts[partsIndex] = sub(source, i, i)
+                parts[partsIndex + 1] = replaceValue(nil, "", i, source)
+                partsIndex = partsIndex + 2
+            end
+        else
+            local currentPos = 1
+            while true do
+                local startPos, endPos = find(source, searchValue, currentPos, true)
+                if not startPos then
+                    break
+                end
+                parts[partsIndex] = sub(source, currentPos, startPos - 1)
+                parts[partsIndex + 1] = replaceValue(nil, searchValue, startPos - 1, source)
+                partsIndex = partsIndex + 2
+                currentPos = endPos + 1
+            end
+            parts[partsIndex] = sub(source, currentPos)
+        end
+        return table.concat(parts)
+    end
+end
 -- End of Lua Library inline imports
 local ____exports = {}
 local shouldRefreshData
@@ -237,11 +317,16 @@ ____exports._build_position = function(filePath, source, capturedNodes)
     end
 end
 ____exports._position_id = function(position, _parent)
+    local positionId = ""
     if position.id then
-        return position.id
+        positionId = position.id
     else
-        return (position.path .. "::") .. position.name
+        positionId = (position.path .. "::") .. position.name
     end
+    if vim.fn.has("win32") == 1 then
+        positionId = __TS__StringReplaceAll(positionId, "\\", "/")
+    end
+    return positionId
 end
 ____exports.populate_data = function()
     if shouldRefreshData() then

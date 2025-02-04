@@ -100,9 +100,9 @@ export const discoverPositions: Adapter['discover_positions'] = (
 		position_id: 'require("neotest-playwright.discover")._position_id',
 		...(options.enable_dynamic_test_discovery
 			? {
-					build_position:
-						'require("neotest-playwright.discover")._build_position',
-			  }
+				build_position:
+					'require("neotest-playwright.discover")._build_position',
+			}
 			: {}),
 	});
 };
@@ -158,11 +158,20 @@ export const _build_position: BuildPosition = (
 };
 
 export const _position_id: PositionId = (position, _parent) => {
+	let positionId = '';
+
 	if (position.id) {
-		return position.id;
+		positionId = position.id;
 	} else {
-		return position.path + '::' + position.name;
+		positionId = position.path + '::' + position.name;
 	}
+
+	// Windows compatibility
+	if (vim.fn.has('win32') === 1) {
+		positionId = positionId.replaceAll('\\', '/');
+	}
+
+	return positionId;
 };
 
 export const populate_data = () => {

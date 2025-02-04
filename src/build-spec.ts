@@ -28,6 +28,11 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 		}
 
 		testFilter = `${pos.path}:${line}`;
+
+		// Windows compatibility
+		if (vim.fn.has('win32') === 1) {
+			testFilter = testFilter.replaceAll('\\', '/');
+		}
 	}
 
 	const projects = pos.project_id ? [pos.project_id] : options.projects;

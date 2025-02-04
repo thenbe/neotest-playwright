@@ -20,7 +20,16 @@ export const buildTestPosition = (basePosition: BasePosition): Position[] => {
 	const specs = data.specs.filter((spec) => {
 		const specAbsolutePath = data.rootDir + '/' + spec.file;
 
-		const fileMatch = specAbsolutePath === basePosition.path;
+		let specPath = specAbsolutePath;
+		let basePath = basePosition.path;
+
+		// Windows compatibility
+		if (vim.fn.has('win32') === 1) {
+			specPath = specPath.replaceAll('\\', '/');
+			basePath = basePath.replaceAll('\\', '/');
+		}
+
+		const fileMatch = specPath === basePath;
 
 		if (!fileMatch) {
 			return false;
