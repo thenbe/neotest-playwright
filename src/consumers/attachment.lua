@@ -67,30 +67,30 @@ M.attachment = function(client)
 		print('No attachments found')
 		return
 	end
+	async.scheduler()
+	local choice, i =  async.ui.select(options, { prompt = 'Select an attachment:' })
+	if not choice then
+		return
+	end
 
-	vim.ui.select(options, { prompt = 'Select an attachment:' }, function(choice, i)
-		if not choice then
-			return
-		end
+	local selection = attachments[i]
+	if not selection then
+		return
+	end
 
-		local selection = attachments[i]
-		if not selection then
-			return
-		end
+	local xdg_content_types = { 'video/webm', 'image/png' }
 
-		local xdg_content_types = { 'video/webm', 'image/png' }
-
-		if selection.contentType == 'application/zip' then
-			local bin = adapter.options.get_playwright_binary(file)
-			local cmd = bin .. ' show-trace ' .. selection.path .. ' &'
-			os.execute(cmd)
-		elseif selection.contentType == 'text/plain' then
-			vim.cmd.edit(selection.path)
-		elseif vim.tbl_contains(xdg_content_types, selection.contentType) then
-			local cmd = 'xdg-open ' .. selection.path .. ' &'
-			os.execute(cmd)
-		end
-	end)
+	if selection.contentType == 'application/zip' then
+		local bin = adapter.options.get_playwright_binary(file)
+		local cmd = bin .. ' show-trace ' .. selection.path .. ' &'
+		os.execute(cmd)
+	elseif vim.startswith(selection.contentType, "text/") then
+		async.scheduler()
+		vim.cmd.edit(selection.path)
+	elseif vim.tbl_contains(xdg_content_types, selection.contentType) then
+		local cmd = 'xdg-open ' .. selection.path .. ' &'
+		os.execute(cmd)
+	end
 end
 
 return M
