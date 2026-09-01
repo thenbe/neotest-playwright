@@ -68,6 +68,7 @@ declare module 'neotest' {
 		/** Shortened output string */
 		short: string;
 		errors: Error[];
+		attachments?: import('@playwright/test/reporter').JSONReportTestResult['attachments'];
 	}
 
 	interface Error {
