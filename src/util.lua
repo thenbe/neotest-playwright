@@ -1,7 +1,7 @@
 local async = require('neotest.async')
 local vim = vim
 local validate = vim.validate
-local uv = vim.loop
+local uv = vim.uv or vim.loop
 
 local M = {}
 

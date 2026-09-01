@@ -129,6 +129,7 @@ local ____exports = {}
 local lib = require("neotest.lib")
 local ____logging = require('neotest-playwright.logging')
 local logger = ____logging.logger
+local uv = vim.uv or vim.loop
 ____exports.getPlaywrightBinary = function()
     local dir = ____exports.get_cwd()
     local node_modules = dir .. "/node_modules"
@@ -161,7 +162,7 @@ ____exports.getPlaywrightConfig = function()
     )
 end
 ____exports.get_cwd = function()
-    local dir = vim.loop.cwd()
+    local dir = uv.cwd()
     return dir
 end
 return ____exports

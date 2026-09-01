@@ -2,6 +2,8 @@ import * as lib from 'neotest.lib';
 import { logger } from './logging';
 import type { AdapterOptions } from './types/adapter';
 
+const uv = vim.uv ?? vim.loop;
+
 export const getPlaywrightBinary: AdapterOptions['get_playwright_binary'] =
 	() => {
 		const dir = get_cwd();
@@ -46,7 +48,7 @@ export const get_cwd: NonNullable<AdapterOptions['get_cwd']> = () => {
 	// current buffer's path (for non-file buffers, return buffer name. E.g. "Neotest Summary")
 	// const dir = vim.api.nvim_eval('expand("%:p:h")') as unknown as string;
 
-	const dir = vim.loop.cwd() as unknown as string;
+	const dir = uv.cwd();
 
 	return dir;
 };
