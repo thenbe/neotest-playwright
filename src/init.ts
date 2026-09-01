@@ -31,7 +31,7 @@ setmetatable(adapter, {
 		// Apply user config
 		for (const [key, value] of pairs(updated)) {
 			if (key === 'filter_dir') {
-				const filter_dir = value as Adapter["filter_dir"]
+				const filter_dir = value as Adapter['filter_dir'];
 				// @ts-expect-error filter_dir optionally defined by users should
 				// override the adapter's own filter_dir
 				config.filter_dir = filter_dir;
@@ -39,7 +39,7 @@ setmetatable(adapter, {
 			}
 
 			if (key === 'is_test_file') {
-				const is_test_file = value as Adapter["is_test_file"]
+				const is_test_file = value as Adapter['is_test_file'];
 				// @ts-expect-error is_test_file optionally defined by users should
 				// override the adapter's own is_test_file
 				config.is_test_file = is_test_file;
