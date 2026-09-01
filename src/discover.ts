@@ -130,8 +130,7 @@ export const _build_position: BuildPosition = (
 	) as string;
 
 	const definition = capturedNodes[`${match_type}.definition`];
-	// @ts-expect-error update type
-	const range = [definition.range()] as unknown as Range;
+	const range = definition.range();
 
 	if (match_type === 'namespace') {
 		return {

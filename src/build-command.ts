@@ -33,7 +33,7 @@ export const buildCommand = (options: CommandOptions, extraArgs: string[]) => {
 	if (o.abortOnFailure === true) command.push('-x');
 	if (o.workers !== undefined) command.push(`--workers=${o.workers}`);
 	if (o.timeout !== undefined) command.push(`--timeout=${o.timeout}`);
-	if (o.config !== undefined) command.push(`--config=${o.config}`);
+	if (o.config != null) command.push(`--config=${o.config}`);
 	if (o.projects !== undefined) {
 		for (const project of o.projects) {
 			if (typeof project === 'string' && project.length > 0) {
