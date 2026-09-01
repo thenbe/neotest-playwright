@@ -14,6 +14,8 @@ interface IVim {
 		cwd: (this: void) => string;
 	};
 
+	uv?: IVim['loop'];
+
 	ui: {
 		select: (
 			this: void,

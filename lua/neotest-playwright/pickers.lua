@@ -10,6 +10,7 @@ local conf = require('telescope.config').values
 local action_state = require('telescope.actions.state')
 local action_utils = require('telescope.actions.utils')
 local actions = require('telescope.actions')
+local uv = vim.uv or vim.loop
 
 ---@alias ProjectName string
 
@@ -99,7 +100,7 @@ local function show_picker(opts, np_opts)
 	-- Automatically mark the selected options as selected. This function errors
 	-- when called quickly after creating the picker. Therefore, we delay its
 	-- execution a bit.
-	local timer = vim.loop.new_timer()
+	local timer = uv.new_timer()
 	timer:start(
 		70,
 		0,
