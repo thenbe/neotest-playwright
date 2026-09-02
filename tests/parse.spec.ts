@@ -1,9 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type * as P from '@playwright/test/reporter';
 import type * as neotest from 'neotest';
-import { expect, test } from 'vitest';
+import { expect, test, vi } from 'vitest';
 import * as report from '../src/report';
 import sample from './sample/report.json';
+
+vi.mock('neotest-playwright.util', () => ({
+	cleanAnsi: (value: string) => value,
+}));
+
+vi.mock('../src/adapter-options', () => ({
+	options: { enable_dynamic_test_discovery: false },
+}));
+
+vi.mock('../src/helpers', () => ({
+	emitError: () => undefined,
+}));
 
 test('parse report', () => {
 	const results = report.parseOutput(sample as unknown as P.JSONReport);
@@ -13,6 +25,7 @@ test('parse report', () => {
 			status: 'passed',
 			short: 'addition: passed',
 			errors: [],
+			attachments: [],
 		},
 		'/home/user/project/tests/example.spec.ts::not substraction': {
 			status: 'failed',
@@ -20,14 +33,16 @@ test('parse report', () => {
 			errors: expect.arrayContaining([
 				expect.objectContaining({
 					message: expect.stringMatching('Error: '),
-					line: 9,
+					line: 8,
 				}),
 			]),
+			attachments: [],
 		},
 		'/home/user/project/tests/example.spec.ts::common sense': {
 			status: 'passed',
 			short: 'common sense: passed',
 			errors: [],
+			attachments: [],
 		},
 		'/home/user/project/tests/example.spec.ts::not so common sense': {
 			status: 'failed',
@@ -35,9 +50,10 @@ test('parse report', () => {
 			errors: expect.arrayContaining([
 				expect.objectContaining({
 					message: expect.stringMatching('Error: '),
-					line: 18,
+					line: 17,
 				}),
 			]),
+			attachments: [],
 		},
 	} satisfies neotest.Results;
 

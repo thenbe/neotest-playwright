@@ -4,7 +4,7 @@
 module.exports = {
 	root: true,
 	globals: {
-		'module':'off'
+		module: 'off',
 	},
 	plugins: ['@typescript-eslint'],
 	extends: [

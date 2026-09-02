@@ -18,7 +18,7 @@ export const buildTestPosition = (basePosition: BasePosition): Position[] => {
 	}
 
 	const specs = data.specs.filter((spec) => {
-		const specAbsolutePath = data.rootDir + '/' + spec.file;
+		const specAbsolutePath = tostring(data.rootDir) + '/' + spec.file;
 
 		const fileMatch = specAbsolutePath === basePosition.path;
 

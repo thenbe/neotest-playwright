@@ -3,7 +3,9 @@ declare function print(...args: unknown[]): void;
 type MatchType = 'namespace' | 'test';
 
 type NodeMatch<T extends MatchType> = {
-	[K in `${T}.name` | `${T}.definition`]: LuaUserdata;
+	[K in `${T}.name`]: LuaUserdata;
+} & {
+	[K in `${T}.definition`]: LuaUserdata & { range(): Range };
 };
 
 type Range = LuaMultiReturn<[number, number, number, number]>;
@@ -68,6 +70,7 @@ declare module 'neotest' {
 		/** Shortened output string */
 		short: string;
 		errors: Error[];
+		attachments?: import('@playwright/test/reporter').JSONReportTestResult['attachments'];
 	}
 
 	interface Error {

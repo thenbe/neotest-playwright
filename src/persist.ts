@@ -24,7 +24,7 @@ export const loadCache = (): Cache | null => {
 		return null;
 	}
 
-	const cache: Cache = vim.fn.json_decode(existing[0]);
+	const cache = vim.fn.json_decode(existing[0]) as Cache;
 
 	return cache;
 };
