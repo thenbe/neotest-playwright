@@ -9,9 +9,17 @@ import { loadPreselectedProjects } from './project';
 import { flattenSpecs } from './report';
 import type { Adapter } from './types/adapter';
 
+// Share the CLI report between file filtering and position discovery. Each
+// execution context gets its own report, including when Neovim changes project.
+let reports: Record<string, NonNullable<Adapter['data']['report']>> = {};
+
 export const root: Adapter['root'] = lib.files.match_root_pattern(
 	'playwright.config.ts',
 	'playwright.config.js',
+	'playwright.config.mjs',
+	'playwright.config.mts',
+	'playwright.config.cjs',
+	'playwright.config.cts',
 );
 
 export const filterDir: Adapter['filter_dir'] = (
@@ -27,6 +35,21 @@ export const isTestFile: Adapter['is_test_file'] = (
 ): boolean => {
 	if (!file_path) {
 		return false;
+	}
+	if (options.enable_dynamic_test_discovery) {
+		if (!root(file_path)) {
+			return false;
+		}
+		populate_data(file_path);
+		const rootDir = data.rootDir;
+		if (!rootDir) return false;
+		return (
+			data.specs?.some(
+				(spec) =>
+					vim.fn.fnamemodify(`${rootDir}/${spec.file}`, ':p') ===
+					vim.fn.fnamemodify(file_path, ':p'),
+			) ?? false
+		);
 	}
 
 	// TODO: Don't hardcode. Either get from user config or resolve using playwright cli.
@@ -53,9 +76,12 @@ export const discoverPositions: Adapter['discover_positions'] = (
 	// https://github.com/nvim-neotest/neotest/issues/210
 	if (lib.subprocess.enabled()) {
 		// This is async and will wait for the function to return
-		lib.subprocess.call("require('neotest-playwright.discover').populate_data");
+		lib.subprocess.call(
+			"require('neotest-playwright.discover').populate_data",
+			[path],
+		);
 	} else {
-		populate_data();
+		populate_data(path);
 	}
 
 	const query = /* query */ `
@@ -165,29 +191,29 @@ export const _position_id: PositionId = (position, _parent) => {
 	}
 };
 
-export const populate_data = () => {
-	if (shouldRefreshData()) {
-		refresh_data();
+export const populate_data = (path?: string) => {
+	const key = vim.fn.json_encode([
+		options.get_playwright_binary(path),
+		options.get_playwright_config(path),
+		options.get_cwd?.(path),
+		options.env,
+	]);
+	let report = reports[key];
+	if (!report) {
+		report = get_config(path);
+		reports[key] = report;
+		options.projects = loadPreselectedProjects() ?? [];
 	}
-};
-
-/** Called by the subprocess before parsing a file */
-export const refresh_data = () => {
-	logger('debug', 'Refreshing data');
-	const report = get_config();
 
 	data.report = report; // TODO: do we need to store this?
 	data.specs = flattenSpecs(report.suites);
 	data.rootDir = report.config.rootDir;
-	options.projects = loadPreselectedProjects() ?? [];
 };
 
-const shouldRefreshData = () => {
-	if (data.specs && data.rootDir) {
-		logger('debug', 'Data already exists. Skipping refresh.');
-		// data already exists
-		return false;
-	} else {
-		return true;
-	}
+/** Called in both Neovim processes by :NeotestPlaywrightRefresh. */
+export const refresh_data = () => {
+	logger('debug', 'Refreshing data');
+	reports = {};
+	populate_data();
+	options.projects = loadPreselectedProjects() ?? [];
 };

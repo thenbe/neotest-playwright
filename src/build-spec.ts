@@ -34,8 +34,8 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 
 	const commandOptions: CommandOptions = {
 		...COMMAND_PRESETS[options.preset],
-		bin: options.get_playwright_binary(),
-		config: options.get_playwright_config(),
+		bin: options.get_playwright_binary(pos.path),
+		config: options.get_playwright_config(pos.path),
 		projects,
 		testFilter: testFilter,
 	};
@@ -46,7 +46,8 @@ export const buildSpec: Adapter['build_spec'] = (args) => {
 
 	return {
 		command: buildCommand(commandOptions, extraArgs),
-		cwd: typeof options.get_cwd === 'function' ? options.get_cwd() : null,
+		cwd:
+			typeof options.get_cwd === 'function' ? options.get_cwd(pos.path) : null,
 		context: {
 			results_path: resultsPath,
 			file: pos.path,

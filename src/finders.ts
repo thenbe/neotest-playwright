@@ -2,51 +2,63 @@ import * as lib from 'neotest.lib';
 import { logger } from './logging';
 import type { AdapterOptions } from './types/adapter';
 
-export const getPlaywrightBinary: AdapterOptions['get_playwright_binary'] =
-	() => {
-		const dir = get_cwd();
+export const getPlaywrightBinary: AdapterOptions['get_playwright_binary'] = (
+	path,
+) => {
+	const dir = get_cwd(path);
 
-		const node_modules = `${dir}/node_modules`;
+	const node_modules = `${dir}/node_modules`;
 
-		const bin = `${node_modules}/.bin/playwright`;
+	const bin = `${node_modules}/.bin/playwright`;
 
-		if (lib.files.exists(bin)) {
-			return bin;
-		} else {
-			logger('error', 'playwright binary does not exist at ', bin);
-			throw new Error(
-				'Unable to locate playwright binary. Expected to find it at: ' + bin,
-			);
-		}
-	};
-
-export const getPlaywrightConfig: AdapterOptions['get_playwright_config'] =
-	() => {
-		const dir = get_cwd();
-
-		const configs = [
-			`${dir}/playwright.config.ts`,
-			`${dir}/playwright.config.js`,
-		];
-
-		for (const config of configs) {
-			if (lib.files.exists(config)) {
-				return config;
-			}
-		}
-
-		logger('error', 'Unable to locate playwright config file.');
+	if (lib.files.exists(bin)) {
+		return bin;
+	} else {
+		logger('error', 'playwright binary does not exist at ', bin);
 		throw new Error(
-			'Unable to locate playwright config file. Expected to find it at: ' +
-				configs.join(', '),
+			'Unable to locate playwright binary. Expected to find it at: ' + bin,
 		);
-	};
+	}
+};
 
-export const get_cwd: NonNullable<AdapterOptions['get_cwd']> = () => {
-	// current buffer's path (for non-file buffers, return buffer name. E.g. "Neotest Summary")
-	// const dir = vim.api.nvim_eval('expand("%:p:h")') as unknown as string;
+export const getPlaywrightConfig: AdapterOptions['get_playwright_config'] = (
+	path,
+) => {
+	const dir = get_cwd(path);
 
-	const dir = vim.loop.cwd() as unknown as string;
+	const configs = [
+		`${dir}/playwright.config.ts`,
+		`${dir}/playwright.config.js`,
+		`${dir}/playwright.config.mjs`,
+		`${dir}/playwright.config.mts`,
+		`${dir}/playwright.config.cjs`,
+		`${dir}/playwright.config.cts`,
+	];
 
-	return dir;
+	for (const config of configs) {
+		if (lib.files.exists(config)) {
+			return config;
+		}
+	}
+
+	logger('error', 'Unable to locate playwright config file.');
+	throw new Error(
+		'Unable to locate playwright config file. Expected to find it at: ' +
+			configs.join(', '),
+	);
+};
+
+export const get_cwd: NonNullable<AdapterOptions['get_cwd']> = (path) => {
+	const dir = path
+		? lib.files.match_root_pattern(
+				'playwright.config.ts',
+				'playwright.config.js',
+				'playwright.config.mjs',
+				'playwright.config.mts',
+				'playwright.config.cjs',
+				'playwright.config.cts',
+		  )(path)
+		: null;
+
+	return dir ?? (vim.loop.cwd() as unknown as string);
 };

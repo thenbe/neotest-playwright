@@ -129,8 +129,8 @@ local ____exports = {}
 local lib = require("neotest.lib")
 local ____logging = require('neotest-playwright.logging')
 local logger = ____logging.logger
-____exports.getPlaywrightBinary = function()
-    local dir = ____exports.get_cwd()
+____exports.getPlaywrightBinary = function(path)
+    local dir = ____exports.get_cwd(path)
     local node_modules = dir .. "/node_modules"
     local bin = node_modules .. "/.bin/playwright"
     if lib.files.exists(bin) then
@@ -143,9 +143,16 @@ ____exports.getPlaywrightBinary = function()
         )
     end
 end
-____exports.getPlaywrightConfig = function()
-    local dir = ____exports.get_cwd()
-    local configs = {dir .. "/playwright.config.ts", dir .. "/playwright.config.js"}
+____exports.getPlaywrightConfig = function(path)
+    local dir = ____exports.get_cwd(path)
+    local configs = {
+        dir .. "/playwright.config.ts",
+        dir .. "/playwright.config.js",
+        dir .. "/playwright.config.mjs",
+        dir .. "/playwright.config.mts",
+        dir .. "/playwright.config.cjs",
+        dir .. "/playwright.config.cts"
+    }
     for ____, config in ipairs(configs) do
         if lib.files.exists(config) then
             return config
@@ -160,8 +167,21 @@ ____exports.getPlaywrightConfig = function()
         0
     )
 end
-____exports.get_cwd = function()
-    local dir = vim.loop.cwd()
-    return dir
+____exports.get_cwd = function(path)
+    local ____path_0
+    if path then
+        ____path_0 = lib.files.match_root_pattern(
+            "playwright.config.ts",
+            "playwright.config.js",
+            "playwright.config.mjs",
+            "playwright.config.mts",
+            "playwright.config.cjs",
+            "playwright.config.cts"
+        )(path)
+    else
+        ____path_0 = nil
+    end
+    local dir = ____path_0
+    return dir or vim.loop.cwd()
 end
 return ____exports

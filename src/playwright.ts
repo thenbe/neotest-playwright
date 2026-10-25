@@ -4,11 +4,11 @@ import { buildCommand } from './build-command';
 import { emitError } from './helpers';
 import { logger } from './logging';
 
-export const get_config = () => {
+export const get_config = (path?: string) => {
 	const cmd = buildCommand(
 		{
-			bin: options.get_playwright_binary(),
-			config: options.get_playwright_config(),
+			bin: options.get_playwright_binary(path),
+			config: options.get_playwright_config(path),
 			reporters: ['json'],
 		},
 		['--list'],
@@ -21,10 +21,18 @@ export const get_config = () => {
 			.join(' '),
 	);
 
-	const output = run(cmd.join(' '));
+	const cwd = options.get_cwd?.(path);
+	const output = run(
+		(cwd ? `cd ${vim.fn.shellescape(cwd)} && ` : '') + cmd.join(' '),
+	);
 
 	if (!output) {
 		throw new Error('Failed to get Playwright config');
+	}
+	if (output.errors.length > 0) {
+		throw new Error(
+			'Playwright test discovery failed; check the Playwright list command',
+		);
 	}
 
 	return output;

@@ -79,8 +79,8 @@ ____exports.buildSpec = function(args)
         {},
         COMMAND_PRESETS[options.preset],
         {
-            bin = options.get_playwright_binary(),
-            config = options.get_playwright_config(),
+            bin = options.get_playwright_binary(pos.path),
+            config = options.get_playwright_config(pos.path),
             projects = projects,
             testFilter = testFilter
         }
@@ -89,7 +89,7 @@ ____exports.buildSpec = function(args)
     local extraArgs = getExtraArgs(args.extra_args, options.extra_args)
     return {
         command = buildCommand(commandOptions, extraArgs),
-        cwd = type(options.get_cwd) == "function" and options.get_cwd() or nil,
+        cwd = type(options.get_cwd) == "function" and options.get_cwd(pos.path) or nil,
         context = {results_path = resultsPath, file = pos.path},
         env = __TS__ObjectAssign({PLAYWRIGHT_JSON_OUTPUT_NAME = resultsPath}, options.env)
     }

@@ -168,11 +168,11 @@ local ____helpers = require('neotest-playwright.helpers')
 local emitError = ____helpers.emitError
 local ____logging = require('neotest-playwright.logging')
 local logger = ____logging.logger
-____exports.get_config = function()
+____exports.get_config = function(path)
     local cmd = buildCommand(
         {
-            bin = options.get_playwright_binary(),
-            config = options.get_playwright_config(),
+            bin = options.get_playwright_binary(path),
+            config = options.get_playwright_config(path),
             reporters = {"json"}
         },
         {"--list"}
@@ -193,10 +193,18 @@ ____exports.get_config = function()
             " "
         )
     )
-    local output = run(table.concat(cmd, " "))
+    local ____opt_0 = options.get_cwd
+    local cwd = ____opt_0 and ____opt_0(path)
+    local output = run((cwd and ("cd " .. vim.fn.shellescape(cwd)) .. " && " or "") .. table.concat(cmd, " "))
     if not output then
         error(
             __TS__New(Error, "Failed to get Playwright config"),
+            0
+        )
+    end
+    if #output.errors > 0 then
+        error(
+            __TS__New(Error, "Playwright test discovery failed; check the Playwright list command"),
             0
         )
     end

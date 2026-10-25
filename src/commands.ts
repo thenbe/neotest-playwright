@@ -6,9 +6,10 @@ const refresh_command = () => {
 	if (lib.subprocess.enabled()) {
 		// This is async and will wait for the function to return
 		lib.subprocess.call("require('neotest-playwright.discover').refresh_data");
-	} else {
-		refresh_data();
 	}
+	// File filtering happens in the parent; position parsing may happen in the
+	// subprocess. Neither process may retain an old file list after refresh.
+	refresh_data();
 };
 
 export const create_refresh_command = () => {

@@ -7,9 +7,8 @@ local refresh_data = ____discover.refresh_data
 local function refresh_command()
     if lib.subprocess.enabled() then
         lib.subprocess.call("require('neotest-playwright.discover').refresh_data")
-    else
-        refresh_data()
     end
+    refresh_data()
 end
 ____exports.create_refresh_command = function()
     vim.api.nvim_create_user_command(

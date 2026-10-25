@@ -1,12 +1,5 @@
 --[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
 -- Lua Library inline imports
-local function __TS__StringEndsWith(self, searchString, endPosition)
-    if endPosition == nil or endPosition > #self then
-        endPosition = #self
-    end
-    return string.sub(self, endPosition - #searchString + 1, endPosition) == searchString
-end
-
 local function __TS__ArraySome(self, callbackfn, thisArg)
     for i = 1, #self do
         if callbackfn(thisArg, self[i], i - 1, self) then
@@ -14,6 +7,13 @@ local function __TS__ArraySome(self, callbackfn, thisArg)
         end
     end
     return false
+end
+
+local function __TS__StringEndsWith(self, searchString, endPosition)
+    if endPosition == nil or endPosition > #self then
+        endPosition = #self
+    end
+    return string.sub(self, endPosition - #searchString + 1, endPosition) == searchString
 end
 
 local function __TS__ObjectAssign(target, ...)
@@ -153,7 +153,6 @@ do
 end
 -- End of Lua Library inline imports
 local ____exports = {}
-local shouldRefreshData
 local lib = require("neotest.lib")
 local ____adapter_2Ddata = require('neotest-playwright.adapter-data')
 local data = ____adapter_2Ddata.data
@@ -169,13 +168,40 @@ local ____project = require('neotest-playwright.project')
 local loadPreselectedProjects = ____project.loadPreselectedProjects
 local ____report = require('neotest-playwright.report')
 local flattenSpecs = ____report.flattenSpecs
-____exports.root = lib.files.match_root_pattern("playwright.config.ts", "playwright.config.js")
+local reports = {}
+____exports.root = lib.files.match_root_pattern(
+    "playwright.config.ts",
+    "playwright.config.js",
+    "playwright.config.mjs",
+    "playwright.config.mts",
+    "playwright.config.cjs",
+    "playwright.config.cts"
+)
 ____exports.filterDir = function(name, _rel_path, _root)
     return name ~= "node_modules"
 end
 ____exports.isTestFile = function(file_path)
     if not file_path then
         return false
+    end
+    if options.enable_dynamic_test_discovery then
+        if not ____exports.root(file_path) then
+            return false
+        end
+        ____exports.populate_data(file_path)
+        local rootDir = data.rootDir
+        if not rootDir then
+            return false
+        end
+        local ____opt_0 = data.specs
+        local ____temp_2 = ____opt_0 and __TS__ArraySome(
+            data.specs,
+            function(____, spec) return vim.fn.fnamemodify((rootDir .. "/") .. spec.file, ":p") == vim.fn.fnamemodify(file_path, ":p") end
+        )
+        if ____temp_2 == nil then
+            ____temp_2 = false
+        end
+        return ____temp_2
     end
     local endings = {
         ".spec.ts",
@@ -195,9 +221,9 @@ ____exports.isTestFile = function(file_path)
 end
 ____exports.discoverPositions = function(path)
     if lib.subprocess.enabled() then
-        lib.subprocess.call("require('neotest-playwright.discover').populate_data")
+        lib.subprocess.call("require('neotest-playwright.discover').populate_data", {path})
     else
-        ____exports.populate_data()
+        ____exports.populate_data(path)
     end
     local query = "\n\t\t; -- Namespaces --\n\n\t\t; Matches: test.describe('title')\n\n\t\t(call_expression\n\t\t function: (member_expression) @func_name (#eq? @func_name \"test.describe\")\n\n\t\t arguments: (arguments\n\t\t\t (string (string_fragment) @namespace.name)\n\t\t\t ) @namespace.definition\n\t\t )\n\n\t\t; -- Tests --\n\n\t\t; Matches: test('title')\n\n\t\t(call_expression\n\t\t function: (identifier) @func_name (#eq? @func_name \"test\")\n\n\t\t arguments: (arguments\n\t\t\t(string (string_fragment) @test.name\n\t\t\t)\n\t\t\t) @test.definition\n\t\t)\n\n\t\t; Matches: test.only('title') / test.fixme('title')\n\n\t\t(call_expression\n\t\t function: (member_expression) @func_name (#any-of? @func_name \"test.only\" \"test.fixme\" \"test.skip\")\n\n\t\t arguments: (arguments\n\t\t\t(string (string_fragment) @test.name)\n\t\t\t) @test.definition\n\t\t)\n\t\t"
     return lib.treesitter.parse_positions(
@@ -243,26 +269,32 @@ ____exports._position_id = function(position, _parent)
         return (position.path .. "::") .. position.name
     end
 end
-____exports.populate_data = function()
-    if shouldRefreshData() then
-        ____exports.refresh_data()
+____exports.populate_data = function(path)
+    local ____vim_fn_json_encode_7 = vim.fn.json_encode
+    local ____options_get_playwright_binary_result_5 = options.get_playwright_binary(path)
+    local ____options_get_playwright_config_result_6 = options.get_playwright_config(path)
+    local ____opt_3 = options.get_cwd
+    local key = ____vim_fn_json_encode_7({
+        ____options_get_playwright_binary_result_5,
+        ____options_get_playwright_config_result_6,
+        ____opt_3 and ____opt_3(path),
+        options.env
+    })
+    local report = reports[key]
+    if not report then
+        report = get_config(path)
+        reports[key] = report
+        options.projects = loadPreselectedProjects() or ({})
     end
-end
---- Called by the subprocess before parsing a file
-____exports.refresh_data = function()
-    logger("debug", "Refreshing data")
-    local report = get_config()
     data.report = report
     data.specs = flattenSpecs(report.suites)
     data.rootDir = report.config.rootDir
-    options.projects = loadPreselectedProjects() or ({})
 end
-shouldRefreshData = function()
-    if data.specs and data.rootDir then
-        logger("debug", "Data already exists. Skipping refresh.")
-        return false
-    else
-        return true
-    end
+--- Called in both Neovim processes by :NeotestPlaywrightRefresh.
+____exports.refresh_data = function()
+    logger("debug", "Refreshing data")
+    reports = {}
+    ____exports.populate_data()
+    options.projects = loadPreselectedProjects() or ({})
 end
 return ____exports
